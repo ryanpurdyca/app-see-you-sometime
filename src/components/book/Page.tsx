@@ -68,7 +68,13 @@ export function Page({ index, openness, readingPage, peeled, hovered }: Props) {
     return () => controls.stop();
   }, [peeled, hovered, readingPage, index, hoverPeel]);
 
-  const translateZ = (index + 1) * PAGE_Z_STEP;
+  // In reading mode, reverse Z-ordering for the right stack so readingPage sits
+  // on top. Without this, readingPage has the lowest Z and its peel disappears
+  // behind the pages above it. Left stack keeps the natural order.
+  const translateZ =
+    readingPage !== null && index >= readingPage
+      ? (NUM_PAGES - (index - readingPage)) * PAGE_Z_STEP
+      : (index + 1) * PAGE_Z_STEP;
 
   return (
     <motion.div
