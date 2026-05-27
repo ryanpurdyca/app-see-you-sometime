@@ -144,6 +144,13 @@ Append new entries at the bottom. Use the format: `### YYYY-MM-DD — Title`.
 - **Scene tilt reduces to 0° as book opens.** `tiltX` and `tiltZ` are `useTransform` MotionValues derived from `smoothOpenness` (`[0,1] → [SCENE_TILT_X_DEG, 0]` and `[SCENE_TILT_Z_DEG, 0]`). The book inner div is now a `motion.div` with `style={{ rotateX: tiltX, rotateZ: tiltZ }}` instead of a static `transform` string.
 - **Persistent `rotateY` MotionValue in `Page`.** Previously, switching between idle and reading modes swapped between `style.rotateY` (MotionValue) and `animate.rotateY` (declarative), causing Framer Motion to lose the current position and snap. Fix: a single `rotateY = useMotionValue(...)` always lives in `style`. A `useEffect` drives it in two ways: in idle mode it subscribes to `idleRotateY` changes; in reading mode it calls the imperative `animate(rotateY, target, spring)` which correctly springs FROM the current position. This gives a smooth fan-to-flat collapse on Read and clean page flips on Next/Back.
 
+### 2026-05-27 — Reading-mode raised pages, hover lift, clickable page regions
+
+- **Reading tilt (`READING_SCENE_TILT_X = 6°`)**: When Read is clicked, an additional `rotateX` is animated onto the scene via a `readingTiltX` MotionValue (springs in; springs back to 0 on Close/Cancel). `combinedTiltX = useTransform([tiltX, readingTiltX], ([a, b]) => a + b)` merges both signals cleanly without nesting springs.
+- **Per-page hover lift**: `Page.tsx` accepts a `hovered: boolean` prop. A `lift` MotionValue springs between 0 and `PAGE_HOVER_LIFT_PX (30px)`. `translateZ = useTransform(lift, v => baseTZ + v)` adds the lift on top of the stacking offset without conflicting with `rotateY`.
+- **Transparent click overlay regions**: In reading mode, two `<div>` elements are rendered outside the perspective container (flat screen space, no 3D transform) covering the left and right page footprints (`left: calc(50vw - var(--book-width))` and `left: 50vw`). Left region: onClick → handleBack (no-op when on page 0), onMouseEnter/Leave → setHoveredSide. Right region: onClick → handleNext (no-op on last page), hover handlers same pattern. This keeps hit-testing simple and avoids raycasting through the 3D scene.
+- **`hoveredSide` state** (`'left' | 'right' | null`) is cleared on mode exit (handleClose, handleCancel) to prevent stale hover lift if the mouse doesn't move after the overlay disappears.
+
 ## 6. Design system
 
 **Tokens** (`src/design-system/tokens.css`):

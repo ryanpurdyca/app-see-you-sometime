@@ -54,3 +54,9 @@ export const BOOK_WIDTH_PX = 320;
  * cover is shifted to the right of centre by the same amount.
  */
 export const OPEN_CENTRE_OFFSET = "calc(var(--book-width) / 2)";
+
+/** Additional rotateX applied to the scene in reading mode to give pages subtle depth. */
+export const READING_SCENE_TILT_X = 6;
+
+/** translateZ increase (px) applied to a page when the user hovers its side. */
+export const PAGE_HOVER_LIFT_PX = 30;

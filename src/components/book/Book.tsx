@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { animate, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Cover } from "./Cover";
 import { Page } from "./Page";
 import { BackCover } from "./BackCover";
@@ -11,6 +11,7 @@ import {
   NUM_PAGES,
   OPEN_CENTRE_OFFSET,
   OPENNESS_SPRING,
+  READING_SCENE_TILT_X,
   SCENE_PERSPECTIVE_PX,
   SCENE_TILT_X_DEG,
   SCENE_TILT_Z_DEG,
@@ -33,8 +34,17 @@ export function Book() {
   const tiltX = useTransform(smoothOpenness, [0, 1], [SCENE_TILT_X_DEG, 0]);
   const tiltZ = useTransform(smoothOpenness, [0, 1], [SCENE_TILT_Z_DEG, 0]);
 
+  // Additional tilt applied in reading mode to give pages subtle depth.
+  const readingTiltX = useMotionValue(0);
+  const combinedTiltX = useTransform(
+    [tiltX, readingTiltX],
+    ([a, b]) => (a as number) + (b as number),
+  );
+
   const [mode, setMode] = useState<BookMode>("idle");
   const [currentPage, setCurrentPage] = useState(0);
+  const [hoveredSide, setHoveredSide] = useState<"left" | "right" | null>(null);
+
   // Ref mirrors mode so the pointer-event handler always sees the current
   // value without needing to re-register the listener on every mode change.
   const modeRef = useRef<BookMode>("idle");
@@ -73,10 +83,13 @@ export function Book() {
     openness.set(1);
     setCurrentPage(0);
     setModeSync("reading");
+    animate(readingTiltX, READING_SCENE_TILT_X, { type: "spring", stiffness: 120, damping: 20 });
   };
 
   const handleCancel = () => {
     setModeSync("idle");
+    setHoveredSide(null);
+    animate(readingTiltX, 0, { type: "spring", stiffness: 120, damping: 20 });
   };
 
   const handleNext = () => {
@@ -90,6 +103,8 @@ export function Book() {
   const handleClose = () => {
     setModeSync("idle");
     setCurrentPage(0);
+    setHoveredSide(null);
+    animate(readingTiltX, 0, { type: "spring", stiffness: 120, damping: 20 });
     openness.set(0);
   };
 
@@ -112,17 +127,60 @@ export function Book() {
             height: "var(--book-height)",
             left: OPEN_CENTRE_OFFSET,
             transformStyle: "preserve-3d",
-            rotateX: tiltX,
+            rotateX: combinedTiltX,
             rotateZ: tiltZ,
           }}
         >
           <BackCover />
           {Array.from({ length: NUM_PAGES }, (_, i) => (
-            <Page key={i} index={i} openness={smoothOpenness} readingPage={readingPage} />
+            <Page
+              key={i}
+              index={i}
+              openness={smoothOpenness}
+              readingPage={readingPage}
+              hovered={
+                readingPage !== null &&
+                ((i < readingPage && hoveredSide === "left") ||
+                  (i >= readingPage && hoveredSide === "right"))
+              }
+            />
           ))}
           <Cover openness={smoothOpenness} />
         </motion.div>
       </div>
+
+      {/* Transparent click/hover regions in reading mode — outside the
+          perspective container so hit-testing is in flat screen space. */}
+      {mode === "reading" && (
+        <>
+          {/* Left page — navigates Back */}
+          <div
+            className="absolute cursor-pointer"
+            style={{
+              left: "calc(50vw - var(--book-width))",
+              top: "calc(50vh - var(--book-height) / 2)",
+              width: "var(--book-width)",
+              height: "var(--book-height)",
+            }}
+            onClick={currentPage > 0 ? handleBack : undefined}
+            onMouseEnter={() => setHoveredSide("left")}
+            onMouseLeave={() => setHoveredSide(null)}
+          />
+          {/* Right page — navigates Next */}
+          <div
+            className="absolute cursor-pointer"
+            style={{
+              left: "50vw",
+              top: "calc(50vh - var(--book-height) / 2)",
+              width: "var(--book-width)",
+              height: "var(--book-height)",
+            }}
+            onClick={currentPage < NUM_PAGES - 1 ? handleNext : undefined}
+            onMouseEnter={() => setHoveredSide("right")}
+            onMouseLeave={() => setHoveredSide(null)}
+          />
+        </>
+      )}
 
       {/* 2D button overlay — outside the perspective container so it isn't
           affected by 3D transforms. Absolutely positioned using vw/vh so it
