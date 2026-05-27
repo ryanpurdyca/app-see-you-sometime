@@ -7,7 +7,9 @@ import { Page } from "./Page";
 import { BackCover } from "./BackCover";
 import {
   NUM_PAGES,
+  OPEN_CENTRE_OFFSET,
   OPENNESS_SPRING,
+  POINTER_EDGE_MARGIN_PX,
   SCENE_PERSPECTIVE_PX,
   SCENE_TILT_X_DEG,
   SCENE_TILT_Z_DEG,
@@ -29,8 +31,10 @@ export function Book() {
   useEffect(() => {
     const setFromClientX = (clientX: number) => {
       const w = window.innerWidth || 1;
-      const ratio = 1 - clientX / w;
-      openness.set(Math.max(0, Math.min(1, ratio)));
+      const m = POINTER_EDGE_MARGIN_PX;
+      const usable = w - m * 2;
+      const clamped = Math.max(m, Math.min(w - m, clientX));
+      openness.set(1 - (clamped - m) / usable);
     };
 
     const onPointerMove = (e: PointerEvent) => setFromClientX(e.clientX);
@@ -61,6 +65,7 @@ export function Book() {
         style={{
           width: "var(--book-width)",
           height: "var(--book-height)",
+          left: OPEN_CENTRE_OFFSET,
           transformStyle: "preserve-3d",
           transform: `rotateX(${SCENE_TILT_X_DEG}deg) rotateZ(${SCENE_TILT_Z_DEG}deg)`,
         }}

@@ -116,6 +116,11 @@ Append new entries at the bottom. Use the format: `### YYYY-MM-DD — Title`.
 - **`openness` is derived from pointer X only**, not pointer Y. Trade-off: simpler model, but the book doesn't tilt with vertical pointer position. Future enhancement candidate.
 - **AGENTS.md auto-update enforced via pre-commit.** Trade-off: occasional friction on trivial commits (mitigated by `SKIP_AGENTS_CHECK=1`), but guarantees this document doesn't rot.
 
+### 2026-05-27 — Open-centred layout + pointer edge margins
+
+- **`position: relative; left: calc(var(--book-width) / 2)`** on the book container offsets it so the spine sits at screen centre. When fully open the spread is symmetric around centre; when closed the cover shifts right-of-centre. Implemented via a CSS `left` offset (rather than `translateX` on the 3D element) so it doesn't interact with the `preserve-3d` transform stack.
+- **`POINTER_EDGE_MARGIN_PX = 100`** clamps the active pointer range to [100px, viewportWidth−100px]. This means the user reaches full open/closed before the cursor hits the very edge of the screen, which is more ergonomic and avoids accidental max-state at the screen boundary. The usable range maps linearly to openness [0, 1].
+
 ## 6. Design system
 
 **Tokens** (`src/design-system/tokens.css`):

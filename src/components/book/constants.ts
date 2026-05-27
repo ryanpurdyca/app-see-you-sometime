@@ -39,3 +39,18 @@ export const OPENNESS_SPRING = {
 
 /** Z-offset between stacked pages (px). Prevents z-fighting when closed. */
 export const PAGE_Z_STEP = 0.4;
+
+/**
+ * How far from each edge (px) the pointer range starts. Prevents the book
+ * from requiring the cursor to reach the very edge of the screen to hit
+ * fully-open or fully-closed.
+ */
+export const POINTER_EDGE_MARGIN_PX = 100;
+
+/**
+ * Horizontal offset applied to the book container so the open state (spread
+ * evenly around the spine) appears visually centred on screen. Equal to half
+ * the book width: when open, the spine is at screen centre; when closed, the
+ * cover is shifted to the right of centre by the same amount.
+ */
+export const OPEN_CENTRE_OFFSET = "calc(var(--book-width) / 2)";
