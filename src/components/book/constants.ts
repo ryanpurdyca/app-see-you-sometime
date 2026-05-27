@@ -58,5 +58,6 @@ export const OPEN_CENTRE_OFFSET = "calc(var(--book-width) / 2)";
 /** Additional rotateX applied to the scene in reading mode to give pages subtle depth. */
 export const READING_SCENE_TILT_X = 6;
 
-/** translateZ increase (px) applied to a page when the user hovers its side. */
-export const PAGE_HOVER_LIFT_PX = 30;
+/** rotateY offset (degrees) applied to the about-to-flip page on hover,
+ *  simulating a peel away from the stack while staying anchored at the spine. */
+export const PAGE_HOVER_PEEL_DEG = 12;

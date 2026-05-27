@@ -7,7 +7,7 @@ import {
   COVER_OPEN_ANGLE,
   NUM_PAGES,
   PAGE_FAN_SPREAD,
-  PAGE_HOVER_LIFT_PX,
+  PAGE_HOVER_PEEL_DEG,
   PAGE_Z_STEP,
 } from "./constants";
 
@@ -20,7 +20,7 @@ type Props = {
    *          stack (COVER_OPEN_ANGLE), others sit on the right stack (0°).
    */
   readingPage: number | null;
-  /** True when the user is hovering the side of the spread this page belongs to. */
+  /** True when this page should show the "ready to flip" peel on hover. */
   hovered: boolean;
 };
 
@@ -33,8 +33,7 @@ export function Page({ index, openness, readingPage, hovered }: Props) {
 
   const isEdgePage = index === NUM_PAGES - 1;
 
-  // Persistent rotateY — always in style, driven by subscription (idle) or
-  // imperative spring (reading) so Framer Motion never loses the current angle.
+  // Base rotateY — driven by idle subscription or imperative spring (reading).
   const rotateY = useMotionValue(idleRotateY.get());
 
   useEffect(() => {
@@ -47,19 +46,27 @@ export function Page({ index, openness, readingPage, hovered }: Props) {
     return () => controls.stop();
   }, [readingPage, index, idleRotateY, rotateY]);
 
-  // Hover lift: springs translateZ up when the user hovers this page's side.
-  const baseTZ = (index + 1) * PAGE_Z_STEP;
-  const lift = useMotionValue(0);
-  const translateZ = useTransform(lift, (v) => baseTZ + v);
+  // Hover peel: small rotateY offset that makes the page look ready to flip,
+  // hinging at the spine. Left-stack pages peel positive (toward 0°);
+  // right-stack pages peel negative (away from 0°).
+  const hoverPeel = useMotionValue(0);
+  const combinedRotY = useTransform(
+    [rotateY, hoverPeel],
+    ([r, h]) => (r as number) + (h as number),
+  );
 
   useEffect(() => {
-    const controls = animate(lift, hovered ? PAGE_HOVER_LIFT_PX : 0, {
-      type: "spring",
-      stiffness: 220,
-      damping: 22,
-    });
+    const target =
+      hovered && readingPage !== null
+        ? index < readingPage
+          ? PAGE_HOVER_PEEL_DEG
+          : -PAGE_HOVER_PEEL_DEG
+        : 0;
+    const controls = animate(hoverPeel, target, { type: "spring", stiffness: 220, damping: 22 });
     return () => controls.stop();
-  }, [hovered, lift]);
+  }, [hovered, readingPage, index, hoverPeel]);
+
+  const translateZ = (index + 1) * PAGE_Z_STEP;
 
   return (
     <motion.div
@@ -74,7 +81,7 @@ export function Page({ index, openness, readingPage, hovered }: Props) {
         transformOrigin: "0% 50%",
         transformStyle: "preserve-3d",
         translateZ,
-        rotateY,
+        rotateY: combinedRotY,
       }}
     >
       <div

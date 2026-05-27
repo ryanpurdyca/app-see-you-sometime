@@ -140,8 +140,8 @@ export function Book() {
               readingPage={readingPage}
               hovered={
                 readingPage !== null &&
-                ((i < readingPage && hoveredSide === "left") ||
-                  (i >= readingPage && hoveredSide === "right"))
+                ((i === readingPage - 1 && hoveredSide === "left") ||
+                  (i === readingPage && hoveredSide === "right"))
               }
             />
           ))}
