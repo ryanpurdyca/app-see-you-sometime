@@ -11,7 +11,7 @@ export function BackCover() {
       data-testid="book-back-cover"
       className={cn(
         "border-accent bg-surface absolute inset-0",
-        "rounded-l-[3px] rounded-r-[10px] border-2",
+        "rounded-l-[8px] rounded-r-[10px] border-2",
       )}
       style={{
         transformStyle: "preserve-3d",

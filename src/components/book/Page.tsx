@@ -39,7 +39,7 @@ export function Page({ index, openness }: Props) {
       data-index={index}
       className={cn(
         "bg-paper absolute inset-0",
-        "rounded-l-[2px] rounded-r-[8px]",
+        "rounded-l-[8px] rounded-r-[8px]",
         isEdgePage ? "border-accent/70 border" : "border-paper-edge border",
       )}
       style={{
@@ -52,7 +52,7 @@ export function Page({ index, openness }: Props) {
       {/* Subtle gradient hints at page curvature without using an image. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-l-[2px] rounded-r-[8px]"
+        className="pointer-events-none absolute inset-0 rounded-l-[8px] rounded-r-[8px]"
         style={{
           background:
             "linear-gradient(to right, rgba(11,13,18,0.04) 0%, transparent 8%, transparent 92%, rgba(11,13,18,0.03) 100%)",

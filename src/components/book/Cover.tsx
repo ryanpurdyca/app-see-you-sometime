@@ -27,7 +27,7 @@ export function Cover({ openness }: Props) {
       data-testid="book-cover"
       className={cn(
         "border-accent bg-surface absolute inset-0",
-        "rounded-l-[3px] rounded-r-[10px] border-2",
+        "rounded-l-[8px] rounded-r-[10px] border-2",
         "shadow-[0_18px_40px_-20px_var(--color-paper-shadow)]",
       )}
       style={{
@@ -35,7 +35,6 @@ export function Cover({ openness }: Props) {
         transformStyle: "preserve-3d",
         translateZ,
         rotateY,
-        backfaceVisibility: "hidden",
       }}
     >
       <CoverFace />
@@ -62,7 +61,7 @@ function CoverFace() {
 function CoverInside() {
   return (
     <div
-      className="bg-surface-raised border-accent-soft absolute inset-0 rounded-l-[3px] rounded-r-[10px] border"
+      className="bg-surface-raised border-accent-soft absolute inset-0 rounded-l-[8px] rounded-r-[10px] border"
       style={{
         transform: "rotateY(180deg) translateZ(1px)",
         backfaceVisibility: "hidden",

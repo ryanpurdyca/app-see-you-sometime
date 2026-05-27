@@ -41,11 +41,11 @@ export const OPENNESS_SPRING = {
 export const PAGE_Z_STEP = 0.4;
 
 /**
- * How far from each edge (px) the pointer range starts. Prevents the book
- * from requiring the cursor to reach the very edge of the screen to hit
- * fully-open or fully-closed.
+ * Must equal the `--book-width` CSS token in tokens.css (320px).
+ * Used in JS to derive dynamic pointer range thresholds that align with the
+ * book's rendered edges — no hard-coded pixel margins needed.
  */
-export const POINTER_EDGE_MARGIN_PX = 100;
+export const BOOK_WIDTH_PX = 320;
 
 /**
  * Horizontal offset applied to the book container so the open state (spread

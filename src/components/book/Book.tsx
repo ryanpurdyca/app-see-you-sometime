@@ -6,10 +6,10 @@ import { Cover } from "./Cover";
 import { Page } from "./Page";
 import { BackCover } from "./BackCover";
 import {
+  BOOK_WIDTH_PX,
   NUM_PAGES,
   OPEN_CENTRE_OFFSET,
   OPENNESS_SPRING,
-  POINTER_EDGE_MARGIN_PX,
   SCENE_PERSPECTIVE_PX,
   SCENE_TILT_X_DEG,
   SCENE_TILT_Z_DEG,
@@ -31,10 +31,14 @@ export function Book() {
   useEffect(() => {
     const setFromClientX = (clientX: number) => {
       const w = window.innerWidth || 1;
-      const m = POINTER_EDGE_MARGIN_PX;
-      const usable = w - m * 2;
-      const clamped = Math.max(m, Math.min(w - m, clientX));
-      openness.set(1 - (clamped - m) / usable);
+      // Fully closed when cursor reaches the right edge of the closed book;
+      // fully open when cursor reaches the left edge of the fully-open spread.
+      // Spine sits at screen centre (w/2), book extends ±BOOK_WIDTH_PX from it.
+      const spineX = w / 2;
+      const closeAt = spineX + BOOK_WIDTH_PX;
+      const openAt = spineX - BOOK_WIDTH_PX;
+      const clamped = Math.max(openAt, Math.min(closeAt, clientX));
+      openness.set(1 - (clamped - openAt) / (closeAt - openAt));
     };
 
     const onPointerMove = (e: PointerEvent) => setFromClientX(e.clientX);

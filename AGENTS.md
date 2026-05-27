@@ -86,6 +86,7 @@ src/
       Cover.tsx              Hinged front cover with face + inside surfaces
       Page.tsx               Single hinged page
       BackCover.tsx          Static back cover
+      LeftPageText.tsx       Handwritten text behind the open cover (DOM-layered)
       constants.ts           All tunable layout/motion constants
       index.ts               Public barrel for the book feature
       Book.test.tsx
@@ -120,6 +121,13 @@ Append new entries at the bottom. Use the format: `### YYYY-MM-DD — Title`.
 
 - **`position: relative; left: calc(var(--book-width) / 2)`** on the book container offsets it so the spine sits at screen centre. When fully open the spread is symmetric around centre; when closed the cover shifts right-of-centre. Implemented via a CSS `left` offset (rather than `translateX` on the 3D element) so it doesn't interact with the `preserve-3d` transform stack.
 - **`POINTER_EDGE_MARGIN_PX = 100`** clamps the active pointer range to [100px, viewportWidth−100px]. This means the user reaches full open/closed before the cursor hits the very edge of the screen, which is more ergonomic and avoids accidental max-state at the screen boundary. The usable range maps linearly to openness [0, 1].
+
+### 2026-05-27 — Pointer range anchored to book geometry, spine rounding, left-page text
+
+- **Pointer range anchored to book edges.** `closeAt = spineX + BOOK_WIDTH_PX` (right edge of closed book) and `openAt = spineX - BOOK_WIDTH_PX` (left edge of the open spread). Replaces the 100px screen-edge margin with semantically meaningful positions that adapt to viewport width automatically.
+- **Spine rounding.** All four book pieces (Cover, BackCover, Page, CoverInside) now use `rounded-l-[8px]` on the spine edge to match the right-side corner radius.
+- **`LeftPageText` component** (`src/components/book/LeftPageText.tsx`). Displays handwritten placeholder text centred in the area the front cover occupies when fully open. Positioned at `left: calc(50vw - var(--book-width))` so it aligns exactly with the open cover's footprint. Rendered before `<Book />` in DOM order so the 3D scene (including the swinging cover) paints over it. Uses `Just Another Hand` Google Font via `next/font/google` (`variable: "--font-handwritten"`) — exposed in `@theme inline` and consumed as the `font-handwritten` Tailwind utility.
+- **Cover occlusion fix.** `backfaceVisibility: "hidden"` must NOT be placed on the outer `preserve-3d` container of `Cover.tsx`. Doing so hides the _entire subtree_ — including `CoverInside` — once the container's backface faces the viewer (past −90°). Each child (`CoverFace`, `CoverInside`) carries its own `backfaceVisibility: "hidden"` to control visibility independently.
 
 ## 6. Design system
 
