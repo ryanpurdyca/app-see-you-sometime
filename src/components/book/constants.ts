@@ -60,7 +60,7 @@ export const READING_SCENE_TILT_X = 6;
 
 /** Base rotateY peel (degrees) always present on about-to-flip pages in reading
  *  mode — subtle enough that you can just barely see the page behind them. */
-export const PAGE_BASE_PEEL_DEG = 9;
+export const PAGE_BASE_PEEL_DEG = 14;
 
 /** Additional rotateY peel on top of PAGE_BASE_PEEL_DEG when the user hovers,
  *  giving a stronger "ready to flip" signal. */
