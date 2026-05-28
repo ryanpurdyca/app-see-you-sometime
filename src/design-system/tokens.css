@@ -32,6 +32,10 @@
   --color-paper-edge: #e6eaf5;
   --color-paper-shadow: rgba(11, 13, 18, 0.08);
 
+  /* Book cover */
+  --color-cover: #000000;
+  --color-cover-border-inner: #ffffff;
+
   /* Decorative */
   --color-rule: #d9d7d3;
   --color-gutter: #f2f0ec;

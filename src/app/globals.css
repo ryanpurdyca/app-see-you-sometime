@@ -29,6 +29,8 @@
   --color-paper-edge: var(--color-paper-edge);
   --color-rule: var(--color-rule);
   --color-gutter: var(--color-gutter);
+  --color-cover: var(--color-cover);
+  --color-cover-border-inner: var(--color-cover-border-inner);
 
   --radius-xs: var(--radius-xs);
   --radius-sm: var(--radius-sm);

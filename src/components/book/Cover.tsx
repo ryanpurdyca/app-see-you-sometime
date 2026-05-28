@@ -26,7 +26,7 @@ export function Cover({ openness }: Props) {
     <motion.div
       data-testid="book-cover"
       className={cn(
-        "bg-surface absolute inset-0",
+        "absolute inset-0 bg-cover",
         "rounded-[10px]",
         "border-ink border",
         "shadow-[0_4px_12px_rgba(11,13,18,0.06),_0_20px_48px_rgba(11,13,18,0.12)]",
@@ -40,7 +40,7 @@ export function Cover({ openness }: Props) {
     >
       <div
         aria-hidden
-        className="border-ink pointer-events-none absolute inset-[3px] rounded-[7px] border"
+        className="border-cover-border-inner pointer-events-none absolute inset-[3px] rounded-[7px] border"
       />
       <CoverFace />
       <CoverInside />
@@ -50,16 +50,23 @@ export function Cover({ openness }: Props) {
 
 function CoverFace() {
   return (
-    <div
-      className="absolute inset-0 flex flex-col items-center justify-center gap-7 px-6"
-      style={{ backfaceVisibility: "hidden" }}
-    >
-      <div className="flex flex-col items-center gap-2">
-        <span className="font-handwritten text-ink text-2xl font-semibold tracking-tight">
-          Test
-        </span>
-        <span className="text-ink-muted text-sm">Interactive 3D Book</span>
-      </div>
+    <div className="absolute inset-0" style={{ backfaceVisibility: "hidden" }}>
+      <img
+        src="/images/vitally-01.svg"
+        alt=""
+        width={166}
+        height={216}
+        className="absolute top-[11%] left-[9%] h-auto w-[30%] max-w-[108px] -rotate-6 select-none"
+        draggable={false}
+      />
+      <img
+        src="/images/vitally-02.svg"
+        alt=""
+        width={216}
+        height={155}
+        className="absolute right-[7%] bottom-[13%] h-auto w-[42%] max-w-[138px] rotate-[7deg] select-none"
+        draggable={false}
+      />
     </div>
   );
 }

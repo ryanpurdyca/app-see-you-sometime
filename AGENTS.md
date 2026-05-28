@@ -98,7 +98,7 @@ e2e/
   book.spec.ts               Playwright smoke test of the rendered book
 scripts/
   agents-reminder.mjs        Pre-commit guard that nudges AGENTS.md updates
-public/                      Static assets (currently empty)
+public/                      Static assets (`images/vitally-01.svg`, `vitally-02.svg` on book cover)
 ```
 
 **Conventions:**
@@ -185,7 +185,7 @@ Append new entries at the bottom. Use the format: `### YYYY-MM-DD — Title`.
 
 **Tokens** (`src/design-system/tokens.css`):
 
-- Colors: `canvas`, `surface`, `surface-raised`, `ink`, `ink-muted`, `ink-subtle`, `accent`, `accent-strong`, `accent-soft`, `paper`, `paper-edge`.
+- Colors: `canvas`, `surface`, `surface-raised`, `ink`, `ink-muted`, `ink-subtle`, `accent`, `accent-strong`, `accent-soft`, `paper`, `paper-edge`, `cover`, `cover-border-inner`.
 - Radii: `radius-xs`, `-sm`, `-md`, `-lg`.
 - Book geometry: `--book-width`, `--book-height`, `--book-spine`.
 - Motion: `--ease-out-soft`, `--ease-page`, `--duration-fast|base|slow`.
