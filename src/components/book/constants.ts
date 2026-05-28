@@ -92,3 +92,14 @@ export const PAGE_SUB_PEEL_DEG = 12;
 /** Additional rotateY peel added on top of the base peel when the user hovers,
  *  giving a stronger "ready to flip" signal. */
 export const PAGE_HOVER_BOOST_DEG = 6;
+
+/**
+ * Spring for the cover's iridescent sheen as it tracks the pointer. Looser than
+ * OPENNESS_SPRING so the sheen glides languidly behind the cursor rather than
+ * snapping to it — reads as a reflection, not a follower.
+ */
+export const COVER_SHEEN_SPRING = {
+  stiffness: 120,
+  damping: 26,
+  mass: 0.8,
+} as const;
