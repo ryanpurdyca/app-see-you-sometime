@@ -12,9 +12,20 @@ type Props = {
 };
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: cn("bg-ink border-ink text-white", "hover:bg-ink/85 hover:border-ink/85"),
-  secondary: cn("bg-transparent border-2 border-ink text-ink", "hover:border-ink"),
-  supporting: cn("bg-transparent border-transparent text-ink", "hover:bg-surface"),
+  primary: cn(
+    "bg-ink border-ink text-white",
+    "hover:bg-ink/85 hover:border-ink/85 active:bg-ink/75",
+  ),
+  secondary: cn(
+    "bg-transparent border-2 border-ink text-ink",
+    "hover:bg-ink hover:border-ink hover:text-white",
+    "active:bg-ink/75 active:text-white",
+  ),
+  supporting: cn(
+    "border-2 border-transparent bg-transparent text-ink",
+    "hover:border-ink hover:bg-transparent",
+    "active:border-ink active:bg-ink/5",
+  ),
 };
 
 export function Button({ variant = "supporting", onClick, children, className }: Props) {

@@ -71,7 +71,7 @@ export function CursorFollower({ openness, mode, hoveringBook }: Props) {
         fontSize: "12px",
       }}
     >
-      Read Book
+      Open
     </motion.div>
   );
 }

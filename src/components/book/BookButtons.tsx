@@ -90,7 +90,7 @@ export function BookButtons({
         {/* Left group — Back fades in once past page 0 */}
         <div className="flex items-center gap-2">
           <Button variant="primary" onClick={isReading ? onNext : onRead}>
-            Next
+            {isReading ? "Next" : "Open"}
           </Button>
           <AnimatePresence>
             {showBack && (
