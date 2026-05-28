@@ -1,18 +1,29 @@
+import { motion, useTransform, type MotionValue } from "framer-motion";
 import { cn } from "@/design-system";
+
+type Props = {
+  openness: MotionValue<number>;
+};
 
 /**
  * Back of the book — static, sits behind every page. Provides the visible
  * outline you see in the reference fully-open state and prevents the page
  * stack from looking floating when the front cover swings away.
+ *
+ * Faded out when the book is closed/mid-closing so the front cover swings
+ * cleanly without a "stuck" outline visible behind it.
  */
-export function BackCover() {
+export function BackCover({ openness }: Props) {
+  const opacity = useTransform(openness, [0.55, 1], [0, 1], { clamp: true });
+
   return (
-    <div
+    <motion.div
       data-testid="book-back-cover"
       className={cn("border-accent bg-surface absolute inset-0", "rounded-[10px] border-2")}
       style={{
         transformStyle: "preserve-3d",
         transform: "translateZ(0px)",
+        opacity,
       }}
     />
   );

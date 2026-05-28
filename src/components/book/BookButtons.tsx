@@ -35,21 +35,34 @@ export function BookButtons({
 
   const isReading = mode === "reading";
   const showBack = isReading && currentPage > 0;
+  const pageWord = currentPage === 0 ? "Page" : "Pages";
+  const pageLeft = currentPage === 0 ? "1" : `${currentPage * 2}`;
+  const pageRight = currentPage === 0 ? null : `${currentPage * 2 + 1}`;
+
+  // Track direction so numbers roll up on Next and down on Back.
+  // Render-phase state update: React re-renders immediately, letting us
+  // read the committed previous value before it's overwritten.
+  const [prevPage, setPrevPage] = useState(currentPage);
+  const [dir, setDir] = useState(1);
+  if (prevPage !== currentPage) {
+    setDir(currentPage > prevPage ? 1 : -1);
+    setPrevPage(currentPage);
+  }
 
   return (
     <motion.div
       className="absolute flex items-center justify-between"
       style={{
         left: "calc(50vw - var(--book-width))",
-        top: "calc(50vh + var(--book-height) / 2 + 32px)",
+        top: "calc(50vh + var(--book-height) / 2 + 52px)",
         width: "calc(var(--book-width) * 2)",
         opacity: openness,
         pointerEvents: interactive ? "auto" : "none",
       }}
     >
-      {/* Left group — Back fades in beside Next once past page 0 */}
+      {/* Left group — Back fades in once past page 0 */}
       <div className="flex items-center gap-2">
-        <Btn onClick={isReading ? onNext : onRead}>{isReading ? "Next" : "Read"}</Btn>
+        <Btn onClick={isReading ? onNext : onRead}>Next</Btn>
         <AnimatePresence>
           {showBack && (
             <motion.div
@@ -65,9 +78,100 @@ export function BookButtons({
         </AnimatePresence>
       </div>
 
-      {/* Right button — always Close in reading mode, Close in idle */}
+      {/* Centered page label — only in reading mode */}
+      {isReading && (
+        <span className="text-accent absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center font-mono text-sm">
+          <span>{pageWord}&nbsp;</span>
+          <AnimatedNumber value={pageLeft} dir={dir} />
+          {pageRight && (
+            <>
+              <span>-</span>
+              <AnimatedNumber value={pageRight} dir={dir} staggerOffset={1} />
+            </>
+          )}
+        </span>
+      )}
+
+      {/* Right button */}
       <Btn onClick={isReading ? onClose : onCancel}>Close</Btn>
     </motion.div>
+  );
+}
+
+function AnimatedNumber({
+  value,
+  dir,
+  staggerOffset = 0,
+}: {
+  value: string;
+  dir: number;
+  staggerOffset?: number;
+}) {
+  const [snapshot, setSnapshot] = useState(value);
+  const [prevValue, setPrevValue] = useState(value);
+  if (value !== snapshot) {
+    setPrevValue(snapshot);
+    setSnapshot(value);
+  }
+
+  const digits = value.split("");
+  const prevDigits = prevValue.split("");
+
+  // If digit count changed, animate the whole number as a block.
+  if (digits.length !== prevDigits.length) {
+    return (
+      <span className="inline-block overflow-hidden leading-none" style={{ height: "1em" }}>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={value}
+            className="inline-block"
+            initial={{ y: dir * 18 }}
+            animate={{ y: 0 }}
+            exit={{ y: dir * -18 }}
+            transition={{
+              duration: 0.18,
+              ease: [0.25, 0.46, 0.45, 0.94],
+              delay: staggerOffset * 0.06,
+            }}
+          >
+            {value}
+          </motion.span>
+        </AnimatePresence>
+      </span>
+    );
+  }
+
+  return (
+    <>
+      {digits.map((digit, i) =>
+        digit === prevDigits[i] ? (
+          <span key={i}>{digit}</span>
+        ) : (
+          <span
+            key={i}
+            className="inline-block overflow-hidden leading-none"
+            style={{ height: "1em" }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={digit}
+                className="inline-block"
+                initial={{ y: dir * 18 }}
+                animate={{ y: 0 }}
+                exit={{ y: dir * -18 }}
+                transition={{
+                  duration: 0.18,
+                  ease: [0.25, 0.46, 0.45, 0.94],
+                  delay: (staggerOffset + i) * 0.06,
+                }}
+              >
+                {digit}
+              </motion.span>
+            </AnimatePresence>
+          </span>
+        ),
+      )}
+    </>
   );
 }
 

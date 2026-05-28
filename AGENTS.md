@@ -153,6 +153,16 @@ Append new entries at the bottom. Use the format: `### YYYY-MM-DD — Title`.
 - **Transparent click overlay regions**: In reading mode, two `<div>` elements are rendered outside the perspective container (flat screen space, no 3D transform) covering the left and right page footprints (`left: calc(50vw - var(--book-width))` and `left: 50vw`). Left region: onClick → handleBack (no-op when on page 0), onMouseEnter/Leave → setHoveredSide. Right region: onClick → handleNext (no-op on last page), hover handlers same pattern. This keeps hit-testing simple and avoids raycasting through the 3D scene.
 - **`hoveredSide` state** (`'left' | 'right' | null`) drives the extra hover peel on the single about-to-flip page (`i === readingPage - 1` for left, `i === readingPage` for right). The base `peeled` peel applies automatically to those same pages without hover. Both are disabled on the left side when `readingPage === 0` (cover is flat, nothing to flip back to). Cleared on mode exit to prevent stale peel.
 
+### 2026-05-28 — Tilt system, sequential close, animated page label
+
+- **Idle tilt grows with openness**: `baseTiltX = useTransform(smoothOpenness, [0,1], [0, 12])`. Reading mode pins total tilt at 0° by springing `readingTiltX` to −12 on Read (exactly cancels `baseTiltX` at openness=1). Both use the same `OPENNESS_SPRING` so they track together.
+- **Sequential close animation**: `handleClose` decrements `currentPage` by 1 every 90ms (most-recently-flipped first), then waits 200ms before closing the cover. Mode flips to `idle` only once `smoothOpenness < 0.01`, preventing a fan-burst from pages snapping to their idle positions mid-animation.
+- **`isClosing` flag**: Set true at the start of `handleClose`, false in `finishClose` and `handleRead`. While true, `peeled` and `subPeeled` are suppressed so the peel springs to 0° immediately — prevents a "stuck tilted page" artefact during close.
+- **`BackCover` fades in**: opacity driven by `useTransform(openness, [0.55, 1], [0, 1])` so it only appears once the cover is substantially open.
+- **Keyboard navigation**: Arrow-right → Next, Arrow-left → Back (or Close when on page 0). Handler registered once; reads `modeRef` and `currentPageRef` to avoid stale closures.
+- **`currentPageRef`**: Mirrors `currentPage` state (same `setCurrentPageSync` pattern as `modeRef`) so the recursive `flipNext` timeout callback always reads the latest page without capturing a stale closure.
+- **Animated page label**: Monospace blue label below the book shows "Page 1" / "Pages N–M". Only changed digits animate — unchanged digits stay static. Each digit has its own `overflow-hidden` clip container so numbers roll in/out like a slot machine. Direction (Next = roll up, Back = roll down) is tracked with a render-phase state update (`prevPage`/`dir` state pair). The right-hand number starts its stagger 60ms after the left (`staggerOffset`). **Do not use refs for this**: ESLint's `react-hooks/refs` rule rejects ref reads/writes during render — use render-phase `useState` updates instead.
+
 ### 2026-05-27 — Border/radius polish, idle click-to-read, BookButtons redesign
 
 - **Unified corner radii**: All book pieces (Cover, BackCover, Page, CoverInside) now use `rounded-[10px]` uniformly. Previous asymmetric `rounded-l-[8px]` on the spine edge is removed.

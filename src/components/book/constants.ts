@@ -56,7 +56,7 @@ export const BOOK_WIDTH_PX = 320;
 export const OPEN_CENTRE_OFFSET = "calc(var(--book-width) / 2)";
 
 /** Additional rotateX applied to the scene in reading mode to give pages subtle depth. */
-export const READING_SCENE_TILT_X = 6;
+export const READING_SCENE_TILT_X = -12;
 
 /**
  * Base rotateY peel for the about-to-flip page in reading mode. Different
