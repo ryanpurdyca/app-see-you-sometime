@@ -23,6 +23,8 @@
   --color-accent-soft: var(--color-accent-soft);
   --color-paper: var(--color-paper);
   --color-paper-edge: var(--color-paper-edge);
+  --color-rule: var(--color-rule);
+  --color-gutter: var(--color-gutter);
 
   --radius-xs: var(--radius-xs);
   --radius-sm: var(--radius-sm);

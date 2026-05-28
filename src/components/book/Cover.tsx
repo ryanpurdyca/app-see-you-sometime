@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, type MotionValue, useTransform } from "framer-motion";
-import { HalftoneSquare, cn } from "@/design-system";
+import { cn } from "@/design-system";
 import { COVER_OPEN_ANGLE, NUM_PAGES, PAGE_Z_STEP } from "./constants";
 
 type Props = {
@@ -28,8 +28,8 @@ export function Cover({ openness }: Props) {
       className={cn(
         "bg-surface absolute inset-0",
         "rounded-[10px]",
-        "border-accent border",
-        "shadow-[0_18px_40px_-20px_var(--color-paper-shadow)]",
+        "border-ink border",
+        "shadow-[0_4px_12px_rgba(11,13,18,0.06),_0_20px_48px_rgba(11,13,18,0.12)]",
       )}
       style={{
         transformOrigin: "0% 50%",
@@ -40,7 +40,7 @@ export function Cover({ openness }: Props) {
     >
       <div
         aria-hidden
-        className="border-accent pointer-events-none absolute inset-[3px] rounded-[7px] border"
+        className="border-ink pointer-events-none absolute inset-[3px] rounded-[7px] border"
       />
       <CoverFace />
       <CoverInside />
@@ -54,9 +54,10 @@ function CoverFace() {
       className="absolute inset-0 flex flex-col items-center justify-center gap-7 px-6"
       style={{ backfaceVisibility: "hidden" }}
     >
-      <HalftoneSquare size={132} resolution={26} />
       <div className="flex flex-col items-center gap-2">
-        <span className="text-ink text-2xl font-semibold tracking-tight">blank.</span>
+        <span className="font-handwritten text-ink text-2xl font-semibold tracking-tight">
+          Test
+        </span>
         <span className="text-ink-muted text-sm">Interactive 3D Book</span>
       </div>
     </div>
@@ -66,7 +67,7 @@ function CoverFace() {
 function CoverInside() {
   return (
     <div
-      className="bg-surface-raised border-accent-soft absolute inset-0 rounded-[10px] border"
+      className="bg-surface-raised absolute inset-0 rounded-[10px]"
       style={{
         transform: "rotateY(180deg) translateZ(1px)",
         backfaceVisibility: "hidden",

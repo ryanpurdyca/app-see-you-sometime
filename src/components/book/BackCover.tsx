@@ -19,7 +19,11 @@ export function BackCover({ openness }: Props) {
   return (
     <motion.div
       data-testid="book-back-cover"
-      className={cn("border-accent bg-surface absolute inset-0", "rounded-[10px] border-2")}
+      className={cn(
+        "border-ink bg-surface absolute inset-0",
+        "rounded-[10px] border-2",
+        "shadow-[0_4px_12px_rgba(11,13,18,0.06),_0_20px_48px_rgba(11,13,18,0.12)]",
+      )}
       style={{
         transformStyle: "preserve-3d",
         transform: "translateZ(0px)",

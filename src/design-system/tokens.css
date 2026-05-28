@@ -15,12 +15,12 @@
 
 :root {
   /* Surfaces & ink */
-  --color-canvas: #f4f6fb;
+  --color-canvas: #f7f5f1;
   --color-surface: #ffffff;
   --color-surface-raised: #fdfdff;
   --color-ink: #0b0d12;
   --color-ink-muted: #5b6478;
-  --color-ink-subtle: #9aa3b8;
+  --color-ink-subtle: #807e7a;
 
   /* Accent (book outline / primary brand) */
   --color-accent: #3b5bff;
@@ -31,6 +31,10 @@
   --color-paper: #ffffff;
   --color-paper-edge: #e6eaf5;
   --color-paper-shadow: rgba(11, 13, 18, 0.08);
+
+  /* Decorative */
+  --color-rule: #d9d7d3;
+  --color-gutter: #f2f0ec;
 
   /* Radii */
   --radius-xs: 4px;

@@ -6,3 +6,4 @@
 export { cn } from "./cn";
 export { Stage } from "./components/Stage";
 export { HalftoneSquare } from "./components/HalftoneSquare";
+export { Button } from "./components/Button";

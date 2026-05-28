@@ -186,6 +186,7 @@ Append new entries at the bottom. Use the format: `### YYYY-MM-DD — Title`.
 
 - `Stage` — Full-viewport centered surface for top-level scenes.
 - `HalftoneSquare` — Pure-SVG dot grid. Color-controlled via `currentColor`.
+- `Button` — Generic button with `variant` prop: `primary` (filled accent), `secondary` (outlined accent), `supporting` (ghost/muted). Always use this over raw `<button>` elements.
 
 **Utilities:**
 

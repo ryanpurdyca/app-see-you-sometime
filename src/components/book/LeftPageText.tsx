@@ -19,7 +19,7 @@ export function LeftPageText() {
         height: "var(--book-height)",
       }}
     >
-      <p className="font-handwritten text-ink-subtle text-center text-[2.1rem] leading-snug">
+      <p className="font-handwritten text-ink text-center text-[2.1rem] leading-snug font-bold">
         Sed ut perspiciatis unde omnis iste natus error sit voluptatem santium remque totam rem
         aperiam
       </p>

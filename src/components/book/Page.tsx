@@ -87,7 +87,7 @@ export function Page({ index, openness, readingPage, peeled, subPeeled, hovered 
     <motion.div
       data-testid="book-page"
       data-index={index}
-      className={cn("bg-paper absolute inset-0", "rounded-[10px]", "border-accent border")}
+      className={cn("bg-paper absolute inset-0", "rounded-[10px]", "border-ink border")}
       style={{
         transformOrigin: "0% 50%",
         transformStyle: "preserve-3d",
