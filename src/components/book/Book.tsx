@@ -184,6 +184,7 @@ export function Book() {
         style={{
           perspective: `${SCENE_PERSPECTIVE_PX}px`,
           perspectiveOrigin: "50% 45%",
+          pointerEvents: "none",
         }}
       >
         <motion.div

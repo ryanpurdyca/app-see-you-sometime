@@ -7,6 +7,9 @@
  * open spread — with the same dimensions as the book itself so the cover
  * masks it perfectly at full openness.
  */
+
+const caveatStyle = { fontFamily: "var(--font-caveat)" } as const;
+
 export function LeftPageText() {
   return (
     <div
@@ -19,14 +22,22 @@ export function LeftPageText() {
         height: "var(--book-height)",
       }}
     >
-      <p className="font-caveat text-ink mb-4 text-left text-[1.75rem] leading-snug font-bold">
+      <p
+        className="text-ink mb-4 text-left text-[1.75rem] leading-snug font-bold"
+        style={caveatStyle}
+      >
         Dear friends,
       </p>
-      <p className="font-caveat text-ink mb-6 text-left text-[1.75rem] leading-snug font-bold">
+      <p
+        className="text-ink mb-6 text-left text-[1.75rem] leading-snug font-bold"
+        style={caveatStyle}
+      >
         Here&apos;s to a great four years of building, shipping, and laughing together. This is bye
         for now, not forever. I&apos;ll see you sometime.
       </p>
-      <p className="font-caveat text-ink text-left text-[1.75rem] leading-snug font-bold">— Ryan</p>
+      <p className="text-ink text-left text-[1.75rem] leading-snug font-bold" style={caveatStyle}>
+        — Ryan
+      </p>
     </div>
   );
 }
