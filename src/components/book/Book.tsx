@@ -7,6 +7,8 @@ import { Page } from "./Page";
 import { BackCover } from "./BackCover";
 import { BookButtons, type BookMode } from "./BookButtons";
 import { CursorFollower } from "./CursorFollower";
+import { PageSurface } from "@/design-system";
+import { bookPages } from "./pages";
 import {
   BOOK_WIDTH_PX,
   NUM_PAGES,
@@ -102,7 +104,7 @@ export function Book() {
   };
 
   const handleNext = () => {
-    setCurrentPageSync(Math.min(currentPageRef.current + 1, NUM_PAGES - 1));
+    setCurrentPageSync(Math.min(currentPageRef.current + 1, NUM_PAGES));
   };
 
   const handleBack = () => {
@@ -163,7 +165,7 @@ export function Book() {
     const onKeyDown = (e: KeyboardEvent) => {
       if (modeRef.current !== "reading") return;
       if (e.key === "ArrowRight") {
-        setCurrentPageSync(Math.min(currentPageRef.current + 1, NUM_PAGES - 1));
+        setCurrentPageSync(Math.min(currentPageRef.current + 1, NUM_PAGES));
       } else if (e.key === "ArrowLeft") {
         if (currentPageRef.current === 0) {
           handleClose();
@@ -207,6 +209,8 @@ export function Book() {
               index={i}
               openness={smoothOpenness}
               readingPage={readingPage}
+              front={bookPages[i * 2] ?? <PageSurface />}
+              back={bookPages[i * 2 + 1] ?? <PageSurface />}
               peeled={
                 !isClosing &&
                 readingPage !== null &&
@@ -268,7 +272,7 @@ export function Book() {
               width: "var(--book-width)",
               height: "var(--book-height)",
             }}
-            onClick={currentPage < NUM_PAGES - 1 ? handleNext : undefined}
+            onClick={currentPage < NUM_PAGES ? handleNext : undefined}
             onMouseEnter={() => setHoveredSide("right")}
             onMouseLeave={() => setHoveredSide(null)}
           />

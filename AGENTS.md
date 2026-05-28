@@ -86,13 +86,15 @@ src/
     components/
       Stage.tsx              Full-viewport centered surface
       Button.tsx             primary | secondary | supporting variants
+      PageSurface.tsx        Paper-card frame every book page inherits
       HalftoneSquare.tsx     Pure-SVG halftone fill
       HalftoneSquare.test.tsx
   components/                Feature compositions (not reusable primitives)
     book/
       Book.tsx               Top-level scene + reading mode state machine
       Cover.tsx              Black cover face: Vitally SVGs, centred Caveat title
-      Page.tsx               Single hinged page (idle fan or reading-flip)
+      Page.tsx               Single hinged sheet (idle fan or reading-flip); renders front + back faces
+      pages.tsx              Flat list of authored page components (the book's content)
       BackCover.tsx          Static back cover
       BookButtons.tsx        Fade-in Open|Next/Close/Back button pair
       CursorFollower.tsx     Custom cursor pill ("Open"); fades in near fully-open
@@ -213,6 +215,20 @@ Historical entries below remain for context; **this list is the source of truth*
 | LeftPageText font    | `--font-caveat` inline style                                                                                                                                               |
 | Static assets        | `public/images/vitally-01.svg`, `vitally-02.svg` on cover only                                                                                                             |
 
+### 2026-05-28 — Customizable pages (two-faced leaves + content list)
+
+- **Page content is data, authored in `src/components/book/pages.tsx`** as a flat `bookPages: ReactNode[]`. Each entry is one page-face; the book pairs them into sheets (front = `bookPages[2i]`, back = `bookPages[2i+1]`), which matches reading order. Trade-off chosen over an explicit `{front, back}[]` shape: a flat list reads as "as many pages as I create" and an odd final page simply gets a blank back. Add/remove entries to change content and thickness.
+- **One leaf owns both faces.** `Page.tsx` (the hinged sheet) renders two absolutely-positioned face `<div>`s: front at `rotateY(0)`, back at `rotateY(180deg) translateZ(1px)`, each with `backfaceVisibility: "hidden"`. Splitting front/back into two components was rejected — a sheet is one rigid element in CSS 3D; two elements would have to share rotation/peel/z. The back's pre-rotation makes its content read correctly (un-mirrored) once the sheet flips to the left stack. Same pattern as `Cover`'s `CoverFace`/`CoverInside`.
+- **Leaf no longer carries the paper look.** The `bg-paper rounded border-ink` styling moved off the leaf div into the new `PageSurface` primitive (§6); the leaf div is now a transparent `preserve-3d` positioner. Authored pages wrap content in `PageSurface` and inherit the frame; missing faces fall back to a blank `<PageSurface />` in `Book.tsx` so the back still looks like paper.
+- **`NUM_PAGES` is now derived, not hardcoded.** `constants.ts` computes `NUM_PAGES = Math.ceil(bookPages.length / 2)` (sheet count) by importing `pages.tsx`. The import direction is constants → pages (pages imports only `PageSurface`), so there's no cycle. `Book`/`Page`/`Cover` geometry that keyed off `NUM_PAGES` adapts automatically.
+
+### 2026-05-28 — Idle fan order fix (page 1 always leads, spread capped below 90°)
+
+- **Bug:** the page on top while moving the mouse (idle fan) was not the page reading mode opened to. **Root cause is geometric, not z-index/DOM order:** a leaf hinged at the left spine and rotated by a negative `rotateY` swings its right edge tens of px toward the viewer, which completely dominates the ~0.4px `PAGE_Z_STEP` `translateZ` offsets. So for these intersecting rotated planes the frontmost sheet is whichever is _most rotated_, regardless of `translateZ` or DOM paint order. Two earlier fixes that only touched `translateZ` and DOM order were verified ineffective and reverted.
+- **Fix part 1 — reverse the fan.** `Page.tsx`: `fanFraction = (NUM_PAGES - index) / (NUM_PAGES + 1)` (was `(index + 1) / …`). Sheet 0 (page 1) now gets the _largest_ tilt, so it leans most toward the viewer and stays on top; deeper sheets tilt progressively less. `opensAt` (per-sheet open threshold) keys off the same fraction so page 1 also opens first.
+- **Fix part 2 — cap the spread below 90°.** `PAGE_FAN_SPREAD` 158 → **46**. A symmetric fan that crosses 90° inevitably promotes whichever sheet passes ~90° to the front (its right edge is then nearest the viewer), which would re-break the order. Keeping every tilt under 90° guarantees the most-tilted sheet (page 1) always wins and stays readable. Trade-off: the dramatic wide card-spread becomes a subtler gentle fan — accepted by the user ("Gentle fan, always correct").
+- **Verified:** partial-open idle, full-open idle, and reading mode all show page 1 ("Chapter One") on top; Next still flips correctly to Pages 2–3.
+
 ## 6. Design system
 
 **Tokens** (`src/design-system/tokens.css`):
@@ -227,6 +243,7 @@ Historical entries below remain for context; **this list is the source of truth*
 - `Stage` — Full-viewport centered surface for top-level scenes.
 - `HalftoneSquare` — Pure-SVG dot grid. Color-controlled via `currentColor`.
 - `Button` — Generic button with `variant` prop: `primary` (filled ink, hover/active opacity), `secondary` (outlined ink; hover fills ink/white text; active matches primary `bg-ink/75`), `supporting` (ghost; hover 2px ink border, no fill; active light ink tint). Always use this over raw `<button>` elements.
+- `PageSurface` — The "paper card" frame for every book page (paper bg, ink border, `rounded-[10px]`, `p-8`, `flex flex-col`). Fills its parent (a leaf's 3D face wrapper) via `absolute inset-0`; owns no 3D transform. Authored pages in `book/pages.tsx` wrap content in this and extend it via `className`. Accepts all `div` props.
 
 **Utilities:**
 

@@ -1,8 +1,7 @@
 "use client";
 
 import { animate, motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
-import { useEffect } from "react";
-import { cn } from "@/design-system";
+import { useEffect, type ReactNode } from "react";
 import {
   COVER_OPEN_ANGLE,
   NUM_PAGES,
@@ -30,10 +29,29 @@ type Props = {
   subPeeled: boolean;
   /** True when additionally hovered — adds extra peel on top of the base. */
   hovered: boolean;
+  /** Content shown on the front (recto) face — visible on the right stack. */
+  front: ReactNode;
+  /** Content shown on the back (verso) face — visible on the left stack after a flip. */
+  back: ReactNode;
 };
 
-export function Page({ index, openness, readingPage, peeled, subPeeled, hovered }: Props) {
-  const fanFraction = (index + 1) / (NUM_PAGES + 1);
+export function Page({
+  index,
+  openness,
+  readingPage,
+  peeled,
+  subPeeled,
+  hovered,
+  front,
+  back,
+}: Props) {
+  // fanFraction is highest for sheet 0 (page 1) so it gets the largest tilt and
+  // opens first — leaving it the most forward-leaning (and therefore on-top)
+  // page at every openness. A page hinged at the spine leans its right edge
+  // toward the viewer as it rotates, so the most-rotated page sits in front; the
+  // fan spread is capped below 90° (see PAGE_FAN_SPREAD) so page 1 always wins
+  // and stays readable, matching the page reading mode opens to.
+  const fanFraction = (NUM_PAGES - index) / (NUM_PAGES + 1);
   const finalAngle = -PAGE_FAN_SPREAD * fanFraction;
 
   const opensAt = 0.1 + (1 - fanFraction) * 0.5;
@@ -87,13 +105,26 @@ export function Page({ index, openness, readingPage, peeled, subPeeled, hovered 
     <motion.div
       data-testid="book-page"
       data-index={index}
-      className={cn("bg-paper absolute inset-0", "rounded-[10px]", "border-ink border")}
+      className="absolute inset-0"
       style={{
         transformOrigin: "0% 50%",
         transformStyle: "preserve-3d",
         translateZ,
         rotateY: combinedRotY,
       }}
-    ></motion.div>
+    >
+      {/* Front face — faces the viewer when the sheet sits on the right stack. */}
+      <div className="absolute inset-0" style={{ backfaceVisibility: "hidden" }}>
+        {front}
+      </div>
+      {/* Back face — pre-rotated 180° so it reads correctly once the sheet flips
+          onto the left stack. translateZ avoids z-fighting with the front face. */}
+      <div
+        className="absolute inset-0"
+        style={{ transform: "rotateY(180deg) translateZ(1px)", backfaceVisibility: "hidden" }}
+      >
+        {back}
+      </div>
+    </motion.div>
   );
 }

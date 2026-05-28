@@ -6,16 +6,31 @@
  * cover and every page hinge on that edge (transform-origin: 0% 50%).
  */
 
-export const NUM_PAGES = 12;
+import { bookPages } from "./pages";
+
+/**
+ * Number of physical sheets (leaves) in the book. Each sheet has two faces
+ * (front + back), so the sheet count is derived from the authored page list:
+ * two pages per sheet, rounding up for an odd final page. Add/remove entries
+ * in `pages.tsx` to change the book's thickness — nothing here needs editing.
+ */
+export const NUM_PAGES = Math.ceil(bookPages.length / 2);
 
 /** Maximum opening angle for the front cover (degrees, negative = swings left). */
 export const COVER_OPEN_ANGLE = -174;
 
 /**
- * Maximum total fan spread across all pages, in degrees. The innermost page
- * barely moves; the outermost page ends near (but inside of) the cover.
+ * Maximum total fan spread across all pages, in degrees. Sheet 0 (page 1) gets
+ * the largest share and leads the fan; deeper sheets tilt progressively less.
+ *
+ * Capped well below 90° on purpose: a page hinged at the spine leans its right
+ * edge toward the viewer as it rotates, so the most-tilted page is the frontmost
+ * one. Keeping every tilt under 90° guarantees page 1 (the largest tilt) is
+ * always on top and still readable — if the spread crossed 90°, whichever page
+ * passed ~90° would jump in front, so the page shown in idle wouldn't match the
+ * page reading mode opens to.
  */
-export const PAGE_FAN_SPREAD = 158;
+export const PAGE_FAN_SPREAD = 46;
 
 /**
  * Static scene tilt — gives the book the slight three-quarter perspective

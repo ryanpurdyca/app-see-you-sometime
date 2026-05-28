@@ -1,8 +1,17 @@
 "use client";
 
-import { AnimatePresence, motion, useMotionValueEvent, type MotionValue } from "framer-motion";
-import { useState } from "react";
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
+import { useEffect, useState } from "react";
 import { Button } from "@/design-system";
+import { NUM_PAGES } from "./constants";
 
 export type BookMode = "idle" | "reading";
 
@@ -34,7 +43,27 @@ export function BookButtons({
   });
 
   const isReading = mode === "reading";
+  const isAtBackCover = isReading && currentPage >= NUM_PAGES;
   const showBack = isReading && currentPage > 0;
+
+  // Starts at 0 each time reading mode is entered so labels fade in even when
+  // openness is already 1. Multiplied with openness so they fade out naturally
+  // as the book closes.
+  const readingLabelOpacity = useMotionValue(0);
+  const labelOpacity = useTransform(
+    [readingLabelOpacity, openness],
+    ([r, o]) => (r as number) * (o as number),
+  );
+
+  useEffect(() => {
+    if (isReading) {
+      readingLabelOpacity.set(0);
+      const controls = animate(readingLabelOpacity, 1, { duration: 0.35, ease: "easeOut" });
+      return () => controls.stop();
+    } else {
+      readingLabelOpacity.set(0);
+    }
+  }, [isReading, readingLabelOpacity]);
   const pageWord = currentPage === 0 ? "Page" : "Pages";
   const pageLeft = currentPage === 0 ? "1" : `${currentPage * 2}`;
   const pageRight = currentPage === 0 ? null : `${currentPage * 2 + 1}`;
@@ -51,13 +80,14 @@ export function BookButtons({
 
   return (
     <>
-      {/* Book metadata labels — only visible in reading mode, fade with openness */}
+      {/* Book metadata labels — only visible in reading mode, fade in on enter
+          and fade out with openness as the book closes. */}
       {isReading && (
         <>
           <motion.span
             className="text-ink-subtle pointer-events-none absolute font-mono text-sm"
             style={{
-              opacity: openness,
+              opacity: labelOpacity,
               left: "calc(50vw - var(--book-width))",
               top: "calc(50vh - var(--book-height) / 2 - 56px)",
             }}
@@ -67,7 +97,7 @@ export function BookButtons({
           <motion.span
             className="text-ink-subtle pointer-events-none absolute font-mono text-sm"
             style={{
-              opacity: openness,
+              opacity: labelOpacity,
               right: "calc(50vw - var(--book-width))",
               top: "calc(50vh - var(--book-height) / 2 - 56px)",
             }}
@@ -87,11 +117,17 @@ export function BookButtons({
           pointerEvents: interactive ? "auto" : "none",
         }}
       >
-        {/* Left group — Back fades in once past page 0 */}
+        {/* Left group — Next hidden at back cover; Back fades in once past page 0 */}
         <div className="flex items-center gap-2">
-          <Button variant="primary" onClick={isReading ? onNext : onRead}>
-            {isReading ? "Next" : "Open"}
-          </Button>
+          <AnimatePresence initial={false}>
+            {!isAtBackCover && (
+              <motion.div key="next-or-open" exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+                <Button variant="primary" onClick={isReading ? onNext : onRead}>
+                  {isReading ? "Next" : "Open"}
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <AnimatePresence>
             {showBack && (
               <motion.div
@@ -109,19 +145,29 @@ export function BookButtons({
           </AnimatePresence>
         </div>
 
-        {/* Centered page label — only in reading mode */}
-        {isReading && (
-          <span className="text-ink-subtle absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center font-mono text-sm">
-            <span>{pageWord}&nbsp;</span>
-            <AnimatedNumber value={pageLeft} dir={dir} />
-            {pageRight && (
-              <>
-                <span>-</span>
-                <AnimatedNumber value={pageRight} dir={dir} staggerOffset={1} />
-              </>
-            )}
-          </span>
-        )}
+        {/* Centered page label — hidden at back cover. Parent motion.div fades
+            with openness on close so exit fires at near-zero opacity already. */}
+        <AnimatePresence>
+          {isReading && !isAtBackCover && (
+            <motion.span
+              key="page-label"
+              className="text-ink-subtle pointer-events-none absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center font-mono text-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.35 }}
+            >
+              <span>{pageWord}&nbsp;</span>
+              <AnimatedNumber value={pageLeft} dir={dir} />
+              {pageRight && (
+                <>
+                  <span>-</span>
+                  <AnimatedNumber value={pageRight} dir={dir} staggerOffset={1} />
+                </>
+              )}
+            </motion.span>
+          )}
+        </AnimatePresence>
 
         {/* Right button */}
         <Button variant="secondary" onClick={isReading ? onClose : onCancel}>
