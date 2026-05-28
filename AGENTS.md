@@ -153,6 +153,16 @@ Append new entries at the bottom. Use the format: `### YYYY-MM-DD — Title`.
 - **Transparent click overlay regions**: In reading mode, two `<div>` elements are rendered outside the perspective container (flat screen space, no 3D transform) covering the left and right page footprints (`left: calc(50vw - var(--book-width))` and `left: 50vw`). Left region: onClick → handleBack (no-op when on page 0), onMouseEnter/Leave → setHoveredSide. Right region: onClick → handleNext (no-op on last page), hover handlers same pattern. This keeps hit-testing simple and avoids raycasting through the 3D scene.
 - **`hoveredSide` state** (`'left' | 'right' | null`) drives the extra hover peel on the single about-to-flip page (`i === readingPage - 1` for left, `i === readingPage` for right). The base `peeled` peel applies automatically to those same pages without hover. Both are disabled on the left side when `readingPage === 0` (cover is flat, nothing to flip back to). Cleared on mode exit to prevent stale peel.
 
+### 2026-05-27 — Border/radius polish, idle click-to-read, BookButtons redesign
+
+- **Unified corner radii**: All book pieces (Cover, BackCover, Page, CoverInside) now use `rounded-[10px]` uniformly. Previous asymmetric `rounded-l-[8px]` on the spine edge is removed.
+- **Page borders**: Pages use `border border-accent` (1px outer). The per-page inner gradient shadow div is removed — the border alone provides sufficient edge definition.
+- **Cover double-border**: Cover uses `border border-accent` (outer) plus an `aria-hidden` inset child `div` at `inset-[3px] rounded-[7px] border border-accent` to give a two-line frame effect without fighting 3D anti-aliasing.
+- **Mouse range inset**: `closeAt = spineX + BOOK_WIDTH_PX - 100` and `openAt = spineX - BOOK_WIDTH_PX + 100`. Full open/close is reached 100px before the book's physical edge, which is more ergonomic.
+- **Idle click-to-read**: A transparent `<div>` overlay spanning the full book footprint (`calc(var(--book-width) * 2)`) is rendered in idle mode; clicking it fires `handleRead`. This is outside the perspective container so hit-testing is flat.
+- **Button row spacing**: `top: calc(50vh + var(--book-height) / 2 + 32px)` — 32px fixed gap below the book bottom edge.
+- **BookButtons layout**: Redesigned from two edge-aligned buttons to a left group + right single. In reading mode the left group holds "Next" always and "Back" which fades in (`AnimatePresence`, opacity-only, 150ms) once `currentPage > 0`. "Close" sits on the right in both modes. In idle mode the left group shows "Read" and the right shows "Close".
+
 ## 6. Design system
 
 **Tokens** (`src/design-system/tokens.css`):

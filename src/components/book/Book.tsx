@@ -59,8 +59,8 @@ export function Book() {
       if (modeRef.current === "reading") return; // book is pinned open
       const w = window.innerWidth || 1;
       const spineX = w / 2;
-      const closeAt = spineX + BOOK_WIDTH_PX;
-      const openAt = spineX - BOOK_WIDTH_PX;
+      const closeAt = spineX + BOOK_WIDTH_PX - 100;
+      const openAt = spineX - BOOK_WIDTH_PX + 100;
       const clamped = Math.max(openAt, Math.min(closeAt, clientX));
       openness.set(1 - (clamped - openAt) / (closeAt - openAt));
     };
@@ -153,6 +153,20 @@ export function Book() {
           <Cover openness={smoothOpenness} />
         </motion.div>
       </div>
+
+      {/* Idle-mode click region — clicking anywhere on the book triggers Read */}
+      {mode === "idle" && (
+        <div
+          className="absolute cursor-pointer"
+          style={{
+            left: "calc(50vw - var(--book-width))",
+            top: "calc(50vh - var(--book-height) / 2)",
+            width: "calc(var(--book-width) * 2)",
+            height: "var(--book-height)",
+          }}
+          onClick={handleRead}
+        />
+      )}
 
       {/* Transparent click/hover regions in reading mode — outside the
           perspective container so hit-testing is in flat screen space. */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValueEvent, type MotionValue } from "framer-motion";
+import { AnimatePresence, motion, useMotionValueEvent, type MotionValue } from "framer-motion";
 import { useState } from "react";
 import { cn } from "@/design-system";
 
@@ -34,24 +34,39 @@ export function BookButtons({
   });
 
   const isReading = mode === "reading";
-  const leftLabel = isReading ? (currentPage === 0 ? "Close" : "Back") : "Read";
-  const rightLabel = isReading ? "Next" : "Cancel";
-  const handleLeft = isReading ? (currentPage === 0 ? onClose : onBack) : onRead;
-  const handleRight = isReading ? onNext : onCancel;
+  const showBack = isReading && currentPage > 0;
 
   return (
     <motion.div
       className="absolute flex items-center justify-between"
       style={{
         left: "calc(50vw - var(--book-width))",
-        top: "calc(50vh + var(--book-height) / 2 + 1.5rem)",
+        top: "calc(50vh + var(--book-height) / 2 + 32px)",
         width: "calc(var(--book-width) * 2)",
         opacity: openness,
         pointerEvents: interactive ? "auto" : "none",
       }}
     >
-      <Btn onClick={handleLeft}>{leftLabel}</Btn>
-      <Btn onClick={handleRight}>{rightLabel}</Btn>
+      {/* Left group — Back fades in beside Next once past page 0 */}
+      <div className="flex items-center gap-2">
+        <Btn onClick={isReading ? onNext : onRead}>{isReading ? "Next" : "Read"}</Btn>
+        <AnimatePresence>
+          {showBack && (
+            <motion.div
+              key="back"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              <Btn onClick={onBack}>Back</Btn>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Right button — always Close in reading mode, Close in idle */}
+      <Btn onClick={isReading ? onClose : onCancel}>Close</Btn>
     </motion.div>
   );
 }

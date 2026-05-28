@@ -39,8 +39,6 @@ export function Page({ index, openness, readingPage, peeled, subPeeled, hovered 
   const opensAt = 0.1 + (1 - fanFraction) * 0.5;
   const idleRotateY = useTransform(openness, [opensAt, 1], [0, finalAngle], { clamp: true });
 
-  const isEdgePage = index === NUM_PAGES - 1;
-
   // Base rotateY — driven by idle subscription or imperative spring (reading).
   const rotateY = useMotionValue(idleRotateY.get());
 
@@ -89,26 +87,13 @@ export function Page({ index, openness, readingPage, peeled, subPeeled, hovered 
     <motion.div
       data-testid="book-page"
       data-index={index}
-      className={cn(
-        "bg-paper absolute inset-0",
-        "rounded-l-[8px] rounded-r-[8px]",
-        isEdgePage ? "border-accent/70 border" : "border-paper-edge border",
-      )}
+      className={cn("bg-paper absolute inset-0", "rounded-[10px]", "border-accent border")}
       style={{
         transformOrigin: "0% 50%",
         transformStyle: "preserve-3d",
         translateZ,
         rotateY: combinedRotY,
       }}
-    >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-l-[8px] rounded-r-[8px]"
-        style={{
-          background:
-            "linear-gradient(to right, rgba(11,13,18,0.04) 0%, transparent 8%, transparent 92%, rgba(11,13,18,0.03) 100%)",
-        }}
-      />
-    </motion.div>
+    ></motion.div>
   );
 }
