@@ -1,10 +1,24 @@
 "use client";
 
-import { motion, type MotionValue, useTransform } from "framer-motion";
+import { useEffect, useRef } from "react";
+import {
+  animate,
+  motion,
+  type MotionValue,
+  useMotionTemplate,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import { cn } from "@/design-system";
-import { COVER_OPEN_ANGLE, NUM_PAGES, PAGE_Z_STEP } from "./constants";
+import { COVER_OPEN_ANGLE, COVER_SHEEN_SPRING, NUM_PAGES, PAGE_Z_STEP } from "./constants";
 
 const coverTextStyle = { fontFamily: "var(--font-caveat)" } as const;
+
+/** Orbit amplitude (% of the cover) for each drifting wash centre. */
+const SHEEN_DRIFT = 9;
+/** Even phase spacing so the five washes drift apart rather than in unison. */
+const SHEEN_PHASE = (2 * Math.PI) / 5;
 
 const coverTitleClass = cn(
   "text-cover-ink absolute inset-x-0 text-center text-3xl leading-snug font-bold",
@@ -28,6 +42,68 @@ export function Cover({ openness }: Props) {
   // Translate forward so the cover sits above the page stack when closed.
   const translateZ = (NUM_PAGES + 1) * PAGE_Z_STEP;
 
+  // Iridescent sheen that tracks the pointer across the cover face. The cover
+  // can't receive its own pointer events (the perspective container sets
+  // `pointerEvents: none`, see §7), so we listen on the window and measure the
+  // face's projected rect to derive a local 0–1 position. `hover` gates the
+  // effect off whenever the cursor leaves the cover footprint.
+  const faceRef = useRef<HTMLDivElement>(null);
+  const sheenX = useMotionValue(50);
+  const sheenY = useMotionValue(50);
+  const hover = useMotionValue(0);
+  const smoothX = useSpring(sheenX, COVER_SHEEN_SPRING);
+  const smoothY = useSpring(sheenY, COVER_SHEEN_SPRING);
+  const smoothHover = useSpring(hover, COVER_SHEEN_SPRING);
+
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      const el = faceRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      const inside = x >= 0 && x <= 1 && y >= 0 && y <= 1;
+      hover.set(inside ? 1 : 0);
+      if (inside) {
+        sheenX.set(x * 100);
+        sheenY.set(y * 100);
+      }
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [sheenX, sheenY, hover]);
+
+  // Gentle continuous drift (radians) so the iridescence shimmers like a
+  // holographic sticker even when the pointer is still — no hard conic centre.
+  const shimmer = useMotionValue(0);
+  useEffect(() => {
+    const controls = animate(shimmer, Math.PI * 2, {
+      duration: 9,
+      ease: "linear",
+      repeat: Infinity,
+    });
+    return () => controls.stop();
+  }, [shimmer]);
+
+  // Five large washes in distinct hues (cyan, magenta, green, gold, purple)
+  // anchored across the cover's corners and centre. Each orbits its anchor at
+  // SHEEN_PHASE apart, so they drift in and out of overlap continuously —
+  // creating rainbow mixing across the whole surface like a holographic sticker.
+  // A soft white pointer-follow adds a specular accent wherever the cursor sits.
+  const a1x = useTransform(shimmer, (s) => 22 + Math.cos(s) * SHEEN_DRIFT);
+  const a1y = useTransform(shimmer, (s) => 18 + Math.sin(s) * SHEEN_DRIFT);
+  const a2x = useTransform(shimmer, (s) => 78 + Math.cos(s + SHEEN_PHASE) * SHEEN_DRIFT);
+  const a2y = useTransform(shimmer, (s) => 20 + Math.sin(s + SHEEN_PHASE) * SHEEN_DRIFT);
+  const a3x = useTransform(shimmer, (s) => 20 + Math.cos(s + SHEEN_PHASE * 2) * SHEEN_DRIFT);
+  const a3y = useTransform(shimmer, (s) => 80 + Math.sin(s + SHEEN_PHASE * 2) * SHEEN_DRIFT);
+  const a4x = useTransform(shimmer, (s) => 80 + Math.cos(s + SHEEN_PHASE * 3) * SHEEN_DRIFT);
+  const a4y = useTransform(shimmer, (s) => 78 + Math.sin(s + SHEEN_PHASE * 3) * SHEEN_DRIFT);
+  const a5x = useTransform(shimmer, (s) => 50 + Math.cos(s + SHEEN_PHASE * 4) * SHEEN_DRIFT);
+  const a5y = useTransform(shimmer, (s) => 50 + Math.sin(s + SHEEN_PHASE * 4) * SHEEN_DRIFT);
+
+  const sheenBackground = useMotionTemplate`radial-gradient(90% 80% at ${a1x}% ${a1y}%, rgba(48,188,210,0.24) 0%, rgba(48,188,210,0) 65%), radial-gradient(85% 75% at ${a2x}% ${a2y}%, rgba(220,80,178,0.22) 0%, rgba(220,80,178,0) 65%), radial-gradient(90% 80% at ${a3x}% ${a3y}%, rgba(52,205,145,0.20) 0%, rgba(52,205,145,0) 65%), radial-gradient(85% 75% at ${a4x}% ${a4y}%, rgba(220,178,62,0.19) 0%, rgba(220,178,62,0) 65%), radial-gradient(80% 70% at ${a5x}% ${a5y}%, rgba(145,98,225,0.22) 0%, rgba(145,98,225,0) 65%), radial-gradient(50% 50% at ${smoothX}% ${smoothY}%, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0) 65%)`;
+
   return (
     <motion.div
       data-testid="book-cover"
@@ -48,15 +124,21 @@ export function Cover({ openness }: Props) {
         aria-hidden
         className="border-cover-border-inner pointer-events-none absolute inset-[3px] rounded-[7px] border"
       />
-      <CoverFace />
+      <CoverFace faceRef={faceRef} sheenBackground={sheenBackground} sheenOpacity={smoothHover} />
       <CoverInside />
     </motion.div>
   );
 }
 
-function CoverFace() {
+type CoverFaceProps = {
+  faceRef: React.Ref<HTMLDivElement>;
+  sheenBackground: MotionValue<string>;
+  sheenOpacity: MotionValue<number>;
+};
+
+function CoverFace({ faceRef, sheenBackground, sheenOpacity }: CoverFaceProps) {
   return (
-    <div className="absolute inset-0" style={{ backfaceVisibility: "hidden" }}>
+    <div ref={faceRef} className="absolute inset-0" style={{ backfaceVisibility: "hidden" }}>
       <img
         src="/images/vitally-01.svg"
         alt=""
@@ -84,6 +166,17 @@ function CoverFace() {
         <br />
         my time at Vitally
       </p>
+      {/* Iridescent sheen — screen-blended so it only adds light over the black
+          cover (and brightens the white type/artwork it passes), never darkens. */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 overflow-hidden rounded-[10px]"
+        style={{
+          background: sheenBackground,
+          opacity: sheenOpacity,
+          mixBlendMode: "screen",
+        }}
+      />
     </div>
   );
 }
