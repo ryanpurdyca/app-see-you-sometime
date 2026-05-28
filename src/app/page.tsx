@@ -46,6 +46,9 @@ export default function HomePage() {
             "repeating-linear-gradient(180deg, var(--color-rule) 0, var(--color-rule) 6px, transparent 6px, transparent 13px)",
         }}
       />
+      <span className="text-ink-subtle pointer-events-none absolute right-[52px] bottom-[44px] font-mono text-sm">
+        Change Log
+      </span>
     </Stage>
   );
 }

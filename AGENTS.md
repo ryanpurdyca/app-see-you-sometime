@@ -85,7 +85,7 @@ src/
   components/                Feature compositions (not reusable primitives)
     book/
       Book.tsx               Top-level scene + reading mode state machine
-      Cover.tsx              Black cover face: Vitally SVGs, Caveat labels (title + date range)
+      Cover.tsx              Black cover face: Vitally SVGs, centred Caveat title
       Page.tsx               Single hinged page (idle fan or reading-flip)
       BackCover.tsx          Static back cover
       BookButtons.tsx        Fade-in Read/Cancel/Close/Next/Back button pair
@@ -176,7 +176,8 @@ Append new entries at the bottom. Use the format: `### YYYY-MM-DD — Title`.
 
 ### 2026-05-28 — Cover branding: black face, Vitally artwork, Caveat labels
 
-- **Cover face** (`Cover.tsx`): black `bg-cover`, white inset frame (`cover-border-inner`), two Vitally SVGs and two independently positioned Caveat text blocks (title `text-2xl`, date range `text-lg`) using `style={{ fontFamily: "var(--font-caveat)" }}` — same pattern as `LeftPageText`.
+- **Cover face** (`Cover.tsx`): black `bg-cover`, white inset frame (`cover-border-inner`), two Vitally SVGs in corners, centred Caveat title (`text-3xl`) via `style={{ fontFamily: "var(--font-caveat)" }}` — same pattern as `LeftPageText`.
+- **`page.tsx` frame label**: “Change Log” in `text-ink-subtle` mono, offset from the bottom-right dotted-rule corner (`bottom: 44px`, `right: 52px` = rule inset 28px + 16px / 24px).
 - **`cover-ink` token** for white typography on the black cover.
 
 ### 2026-05-28 — CursorFollower, Button design system component, visual polish

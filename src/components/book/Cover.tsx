@@ -6,9 +6,9 @@ import { COVER_OPEN_ANGLE, NUM_PAGES, PAGE_Z_STEP } from "./constants";
 
 const coverTextStyle = { fontFamily: "var(--font-caveat)" } as const;
 
-const coverDateClass = cn("text-cover-ink absolute text-lg leading-snug font-bold");
-
-const coverTitleClass = cn("text-cover-ink absolute text-2xl leading-snug font-bold");
+const coverTitleClass = cn(
+  "text-cover-ink absolute inset-x-0 text-center text-3xl leading-snug font-bold",
+);
 
 type Props = {
   openness: MotionValue<number>;
@@ -73,16 +73,16 @@ function CoverFace() {
         className="absolute right-[7%] bottom-[8%] h-auto w-[42%] max-w-[138px] rotate-[7deg] select-none"
         draggable={false}
       />
-      <p className={cn(coverTitleClass, "top-[10%] left-[42%] max-w-[48%]")} style={coverTextStyle}>
+      <p
+        className={cn(
+          coverTitleClass,
+          "top-1/2 left-1/2 w-full max-w-[85%] -translate-x-1/2 -translate-y-1/2 px-6",
+        )}
+        style={coverTextStyle}
+      >
         Memories from
         <br />
         my time at Vitally
-      </p>
-      <p
-        className={cn(coverDateClass, "bottom-[14%] left-[13%] max-w-[38%]")}
-        style={coverTextStyle}
-      >
-        Fall 2022 to Summer 2026
       </p>
     </div>
   );
