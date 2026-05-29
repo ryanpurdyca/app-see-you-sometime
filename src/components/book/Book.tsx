@@ -162,6 +162,11 @@ export function Book() {
     flipNext();
   };
 
+  const handleCloseRef = useRef(handleClose);
+  useEffect(() => {
+    handleCloseRef.current = handleClose;
+  });
+
   // Keyboard navigation — only active in reading mode.
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -218,6 +223,10 @@ export function Book() {
         }
       },
       peopleCloudInteractive: mode === "reading" && currentPage === 0,
+      coverPageInteractive: mode === "reading" && currentPage === 0,
+      onCoverPagePointer: () => setHoveredSide("left"),
+      onCoverPageLeave: () => setHoveredSide(null),
+      onCoverPageClick: () => handleCloseRef.current(),
     }),
     [mode, currentPage],
   );
@@ -238,7 +247,7 @@ export function Book() {
                 width: "var(--book-width)",
                 height: "var(--book-height)",
               }}
-              onClick={currentPage > 0 ? handleBack : undefined}
+              onClick={currentPage > 0 ? handleBack : handleClose}
               onMouseEnter={() => setHoveredSide("left")}
               onMouseLeave={() => setHoveredSide(null)}
             />
@@ -301,7 +310,12 @@ export function Book() {
                 }
               />
             ))}
-            <Cover openness={smoothOpenness} />
+            <Cover
+              openness={smoothOpenness}
+              closePeelActive={
+                mode === "reading" && currentPage === 0 && hoveredSide === "left" && !isClosing
+              }
+            />
           </motion.div>
         </div>
 

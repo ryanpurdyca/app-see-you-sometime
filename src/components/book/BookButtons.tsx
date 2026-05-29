@@ -117,17 +117,11 @@ export function BookButtons({
           pointerEvents: interactive ? "auto" : "none",
         }}
       >
-        {/* Left group — Next hidden at back cover; Back fades in once past page 0 */}
+        {/* Left group — Next disabled at back cover; Back fades in once past page 0 */}
         <div className="flex items-center gap-2">
-          <AnimatePresence initial={false}>
-            {!isAtBackCover && (
-              <motion.div key="next-or-open" exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-                <Button variant="primary" onClick={isReading ? onNext : onRead}>
-                  {isReading ? "Next" : "Open"}
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <Button variant="primary" onClick={isReading ? onNext : onRead} disabled={isAtBackCover}>
+            {isReading ? "Next" : "Open"}
+          </Button>
           <AnimatePresence>
             {showBack && (
               <motion.div

@@ -11,7 +11,15 @@ import {
   useTransform,
 } from "framer-motion";
 import { cn } from "@/design-system";
-import { COVER_OPEN_ANGLE, COVER_SHEEN_SPRING, NUM_PAGES, PAGE_Z_STEP } from "./constants";
+import { useBookReadingNav } from "./BookReadingContext";
+import {
+  COVER_OPEN_ANGLE,
+  COVER_SHEEN_SPRING,
+  NUM_PAGES,
+  PAGE_BASE_PEEL_LEFT_DEG,
+  PAGE_HOVER_BOOST_DEG,
+  PAGE_Z_STEP,
+} from "./constants";
 
 const coverTextStyle = { fontFamily: "var(--font-caveat)" } as const;
 
@@ -26,6 +34,8 @@ const coverTitleClass = cn(
 
 type Props = {
   openness: MotionValue<number>;
+  /** Page 0 only: peel the open cover when the left page is hovered (close affordance). */
+  closePeelActive?: boolean;
 };
 
 /**
@@ -36,8 +46,19 @@ type Props = {
  * The cover opens during the first half of the openness range so the inner
  * pages can fan during the second half — see {@link Page} and constants.ts.
  */
-export function Cover({ openness }: Props) {
+export function Cover({ openness, closePeelActive = false }: Props) {
   const rotateY = useTransform(openness, [0, 0.55], [0, COVER_OPEN_ANGLE], { clamp: true });
+  const hoverPeel = useMotionValue(0);
+  const combinedRotY = useTransform(
+    [rotateY, hoverPeel],
+    ([r, h]) => (r as number) + (h as number),
+  );
+
+  useEffect(() => {
+    const peel = closePeelActive ? PAGE_BASE_PEEL_LEFT_DEG + PAGE_HOVER_BOOST_DEG : 0;
+    const controls = animate(hoverPeel, peel, { type: "spring", stiffness: 220, damping: 22 });
+    return () => controls.stop();
+  }, [closePeelActive, hoverPeel]);
 
   // Translate forward so the cover sits above the page stack when closed.
   const translateZ = (NUM_PAGES + 1) * PAGE_Z_STEP;
@@ -117,7 +138,7 @@ export function Cover({ openness }: Props) {
         transformOrigin: "0% 50%",
         transformStyle: "preserve-3d",
         translateZ,
-        rotateY,
+        rotateY: combinedRotY,
       }}
     >
       <div
@@ -182,16 +203,24 @@ function CoverFace({ faceRef, sheenBackground, sheenOpacity }: CoverFaceProps) {
 }
 
 function CoverInside() {
+  const readingNav = useBookReadingNav();
+
   return (
     <div
-      className="bg-surface-raised absolute inset-0 flex items-center justify-center rounded-[10px] p-8"
+      className={cn(
+        "bg-surface-raised absolute inset-0 flex items-center justify-center rounded-[10px] p-8",
+        readingNav?.coverPageInteractive && "pointer-events-auto cursor-pointer",
+      )}
       style={{
         transform: "rotateY(180deg) translateZ(1px)",
         backfaceVisibility: "hidden",
       }}
+      onMouseEnter={readingNav?.coverPageInteractive ? readingNav.onCoverPagePointer : undefined}
+      onMouseLeave={readingNav?.coverPageInteractive ? readingNav.onCoverPageLeave : undefined}
+      onClick={readingNav?.coverPageInteractive ? readingNav.onCoverPageClick : undefined}
     >
       <p
-        className="text-ink px-4 text-center text-2xl leading-snug font-bold"
+        className="text-ink pointer-events-none px-4 text-center text-2xl leading-snug font-bold"
         style={coverTextStyle}
       >
         Some of the folks who made my time special.

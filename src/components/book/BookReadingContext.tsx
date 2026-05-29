@@ -7,6 +7,11 @@ export type BookReadingNav = {
   onRightPageClick: () => void;
   /** True only when sheet 0's front (people cloud) is the active right page. */
   peopleCloudInteractive: boolean;
+  /** True on reading page 0 — inside cover (left) closes the book like the Close button. */
+  coverPageInteractive: boolean;
+  onCoverPagePointer: () => void;
+  onCoverPageLeave: () => void;
+  onCoverPageClick: () => void;
 };
 
 const BookReadingContext = createContext<BookReadingNav | null>(null);
