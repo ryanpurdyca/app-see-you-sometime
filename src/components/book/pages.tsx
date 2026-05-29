@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { PageSurface } from "@/design-system";
+import { PeopleCloud } from "./PeopleCloud";
 
 /**
  * The book's content, authored as a flat list of pages.
@@ -27,10 +28,8 @@ function PageHeading({ children }: { children: ReactNode }) {
 
 function ChapterOpen() {
   return (
-    <PageSurface className="items-center justify-center text-center">
-      <p className="text-ink text-4xl leading-snug font-bold" style={caveat}>
-        Chapter One
-      </p>
+    <PageSurface className="overflow-hidden p-0">
+      <PeopleCloud />
     </PageSurface>
   );
 }

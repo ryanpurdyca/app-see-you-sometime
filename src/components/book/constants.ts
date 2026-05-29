@@ -123,3 +123,27 @@ export const COVER_SHEEN_SPRING = {
   damping: 26,
   mass: 0.8,
 } as const;
+
+/**
+ * Page-1 people bubble cloud — collision-packed portrait circles.
+ * Base radius is recomputed from the measured container; these tune interaction.
+ */
+export const PEOPLE_CLOUD_AREA_FILL = 0.55;
+export const PEOPLE_CLOUD_GROW_SCALE = 1.35;
+export const PEOPLE_CLOUD_SHRINK_SCALE = 0.82;
+/** Max center distance (px) for a circle to count as a hovered neighbor. */
+export const PEOPLE_CLOUD_NEIGHBOR_RANGE_PX = 120;
+/** Minimum gap between bubble edges (px). */
+export const PEOPLE_CLOUD_GAP_PX = 8;
+/** Inset from page edges so bubbles never touch the border. */
+export const PEOPLE_CLOUD_EDGE_PAD_PX = 20;
+/** Inner collision passes per solve step. */
+export const PEOPLE_CLOUD_RELAX_ITERATIONS = 6;
+/** Max outer iterations for static layout solve (seed + hover targets). */
+export const PEOPLE_CLOUD_SOLVE_ITERATIONS = 400;
+export const PEOPLE_CLOUD_STABLE_THRESHOLD = 0.15;
+/** Framer Motion spring for bubble x / y / scale toward targets. */
+export const PEOPLE_CLOUD_SPRING = {
+  stiffness: 260,
+  damping: 30,
+} as const;

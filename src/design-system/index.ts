@@ -8,3 +8,4 @@ export { Stage } from "./components/Stage";
 export { HalftoneSquare } from "./components/HalftoneSquare";
 export { Button } from "./components/Button";
 export { PageSurface } from "./components/PageSurface";
+export { Tooltip } from "./components/Tooltip";

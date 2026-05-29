@@ -263,19 +263,22 @@ export function Book() {
             onMouseEnter={() => setHoveredSide("left")}
             onMouseLeave={() => setHoveredSide(null)}
           />
-          {/* Right page — navigates Next */}
-          <div
-            className="absolute cursor-pointer"
-            style={{
-              left: "50vw",
-              top: "calc(50vh - var(--book-height) / 2)",
-              width: "var(--book-width)",
-              height: "var(--book-height)",
-            }}
-            onClick={currentPage < NUM_PAGES ? handleNext : undefined}
-            onMouseEnter={() => setHoveredSide("right")}
-            onMouseLeave={() => setHoveredSide(null)}
-          />
+          {/* Right page — navigates Next; suppressed on page 0 so the people
+              cloud receives pointer events for per-circle hover. */}
+          {currentPage > 0 && (
+            <div
+              className="absolute cursor-pointer"
+              style={{
+                left: "50vw",
+                top: "calc(50vh - var(--book-height) / 2)",
+                width: "var(--book-width)",
+                height: "var(--book-height)",
+              }}
+              onClick={currentPage < NUM_PAGES ? handleNext : undefined}
+              onMouseEnter={() => setHoveredSide("right")}
+              onMouseLeave={() => setHoveredSide(null)}
+            />
+          )}
         </>
       )}
 

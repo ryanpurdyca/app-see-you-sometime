@@ -87,6 +87,7 @@ src/
       Stage.tsx              Full-viewport centered surface
       Button.tsx             primary | secondary | supporting variants
       PageSurface.tsx        Paper-card frame every book page inherits
+      Tooltip.tsx            Pointer-events-none label (e.g. people-cloud hover names)
       HalftoneSquare.tsx     Pure-SVG halftone fill
       HalftoneSquare.test.tsx
   components/                Feature compositions (not reusable primitives)
@@ -95,18 +96,20 @@ src/
       Cover.tsx              Black cover face: Vitally SVGs, centred Caveat title
       Page.tsx               Single hinged sheet (idle fan or reading-flip); renders front + back faces
       pages.tsx              Flat list of authored page components (the book's content)
+      PeopleCloud.tsx        Page-1 collision-packed coworker portrait bubbles
+      people.ts              Portrait list + display names (`public/images/people/`)
       BackCover.tsx          Static back cover
       BookButtons.tsx        Fade-in Open|Next/Close/Back button pair
       CursorFollower.tsx     Custom cursor pill ("Open"); fades in near fully-open
       LeftPageText.tsx       Handwritten text behind the open cover (DOM-layered)
-      constants.ts           All tunable layout/motion constants
+      constants.ts           All tunable layout/motion constants (incl. `PEOPLE_CLOUD_*`)
       index.ts               Public barrel for the book feature
       Book.test.tsx
 e2e/
   book.spec.ts               Playwright smoke test of the rendered book
 scripts/
   agents-reminder.mjs        Pre-commit guard that nudges AGENTS.md updates
-public/                      Static assets (`images/vitally-01.svg`, `vitally-02.svg` on book cover)
+public/                      Static assets (`images/vitally-*.svg` on cover; `images/people/` portraits)
 ```
 
 **Conventions:**
@@ -261,6 +264,13 @@ Historical entries below remain for context; **this list is the source of truth*
 
 - **`PAGE_Z_STEP` 0.4 → 1.5.** The idle z-order fix above stopped the stack from _reordering_ at the reading→idle switch, but closing from page 0 with every sheet at `rotateY: 0` still left six coplanar planes. At 0.4px the depth gaps fell below renderer precision after the perspective divide, so the sort went unstable as the cover seated and a lower sheet (e.g. page 3) flickered through page 1. Flipping pages first hid it because sheets were still mid-spring at varied angles. The fan is rotation-dominated and closed/reading stacks share one outline, so the larger step is invisible except killing that flicker.
 
+### 2026-05-29 — Page 1 people bubble cloud
+
+- **Page 1 content** (`ChapterOpen` in `pages.tsx`) is a full-bleed `PeopleCloud` of 25 coworker portraits from `public/images/people/`, listed in `people.ts` with display names derived from filenames. "Chapter One" copy removed.
+- **Layout engine.** Golden-angle seed + static collision solve to a stable **home** layout (`homeX`/`homeY`, shared `baseR`). DOM bubbles are fixed at home; Framer Motion springs animate `x`/`y`/`scale` deltas toward precomputed targets (`PEOPLE_CLOUD_SPRING`). No per-frame RAF sim — hover jitter avoided.
+- **Hover targets.** On hover, radii are set (grow hovered, shrink home-neighbors within `PEOPLE_CLOUD_NEIGHBOR_RANGE_PX`), hovered bubble is **immovable**, neighbors are solved once to a collision-free layout; `useMemo` caches per `hoveredId`. Tooltip portaled to `document.body` at hovered home center + grown radius.
+- **Pointer-events tradeoff.** The 3D scene wrapper stays `pointer-events: none`; `PeopleCloud` root is `pointer-events: auto`. The reading-mode **right-page nav overlay is omitted when `currentPage === 0`** so circles receive hover; Next from page 1 uses the button row or ArrowRight. Idle click-to-open overlay still covers the spread (hover on page 1 only works in reading mode at page 0).
+
 ## 6. Design system
 
 **Tokens** (`src/design-system/tokens.css`):
@@ -276,6 +286,7 @@ Historical entries below remain for context; **this list is the source of truth*
 - `HalftoneSquare` — Pure-SVG dot grid. Color-controlled via `currentColor`.
 - `Button` — Generic button with `variant` prop: `primary` (filled ink, hover/active opacity), `secondary` (outlined ink; hover fills ink/white text; active matches primary `bg-ink/75`), `supporting` (ghost; hover 2px ink border, no fill; active light ink tint). Always use this over raw `<button>` elements.
 - `PageSurface` — The "paper card" frame for every book page (paper bg, ink border, `rounded-[10px]`, `p-8`, `flex flex-col`). Fills its parent (a leaf's 3D face wrapper) via `absolute inset-0`; owns no 3D transform. Authored pages in `book/pages.tsx` wrap content in this and extend it via `className`. Accepts all `div` props.
+- `Tooltip` — Presentational label positioned with `left`/`top` + `translate(-50%, calc(-100% - 8px))`. `pointer-events: none`; `visible` toggles opacity. Used for people-cloud names on hover — never participates in layout simulation.
 
 **Utilities:**
 
@@ -293,7 +304,7 @@ When you add a primitive or token, update this section and add it to the design-
 - **`next/font` variables need `@utility`, not `@theme inline`** — `@theme inline` resolves `var()` references at build time. Color tokens work because they're defined statically in `tokens.css`. Font variables injected by `next/font` at runtime are invisible to Tailwind's build step, so `@theme inline { --font-handwritten: var(--font-handwritten) }` generates no utility. Fix: use `@utility font-handwritten { font-family: var(--font-handwritten); }` in `globals.css` instead — this emits the rule directly and lets the CSS variable resolve at runtime from the `html` element.
 - **`@utility` font helpers can silently fail for some `next/font` variables** — even a correctly declared `@utility font-caveat { font-family: var(--font-caveat); }` may not apply if Tailwind's class scanner misses the utility or the CSS variable resolves before `next/font` injects it. Reliable fallback: use an inline `style={{ fontFamily: "var(--font-caveat)" }}` directly on the element — this bypasses Tailwind entirely and resolves the CSS variable at runtime from the `html` element.
 - **`useSpring` tracking stalls when source jumps from its initial value** — In Framer Motion 12, `useSpring(source)` tracks changes to `source` via subscription. If `source` was never animated (sits at its initial value 0 since mount) and then `source.set(1)` is called, the spring's internal animation scheduler sometimes fails to start, leaving the spring dormant at 0. Workaround: after `source.set(newValue)`, also call `animate(smoothValue, newValue, ...)` directly to bypass the tracking. This is why `handleRead` calls `animate(smoothOpenness, 1, { stiffness: 400, damping: 40 })` alongside `openness.set(1)`.
-- **`preserve-3d` perspective container must have `pointerEvents: "none"`** — 3D-transformed children are hit-tested in screen space, so visually overlapping 3D book elements capture pointer events before flat overlay `<div>`s behind them in the DOM. Setting `pointerEvents: "none"` on the perspective container delegates all interaction to the purpose-built flat overlays (idle click region, reading-mode left/right regions) which are rendered outside the perspective container as siblings.
+- **`preserve-3d` perspective container must have `pointerEvents: "none"`** — 3D-transformed children are hit-tested in screen space, so visually overlapping 3D book elements capture pointer events before flat overlay `<div>`s behind them in the DOM. Setting `pointerEvents: "none"` on the perspective container delegates all interaction to the purpose-built flat overlays (idle click region, reading-mode left/right regions) which are rendered outside the perspective container as siblings. **Exception:** interactive page content (e.g. `PeopleCloud`) re-enables `pointer-events: auto` on its root; suppress any flat overlay that would sit on top (right nav overlay hidden at `currentPage === 0`).
 - **Cover and left-page Caveat** — use `style={{ fontFamily: "var(--font-caveat)" }}` on cover title and `LeftPageText`; do not use `--font-handwritten` for those surfaces.
 - **§5 history vs current** — entries before “Canonical current state” may describe superseded accent borders, Instrument Serif on the cover, or “Read” labelling; trust the canonical table and §1–§4 over older decision bullets.
 
