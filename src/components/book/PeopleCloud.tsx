@@ -209,6 +209,7 @@ function restTargets(home: SimBubble[], baseR: number): Map<string, BubbleTarget
 
 export function PeopleCloud() {
   const readingNav = useBookReadingNav();
+  const interactive = readingNav?.peopleCloudInteractive ?? false;
   const containerRef = useRef<HTMLDivElement>(null);
   const bubbleRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
@@ -217,6 +218,8 @@ export function PeopleCloud() {
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [tooltipViewport, setTooltipViewport] = useState<{ x: number; y: number } | null>(null);
+
+  const activeHoveredId = interactive ? hoveredId : null;
 
   const initLayout = useCallback((width: number, height: number) => {
     const r = computeBaseRadius(width, height, people.length);
@@ -230,11 +233,11 @@ export function PeopleCloud() {
     if (homeBubbles.length === 0 || baseR <= 0 || size.width <= 0) {
       return new Map<string, BubbleTarget>();
     }
-    if (!hoveredId) {
+    if (!activeHoveredId) {
       return restTargets(homeBubbles, baseR);
     }
-    return computeTargets(homeBubbles, baseR, hoveredId, size.width, size.height);
-  }, [homeBubbles, baseR, hoveredId, size.width, size.height]);
+    return computeTargets(homeBubbles, baseR, activeHoveredId, size.width, size.height);
+  }, [homeBubbles, baseR, activeHoveredId, size.width, size.height]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -253,7 +256,7 @@ export function PeopleCloud() {
     return () => ro.disconnect();
   }, [initLayout]);
 
-  const hoveredHome = hoveredId ? homeBubbles.find((b) => b.id === hoveredId) : null;
+  const hoveredHome = activeHoveredId ? homeBubbles.find((b) => b.id === activeHoveredId) : null;
 
   const setBubbleRef = useCallback((id: string, el: HTMLDivElement | null) => {
     if (el) bubbleRefs.current.set(id, el);
@@ -262,14 +265,14 @@ export function PeopleCloud() {
 
   // Anchor from the bubble's painted box (3D + scale transforms included), not sim coords.
   useEffect(() => {
-    if (!hoveredId) return;
+    if (!activeHoveredId) return;
 
     let rafId = 0;
     let active = true;
 
     const updateTooltip = () => {
       if (!active) return;
-      const el = bubbleRefs.current.get(hoveredId);
+      const el = bubbleRefs.current.get(activeHoveredId);
       if (el) {
         const box = el.getBoundingClientRect();
         setTooltipViewport({
@@ -285,7 +288,7 @@ export function PeopleCloud() {
       active = false;
       cancelAnimationFrame(rafId);
     };
-  }, [hoveredId]);
+  }, [activeHoveredId]);
 
   return (
     <div
@@ -303,13 +306,17 @@ export function PeopleCloud() {
               key={b.id}
               ref={(el) => setBubbleRef(b.id, el)}
               data-people-bubble
-              className="pointer-events-auto absolute overflow-hidden rounded-full"
+              className={
+                interactive
+                  ? "pointer-events-auto absolute overflow-hidden rounded-full"
+                  : "pointer-events-none absolute overflow-hidden rounded-full"
+              }
               style={{
                 left: b.homeX - baseR,
                 top: b.homeY - baseR,
                 width: d,
                 height: d,
-                zIndex: b.id === hoveredId ? 20 : 1,
+                zIndex: b.id === activeHoveredId ? 20 : 1,
               }}
               animate={{
                 x: t.x - b.homeX,
@@ -317,15 +324,23 @@ export function PeopleCloud() {
                 scale: t.r / baseR,
               }}
               transition={{ type: "spring", ...PEOPLE_CLOUD_SPRING }}
-              onMouseEnter={() => {
-                setHoveredId(b.id);
-                readingNav?.onRightPagePointer();
-              }}
-              onClick={() => readingNav?.onRightPageClick()}
-              onMouseLeave={() => {
-                setHoveredId(null);
-                setTooltipViewport(null);
-              }}
+              onMouseEnter={
+                interactive
+                  ? () => {
+                      setHoveredId(b.id);
+                      readingNav?.onRightPagePointer();
+                    }
+                  : undefined
+              }
+              onClick={interactive ? () => readingNav?.onRightPageClick() : undefined}
+              onMouseLeave={
+                interactive
+                  ? () => {
+                      setHoveredId(null);
+                      setTooltipViewport(null);
+                    }
+                  : undefined
+              }
             >
               <Image
                 src={b.src}
@@ -339,7 +354,8 @@ export function PeopleCloud() {
           );
         })}
 
-      {hoveredHome &&
+      {interactive &&
+        hoveredHome &&
         tooltipViewport &&
         typeof document !== "undefined" &&
         createPortal(
@@ -349,7 +365,7 @@ export function PeopleCloud() {
             y={tooltipViewport.y}
             position="fixed"
             gapPx={12}
-            visible={hoveredId !== null}
+            visible={activeHoveredId !== null}
           />,
           document.body,
         )}

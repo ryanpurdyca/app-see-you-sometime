@@ -217,8 +217,9 @@ export function Book() {
           setCurrentPageSync(Math.min(currentPageRef.current + 1, NUM_PAGES));
         }
       },
+      peopleCloudInteractive: mode === "reading" && currentPage === 0,
     }),
-    [],
+    [mode, currentPage],
   );
 
   return (

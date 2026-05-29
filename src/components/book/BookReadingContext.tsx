@@ -5,6 +5,8 @@ import { createContext, useContext, type ReactNode } from "react";
 export type BookReadingNav = {
   onRightPagePointer: () => void;
   onRightPageClick: () => void;
+  /** True only when sheet 0's front (people cloud) is the active right page. */
+  peopleCloudInteractive: boolean;
 };
 
 const BookReadingContext = createContext<BookReadingNav | null>(null);
