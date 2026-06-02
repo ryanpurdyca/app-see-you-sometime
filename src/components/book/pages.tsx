@@ -78,11 +78,28 @@ function PolaroidPreview() {
   );
 }
 
-function APhoto() {
+function TwoPolaroids() {
   return (
-    <PageSurface className="items-center justify-center">
-      <div className="border-ink/30 text-ink-subtle flex h-40 w-40 items-center justify-center rounded-lg border border-dashed text-xs">
-        photo slot
+    <PageSurface className="overflow-hidden p-6">
+      <div className="relative size-full">
+        <Polaroid
+          className="absolute top-10 right-6 z-20"
+          image="/images/people/img-parker.jpeg"
+          alt="Parker"
+          caption="Ship day"
+          rotation={-1}
+          tape={2}
+          tapeRotation={0}
+        />
+        <Polaroid
+          className="absolute bottom-10 left-6 z-10"
+          image="/images/people/img-mimi.jpeg"
+          alt="Mimi"
+          caption="Late night deploy"
+          rotation={2}
+          tape={4}
+          tapeRotation={-2}
+        />
       </div>
     </PageSurface>
   );
@@ -109,7 +126,7 @@ function PlaceholderPage({ n }: { n: number }) {
 export const bookPages: ReactNode[] = [
   <ChapterOpen key="chapter-open" />,
   <PolaroidPreview key="polaroid-preview" />,
-  <APhoto key="a-photo" />,
+  <TwoPolaroids key="two-polaroids" />,
   <AQuote key="a-quote" />,
   ...Array.from({ length: 8 }, (_, i) => <PlaceholderPage key={`placeholder-${i}`} n={i + 5} />),
 ];
