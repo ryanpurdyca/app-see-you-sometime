@@ -289,7 +289,6 @@ Historical entries below remain for context; **this list is the source of truth*
 - `Button` — Generic button with `variant` prop: `primary` (filled ink, hover/active opacity), `secondary` (outlined ink; hover fills ink/white text; active matches primary `bg-ink/75`), `supporting` (ghost; hover 2px ink border, no fill; active light ink tint). Optional `disabled` (40% opacity, `cursor-not-allowed`, hover/active suppressed; native `disabled` blocks clicks). Always use this over raw `<button>` elements.
 - `PageSurface` — The "paper card" frame for every book page (paper bg, ink border, `rounded-[10px]`, `p-8`, `flex flex-col`). Fills its parent (a leaf's 3D face wrapper) via `absolute inset-0`; owns no 3D transform. Authored pages in `book/pages.tsx` wrap content in this and extend it via `className`. Accepts all `div` props.
 - `Tooltip` — Presentational label positioned with `left`/`top` + `translate(-50%, calc(-100% - 8px))`. `pointer-events: none`; `visible` toggles opacity. Used for people-cloud names on hover — never participates in layout simulation.
-- `Screenshot` — An edge-to-edge app screenshot card at a fixed 14:9 aspect ratio. Props: `image` (src), `alt`, `pin` (`1`–`3` → `public/images/pins/pin-N.png`), `rotation` (`-2`…`2` degrees, default `0`). No padding or caption; image is flush inside `rounded-[8px]` with 1px `border-rule`. Pin sits on the outer wrapper (not clipped). Light box shadow. Images sourced from `public/images/screenshot/`.
 - `Polaroid` — A photo print card with a white frame, `rounded-[8px]`, 1px `border-rule` (same token as the page dotted frame), and optional Caveat-font caption. Props: `image` (src), `alt`, `caption`, `rotation` (`-3` … `3` degrees, default `0`), `tape` (`1` … `6` → `public/images/tape/tape-N.webp`), `tapeRotation` (`2` … `-2` degrees, default `0`). Tape is absolutely positioned on the top edge. Image area is 140×108px with matching 1px border and `rounded-[3px]`. Subtle box shadow.
 
 **Utilities:**
@@ -318,7 +317,6 @@ When you add a primitive or token, update this section and add it to the design-
 - **`Polaroid` design-system primitive** (`src/design-system/components/Polaroid.tsx`). White frame, 8px radius, 1px `border-rule`, 140×108px image, centered bold Caveat caption (`text-base`). Optional `rotation`: `-3` … `3` degrees (default `0`). Optional masking tape: `tape` `1`–`6`, `tapeRotation` `2` … `-2` (default `0`). Tape assets in `public/images/tape/`. Exported from the design-system barrel.
 - **Page 2 (`bookPages[1]`)** — `PolaroidPreview`: three `<Polaroid>`s at upper-left, middle-right, and bottom-left; Caveat labels **Cape Cod** and **2023 Offsite** (two lines each) in flex regions beside the stack.
 - **Page 3 (`bookPages[2]`)** — `TwoPolaroids`: two prints at upper-right and bottom-left, inset toward center.
-- **Page 4 (`bookPages[3]`)** — `ScreenshotPage`: single centered `<Screenshot>` at full content width (`p-5 pt-7`).
 
 ## 8. Quality gates
 

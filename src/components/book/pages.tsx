@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { PageSurface, Screenshot } from "@/design-system";
+import { PageSurface } from "@/design-system";
 import { BookPolaroid } from "./BookPolaroid";
 import { PeopleCloud } from "./PeopleCloud";
 
@@ -106,20 +106,6 @@ function TwoPolaroids() {
   );
 }
 
-function ScreenshotPage() {
-  return (
-    <PageSurface className="items-center justify-center p-5 pt-7">
-      <Screenshot
-        image="/images/screenshot/screenshot-1.png"
-        alt="App screenshot"
-        pin={2}
-        rotation={-1}
-        className="w-full"
-      />
-    </PageSurface>
-  );
-}
-
 function PlaceholderPage({ n }: { n: number }) {
   return (
     <PageSurface className="items-center justify-center">
@@ -132,6 +118,6 @@ export const bookPages: ReactNode[] = [
   <ChapterOpen key="chapter-open" />,
   <PolaroidPreview key="polaroid-preview" />,
   <TwoPolaroids key="two-polaroids" />,
-  <ScreenshotPage key="screenshot-page" />,
+  <PageSurface key="page-4" />,
   ...Array.from({ length: 8 }, (_, i) => <PlaceholderPage key={`placeholder-${i}`} n={i + 5} />),
 ];

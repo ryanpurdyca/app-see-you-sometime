@@ -11,5 +11,3 @@ export { PageSurface } from "./components/PageSurface";
 export { Tooltip } from "./components/Tooltip";
 export { Polaroid } from "./components/Polaroid";
 export type { PolaroidRotation, PolaroidTape, PolaroidTapeRotation } from "./components/Polaroid";
-export { Screenshot } from "./components/Screenshot";
-export type { ScreenshotPin, ScreenshotRotation } from "./components/Screenshot";
