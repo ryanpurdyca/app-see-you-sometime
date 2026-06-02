@@ -30,13 +30,36 @@ function ChapterOpen() {
 
 function PolaroidPreview() {
   return (
-    <PageSurface className="items-center justify-center">
-      <Polaroid
-        image="/images/people/img-laura.png"
-        alt="Laura"
-        caption="First week at Vitally"
-        rotation={-2}
-      />
+    <PageSurface className="overflow-hidden p-6">
+      <div className="relative mx-auto h-[300px] w-[200px]">
+        <Polaroid
+          className="absolute top-0 left-0 z-10"
+          image="/images/people/img-laura.png"
+          alt="Laura"
+          caption="First week"
+          rotation={-2}
+          tape={3}
+          tapeRotation={1}
+        />
+        <Polaroid
+          className="absolute top-[88px] left-7 z-20"
+          image="/images/people/img-jason.jpeg"
+          alt="Jason"
+          caption="Team lunch"
+          rotation={2}
+          tape={1}
+          tapeRotation={-1}
+        />
+        <Polaroid
+          className="absolute top-[176px] left-1 z-30"
+          image="/images/people/img-anna.jpeg"
+          alt="Anna"
+          caption="All hands"
+          rotation={-1}
+          tape={5}
+          tapeRotation={2}
+        />
+      </div>
     </PageSurface>
   );
 }

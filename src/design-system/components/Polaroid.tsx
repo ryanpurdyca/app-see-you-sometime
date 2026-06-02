@@ -4,6 +4,21 @@ import { cn } from "../cn";
 /** Slight tilt in degrees — mimics a casually placed print. */
 export type PolaroidRotation = -3 | -2 | -1 | 0 | 1 | 2 | 3;
 
+/** Masking-tape graphic variant (`public/images/tape/tape-N.webp`). */
+export type PolaroidTape = 1 | 2 | 3 | 4 | 5 | 6;
+
+/** Tape strip tilt in degrees. */
+export type PolaroidTapeRotation = 2 | 1 | 0 | -1 | -2;
+
+const TAPE_SRC: Record<PolaroidTape, string> = {
+  1: "/images/tape/tape-1.webp",
+  2: "/images/tape/tape-2.webp",
+  3: "/images/tape/tape-3.webp",
+  4: "/images/tape/tape-4.webp",
+  5: "/images/tape/tape-5.webp",
+  6: "/images/tape/tape-6.webp",
+};
+
 interface PolaroidProps extends HTMLAttributes<HTMLDivElement> {
   /** Path or URL to the photo. */
   image: string;
@@ -13,18 +28,24 @@ interface PolaroidProps extends HTMLAttributes<HTMLDivElement> {
   caption?: string;
   /** Slight rotation in degrees. Defaults to 0. */
   rotation?: PolaroidRotation;
+  /** Masking-tape graphic at the top edge (1–6). */
+  tape?: PolaroidTape;
+  /** Tape strip rotation in degrees. Defaults to 0. */
+  tapeRotation?: PolaroidTapeRotation;
 }
 
 /**
  * Polaroid — a photo print with a white border and handwritten caption.
  *
- * Image area is 160×124px. Shadow is intentionally light.
+ * Image area is 140×108px. Shadow is intentionally light.
  */
 export function Polaroid({
   image,
   alt = "",
   caption,
   rotation = 0,
+  tape,
+  tapeRotation = 0,
   className,
   style,
   ...rest
@@ -42,7 +63,20 @@ export function Polaroid({
         ...style,
       }}
     >
-      <div className="border-rule relative mx-2 mt-2 h-[124px] w-[160px] overflow-hidden rounded-[4px] border">
+      {tape != null && (
+        <img
+          src={TAPE_SRC[tape]}
+          alt=""
+          aria-hidden
+          draggable={false}
+          className="pointer-events-none absolute top-0 left-1/2 z-10 h-auto w-[76px] max-w-none object-contain"
+          style={{
+            transform: `translate(-50%, -42%) rotate(${tapeRotation}deg)`,
+          }}
+        />
+      )}
+
+      <div className="border-rule relative mx-1.5 mt-1.5 h-[108px] w-[140px] overflow-hidden rounded-[3px] border">
         <img
           src={image}
           alt={alt}
@@ -51,10 +85,10 @@ export function Polaroid({
         />
       </div>
 
-      <div className="flex min-h-6 items-center px-2 pt-0.5 pb-1.5">
+      <div className="flex min-h-5 items-center px-1.5 pt-0.5 pb-1">
         {caption && (
           <span
-            className="text-ink text-sm leading-snug"
+            className="text-ink text-xs leading-snug"
             style={{ fontFamily: "var(--font-caveat)" }}
           >
             {caption}
