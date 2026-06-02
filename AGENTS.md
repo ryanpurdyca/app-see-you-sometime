@@ -26,7 +26,7 @@ If none of the above apply, the change is probably trivial enough that the pre-c
 
 ## 1. Product
 
-A single-page experience: on load, the user sees a 3D book built with CSS 3D transforms, inline SVG (e.g. halftone), and static SVG cover artwork (`public/images/vitally-*.svg`) — no raster textures. The book opens and closes following pointer X; at the right edge it closes, at the left it opens fully. The cover and inner pages animate; pages fan out as the book opens. A dotted frame and gutter surround the scene; a “Change Log” label sits at the bottom-right of the frame.
+A single-page experience: on load, the user sees a 3D book built with CSS 3D transforms, inline SVG (e.g. halftone), and static SVG cover artwork (`public/images/stickers/vitally-*.svg`) — no raster textures. The book opens and closes following pointer X; at the right edge it closes, at the left it opens fully. The cover and inner pages animate; pages fan out as the book opens. A dotted frame and gutter surround the scene; a “Change Log” label sits at the bottom-right of the frame.
 
 Future direction is intentionally open; this is the canvas for an exploration whose product shape will emerge over time.
 
@@ -109,7 +109,7 @@ e2e/
   book.spec.ts               Playwright smoke test of the rendered book
 scripts/
   agents-reminder.mjs        Pre-commit guard that nudges AGENTS.md updates
-public/                      Static assets (`images/vitally-*.svg` on cover; `images/people/` portraits)
+public/                      Static assets (`images/stickers/vitally-*.svg` on cover; `images/people/` portraits; `images/tape/` for Polaroid tape)
 ```
 
 **Conventions:**
@@ -217,7 +217,7 @@ Historical entries below remain for context; **this list is the source of truth*
 | Button row           | `top: calc(50vh + var(--book-height) / 2 + 52px)`                                                                                                                          |
 | Page label (reading) | `text-ink-subtle` mono between buttons — not accent blue                                                                                                                   |
 | LeftPageText font    | `--font-caveat` inline style                                                                                                                                               |
-| Static assets        | `public/images/vitally-01.svg`, `vitally-02.svg` on cover only                                                                                                             |
+| Static assets        | `public/images/stickers/vitally-01.svg`, `vitally-02.svg` on cover only                                                                                                    |
 
 ### 2026-05-28 — Customizable pages (two-faced leaves + content list)
 
@@ -289,6 +289,7 @@ Historical entries below remain for context; **this list is the source of truth*
 - `Button` — Generic button with `variant` prop: `primary` (filled ink, hover/active opacity), `secondary` (outlined ink; hover fills ink/white text; active matches primary `bg-ink/75`), `supporting` (ghost; hover 2px ink border, no fill; active light ink tint). Optional `disabled` (40% opacity, `cursor-not-allowed`, hover/active suppressed; native `disabled` blocks clicks). Always use this over raw `<button>` elements.
 - `PageSurface` — The "paper card" frame for every book page (paper bg, ink border, `rounded-[10px]`, `p-8`, `flex flex-col`). Fills its parent (a leaf's 3D face wrapper) via `absolute inset-0`; owns no 3D transform. Authored pages in `book/pages.tsx` wrap content in this and extend it via `className`. Accepts all `div` props.
 - `Tooltip` — Presentational label positioned with `left`/`top` + `translate(-50%, calc(-100% - 8px))`. `pointer-events: none`; `visible` toggles opacity. Used for people-cloud names on hover — never participates in layout simulation.
+- `Polaroid` — A photo print card with a white frame, `rounded-[8px]`, 1px `border-rule` (same token as the page dotted frame), and optional Caveat-font caption. Props: `image` (src), `alt`, `caption`, `rotation` (`-3` … `3` degrees, default `0`), `tape` (`1` … `6` → `public/images/tape/tape-N.webp`), `tapeRotation` (`2` … `-2` degrees, default `0`). Tape is absolutely positioned on the top edge. Image area is 140×108px with matching 1px border and `rounded-[3px]`. Subtle box shadow.
 
 **Utilities:**
 
@@ -309,6 +310,13 @@ When you add a primitive or token, update this section and add it to the design-
 - **`preserve-3d` perspective container must have `pointerEvents: "none"`** — 3D-transformed children are hit-tested in screen space, so visually overlapping 3D book elements capture pointer events before flat overlay `<div>`s behind them in the DOM. Setting `pointerEvents: "none"` on the perspective container delegates all interaction to the purpose-built flat overlays (idle click region, reading-mode left/right regions) which are rendered outside the perspective container as siblings. **Exceptions:** `PeopleCloud` bubbles and page-0 `CoverInside` re-enable `pointer-events: auto` when `BookReadingContext` marks them interactive; nav overlays stay behind the 3D scene for peel + click-through on empty areas.
 - **Cover and left-page Caveat** — use `style={{ fontFamily: "var(--font-caveat)" }}` on cover title and `LeftPageText`; do not use `--font-handwritten` for those surfaces.
 - **§5 history vs current** — entries before “Canonical current state” may describe superseded accent borders, Instrument Serif on the cover, or “Read” labelling; trust the canonical table and §1–§4 over older decision bullets.
+- **`Polaroid` hover / peel / click** — `Page.tsx` face wrappers are `pointer-events-none`; `Polaroid` uses `pointer-events-auto` for image zoom. Reading-mode peel comes from `Book.tsx` `pointermove`. Book pages use `BookPolaroid`, which forwards clicks to `onPageFaceClick` (left half = Back/Close, right half = Next) so prints do not block page turns.
+
+### 2026-06-01 — Polaroid component; page 2 cleared
+
+- **`Polaroid` design-system primitive** (`src/design-system/components/Polaroid.tsx`). White frame, 8px radius, 1px `border-rule`, 140×108px image, centered bold Caveat caption (`text-base`). Optional `rotation`: `-3` … `3` degrees (default `0`). Optional masking tape: `tape` `1`–`6`, `tapeRotation` `2` … `-2` (default `0`). Tape assets in `public/images/tape/`. Exported from the design-system barrel.
+- **Page 2 (`bookPages[1]`)** — `PolaroidPreview`: three `<Polaroid>`s at upper-left, middle-right, and bottom-left; Caveat labels **Cape Cod** and **2023 Offsite** (two lines each) in flex regions beside the stack.
+- **Page 3 (`bookPages[2]`)** — `TwoPolaroids`: two prints at upper-right and bottom-left, inset toward center.
 
 ## 8. Quality gates
 

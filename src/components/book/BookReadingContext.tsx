@@ -3,6 +3,8 @@
 import { createContext, useContext, type ReactNode } from "react";
 
 export type BookReadingNav = {
+  /** Left = Back/Close, right = Next — by viewport X vs spine. */
+  onPageFaceClick: (clientX: number) => void;
   onRightPagePointer: () => void;
   onRightPageClick: () => void;
   /** True only when sheet 0's front (people cloud) is the active right page. */

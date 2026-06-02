@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { PageSurface } from "@/design-system";
+import { BookPolaroid } from "./BookPolaroid";
 import { PeopleCloud } from "./PeopleCloud";
 
 /**
@@ -20,12 +21,6 @@ import { PeopleCloud } from "./PeopleCloud";
 
 const caveat = { fontFamily: "var(--font-caveat)" } as const;
 
-function PageHeading({ children }: { children: ReactNode }) {
-  return (
-    <h2 className="text-ink-subtle mb-4 font-mono text-xs tracking-widest uppercase">{children}</h2>
-  );
-}
-
 function ChapterOpen() {
   return (
     <PageSurface className="pointer-events-none overflow-hidden p-0">
@@ -34,35 +29,79 @@ function ChapterOpen() {
   );
 }
 
-function FirstDays() {
+function PolaroidPreview() {
   return (
-    <PageSurface>
-      <PageHeading>The first days</PageHeading>
-      <p className="text-ink leading-relaxed">
-        Replace this with a memory. Each page is its own component — keep the
-        <code className="bg-surface rounded px-1"> PageSurface </code>
-        wrapper and put whatever you like inside.
-      </p>
-    </PageSurface>
-  );
-}
-
-function APhoto() {
-  return (
-    <PageSurface className="items-center justify-center">
-      <div className="border-ink/30 text-ink-subtle flex h-40 w-40 items-center justify-center rounded-lg border border-dashed text-xs">
-        photo slot
+    <PageSurface className="overflow-hidden p-6">
+      <div className="relative size-full">
+        <BookPolaroid
+          className="absolute top-2 left-2 z-30"
+          image="/images/people/img-laura.png"
+          alt="Laura"
+          caption="First week"
+          rotation={-2}
+          tape={3}
+          tapeRotation={1}
+        />
+        <div className="pointer-events-none absolute top-2 right-2 bottom-[calc(50%-5.5rem)] left-[10.5rem] z-25 flex items-start justify-center pt-5">
+          <p className="text-ink text-center text-xl leading-snug font-bold" style={caveat}>
+            Cape
+            <br />
+            Cod
+          </p>
+        </div>
+        <BookPolaroid
+          className="absolute top-1/2 right-2 z-20 -translate-y-1/2"
+          image="/images/people/img-jason.jpeg"
+          alt="Jason"
+          caption="Team lunch"
+          rotation={2}
+          tape={1}
+          tapeRotation={-1}
+        />
+        <BookPolaroid
+          className="absolute bottom-2 left-2 z-10"
+          image="/images/people/img-anna.jpeg"
+          alt="Anna"
+          caption="All hands"
+          rotation={-1}
+          tape={5}
+          tapeRotation={2}
+        />
+        <div className="pointer-events-none absolute top-[calc(50%+4.5rem)] right-2 bottom-2 left-[10.5rem] z-15 flex items-center justify-center">
+          <p className="text-ink text-center text-xl leading-snug font-bold" style={caveat}>
+            2023
+            <br />
+            Offsite
+          </p>
+        </div>
       </div>
     </PageSurface>
   );
 }
 
-function AQuote() {
+function TwoPolaroids() {
   return (
-    <PageSurface className="items-center justify-center text-center">
-      <p className="text-ink text-2xl leading-snug font-bold" style={caveat}>
-        “A quote that mattered.”
-      </p>
+    <PageSurface className="overflow-hidden p-6">
+      <div className="relative size-full">
+        <BookPolaroid
+          className="absolute top-10 right-6 z-20"
+          image="/images/people/img-parker.jpeg"
+          alt="Parker"
+          caption="Ship day"
+          rotation={-1}
+          tape={2}
+          tapeRotation={0}
+        />
+        <BookPolaroid
+          className="absolute bottom-10 left-6 z-10"
+          image="/images/people/img-mimi.jpeg"
+          alt="Mimi"
+          caption="Late night deploy"
+          rotation={2}
+          tape={4}
+          tapeRotation={-2}
+        />
+      </div>
     </PageSurface>
   );
 }
@@ -77,8 +116,8 @@ function PlaceholderPage({ n }: { n: number }) {
 
 export const bookPages: ReactNode[] = [
   <ChapterOpen key="chapter-open" />,
-  <FirstDays key="first-days" />,
-  <APhoto key="a-photo" />,
-  <AQuote key="a-quote" />,
+  <PolaroidPreview key="polaroid-preview" />,
+  <TwoPolaroids key="two-polaroids" />,
+  <PageSurface key="page-4" />,
   ...Array.from({ length: 8 }, (_, i) => <PlaceholderPage key={`placeholder-${i}`} n={i + 5} />),
 ];

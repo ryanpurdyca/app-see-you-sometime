@@ -161,7 +161,7 @@ function CoverFace({ faceRef, sheenBackground, sheenOpacity }: CoverFaceProps) {
   return (
     <div ref={faceRef} className="absolute inset-0" style={{ backfaceVisibility: "hidden" }}>
       <img
-        src="/images/vitally-01.svg"
+        src="/images/stickers/vitally-01.svg"
         alt=""
         width={166}
         height={216}
@@ -169,7 +169,7 @@ function CoverFace({ faceRef, sheenBackground, sheenOpacity }: CoverFaceProps) {
         draggable={false}
       />
       <img
-        src="/images/vitally-02.svg"
+        src="/images/stickers/vitally-02.svg"
         alt=""
         width={216}
         height={155}
