@@ -18,7 +18,7 @@ interface PolaroidProps extends HTMLAttributes<HTMLDivElement> {
 /**
  * Polaroid — a photo print with a white border and handwritten caption.
  *
- * Image area is 180×140px. Shadow is intentionally light.
+ * Image area is 160×124px. Shadow is intentionally light.
  */
 export function Polaroid({
   image,
@@ -42,7 +42,7 @@ export function Polaroid({
         ...style,
       }}
     >
-      <div className="border-rule relative mx-2 mt-2 h-[140px] w-[180px] overflow-hidden rounded-[4px] border">
+      <div className="border-rule relative mx-2 mt-2 h-[124px] w-[160px] overflow-hidden rounded-[4px] border">
         <img
           src={image}
           alt={alt}
@@ -54,7 +54,7 @@ export function Polaroid({
       <div className="flex min-h-6 items-center px-2 pt-0.5 pb-1.5">
         {caption && (
           <span
-            className="text-ink text-base leading-snug"
+            className="text-ink text-sm leading-snug"
             style={{ fontFamily: "var(--font-caveat)" }}
           >
             {caption}
