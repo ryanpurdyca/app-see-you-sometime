@@ -319,15 +319,15 @@ When you add a primitive or token, update this section and add it to the design-
 ### 2026-06-01 — Polaroid component; page 2 cleared
 
 - **`Polaroid` design-system primitive** (`src/design-system/components/Polaroid.tsx`). White frame, 8px radius, 1px `border-rule`, 140×108px image, centered bold Caveat caption (`text-base`). Optional `rotation`: `-3` … `3` degrees (default `0`). Optional masking tape: `tape` `1`–`6`, `tapeRotation` `2` … `-2` (default `0`). Tape assets in `public/images/tape/`. Exported from the design-system barrel.
-- **Page 2 (`bookPages[1]`)** — `PolaroidPreview`: three `<Polaroid>`s at upper-left, middle-right, and bottom-left; Caveat labels **Cape Cod** and **2023 Offsite** (two lines each) in flex regions beside the stack.
-- **Page 3 (`bookPages[2]`)** — `TwoPolaroids`: two prints at upper-right and bottom-left, inset toward center.
+- **Page 2 (`bookPages[1]`)** — `PolaroidPreview`: three offsite `<Polaroid>`s (`img-2026-01` … `03`) with captions _Product redesign & vision_, _Celebratory tequila_, _One of many great meals_; Caveat spread labels **Autocamp** / **Catskills** and **2026 Offsite** beside the stack.
+- **Page 3 (`bookPages[2]`)** — `TwoPolaroids`: _Flip cup tournament_, _Morning work sessions_ (`img-2026-04`, `05`) at upper-right and bottom-left.
 
 ### 2026-06-02 — Polaroid image lightbox
 
 - **`ImageLightbox`** (`src/design-system/components/ImageLightbox.tsx`) — portaled scrim + enlarged photo; Escape / backdrop / Close; body scroll lock.
 - **`BookPolaroid`** opens the lightbox on click instead of `onPageFaceClick` so prints are viewable without advancing the book.
 - **Active-face gating.** Each `BookPolaroid` takes `bookPageIndex` (`bookPages` flat index). `isPolaroidFaceActive` enables `pointer-events` only on the current spread (right `2 × currentPage`, left `2 × currentPage − 1`). Buried 3D faces stay inert; lightbox closes when the spread changes.
-- **Polaroid spread labels.** `PolaroidPageLabels` on `bookPages[1]`: **Cape Cod** / **2023 Offsite** use `HandwrittenText` only when advancing from reading page 0 → 1 via Next, right-page click, or ArrowRight (`polaroidPreviewLabelsAnimate` + key in `BookReadingContext`). Otherwise static Caveat. Cape Cod lines first, then 2023 Offsite; 0.35s delay after flip (constant in `PolaroidPageLabels.tsx`, not `constants.ts` — avoids import cycle with `pages.tsx`).
+- **Polaroid spread labels.** `PolaroidPageLabels` on `bookPages[1]`: **Autocamp** / **Catskills** and **2026 Offsite** use `HandwrittenText` only when advancing from reading page 0 → 1 via Next, right-page click, or ArrowRight (`polaroidPreviewLabelsAnimate` + key in `BookReadingContext`). Otherwise static Caveat. Autocamp lines first, then 2026 Offsite; 0.35s delay after flip (constant in `PolaroidPageLabels.tsx`, not `constants.ts` — avoids import cycle with `pages.tsx`).
 
 ## 8. Quality gates
 

@@ -4,6 +4,8 @@ import { BookPolaroid } from "./BookPolaroid";
 import { PeopleCloud } from "./PeopleCloud";
 import { PolaroidPageLabels } from "./PolaroidPageLabels";
 
+const SPRING_OFFSITE_IMG = "/images/images/2026-spring-offsite";
+
 /**
  * The book's content, authored as a flat list of pages.
  *
@@ -38,9 +40,9 @@ function PolaroidPreview() {
         <BookPolaroid
           bookPageIndex={POLAROID_PREVIEW_FACE}
           className="absolute top-2 left-2 z-30"
-          image="/images/people/img-laura.png"
-          alt="Laura"
-          caption="First week"
+          image={`${SPRING_OFFSITE_IMG}/img-2026-01.jpg`}
+          alt="Product redesign and vision"
+          caption="Product redesign & vision"
           rotation={-2}
           tape={3}
           tapeRotation={1}
@@ -49,9 +51,9 @@ function PolaroidPreview() {
         <BookPolaroid
           bookPageIndex={POLAROID_PREVIEW_FACE}
           className="absolute top-1/2 right-2 z-20 -translate-y-1/2"
-          image="/images/people/img-jason.jpeg"
-          alt="Jason"
-          caption="Team lunch"
+          image={`${SPRING_OFFSITE_IMG}/img-2026-02.jpg`}
+          alt="Celebratory tequila"
+          caption="Celebratory tequila"
           rotation={2}
           tape={1}
           tapeRotation={-1}
@@ -59,9 +61,9 @@ function PolaroidPreview() {
         <BookPolaroid
           bookPageIndex={POLAROID_PREVIEW_FACE}
           className="absolute bottom-2 left-2 z-10"
-          image="/images/people/img-anna.jpeg"
-          alt="Anna"
-          caption="All hands"
+          image={`${SPRING_OFFSITE_IMG}/img-2026-03.jpg`}
+          alt="One of many great meals"
+          caption="One of many great meals"
           rotation={-1}
           tape={5}
           tapeRotation={2}
@@ -81,9 +83,9 @@ function TwoPolaroids() {
         <BookPolaroid
           bookPageIndex={TWO_POLAROIDS_FACE}
           className="absolute top-10 right-6 z-20"
-          image="/images/people/img-parker.jpeg"
-          alt="Parker"
-          caption="Ship day"
+          image={`${SPRING_OFFSITE_IMG}/img-2026-04.jpg`}
+          alt="Flip cup tournament"
+          caption="Flip cup tournament"
           rotation={-1}
           tape={2}
           tapeRotation={0}
@@ -91,9 +93,9 @@ function TwoPolaroids() {
         <BookPolaroid
           bookPageIndex={TWO_POLAROIDS_FACE}
           className="absolute bottom-10 left-6 z-10"
-          image="/images/people/img-mimi.jpeg"
-          alt="Mimi"
-          caption="Late night deploy"
+          image={`${SPRING_OFFSITE_IMG}/img-2026-05.jpg`}
+          alt="Morning work sessions"
+          caption="Morning work sessions"
           rotation={2}
           tape={4}
           tapeRotation={-2}

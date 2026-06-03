@@ -7,13 +7,13 @@ import {
 } from "@/design-system";
 import { useBookReadingNav } from "./BookReadingContext";
 
-/** Delay before Cape Cod / 2023 Offsite labels begin (after page flip). Lives here to avoid constants → pages import cycle. */
+/** Delay before Autocamp / 2026 Offsite labels begin (after page flip). Lives here to avoid constants → pages import cycle. */
 const POLAROID_LABEL_HANDWRITING_DELAY_S = 0.35;
 
 const labelClass = "text-ink text-2xl leading-snug";
 
-const CAPE_COD_LINES = ["Cape", "Cod"] as const;
-const OFFSITE_LINES = ["2023", "Offsite"] as const;
+const AUTOCAMP_LINES = ["Autocamp", "Catskills"] as const;
+const OFFSITE_LINES = ["2026", "Offsite"] as const;
 
 /** Seconds for one line's letters to finish animating. */
 function lineDurationS(text: string): number {
@@ -36,7 +36,7 @@ function lineDelaysS(lines: readonly string[], startDelayS: number): number[] {
   return delays;
 }
 
-const OFFSITE_START_DELAY_S = POLAROID_LABEL_HANDWRITING_DELAY_S + blockDurationS(CAPE_COD_LINES);
+const OFFSITE_START_DELAY_S = POLAROID_LABEL_HANDWRITING_DELAY_S + blockDurationS(AUTOCAMP_LINES);
 
 type LabelBlockProps = {
   lines: readonly string[];
@@ -79,7 +79,7 @@ function LabelBlock({ lines, animate, animationKey, startDelayS }: LabelBlockPro
   );
 }
 
-/** Cape Cod + 2023 Offsite labels on the polaroid preview spread (bookPages[1]). */
+/** Autocamp / Catskills + 2026 Offsite labels on the polaroid preview spread (bookPages[1]). */
 export function PolaroidPageLabels() {
   const readingNav = useBookReadingNav();
   const animate = readingNav?.polaroidPreviewLabelsAnimate ?? false;
@@ -89,7 +89,7 @@ export function PolaroidPageLabels() {
     <>
       <div className="pointer-events-none absolute top-2 right-2 bottom-[calc(50%-5.5rem)] left-[10.5rem] z-25 flex items-start justify-center pt-5">
         <LabelBlock
-          lines={CAPE_COD_LINES}
+          lines={AUTOCAMP_LINES}
           animate={animate}
           animationKey={animationKey}
           startDelayS={POLAROID_LABEL_HANDWRITING_DELAY_S}
