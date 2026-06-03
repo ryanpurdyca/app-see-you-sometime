@@ -8,12 +8,27 @@ const POPOVER_TRANSITION = { duration: 0.22, ease: [0.22, 0.61, 0.36, 1] as cons
 /** Extra Y (px) when hidden — slides up into place on show, down on hide. */
 const SLIDE_OFFSET_PX = 6;
 
+function BookmarkIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 10 16"
+      className={cn("h-4 w-[10px] shrink-0", className)}
+      fill="currentColor"
+    >
+      <path d="M0 0h10v15Q10 16 9 16L5 12L1 16Q0 16 0 15V0z" />
+    </svg>
+  );
+}
+
 type Props = {
   /** Center X in the positioning parent's coordinate space (px). */
   x: number;
   /** Bottom edge of the anchor element (px). */
   anchorBottom: number;
   visible: boolean;
+  /** Optional header label in a subtle gray bar above the body. */
+  title?: string;
   children: ReactNode;
   /** `fixed` for viewport coords (e.g. portaled popovers); default `absolute`. */
   position?: "absolute" | "fixed";
@@ -29,6 +44,7 @@ export function Popover({
   x,
   anchorBottom,
   visible,
+  title,
   children,
   position = "absolute",
   gapPx = 8,
@@ -47,7 +63,7 @@ export function Popover({
       }}
       transition={POPOVER_TRANSITION}
       className={cn(
-        "border-rule bg-surface text-ink pointer-events-none z-50 rounded-sm border px-2 py-1.5 text-xs shadow-[0_2px_8px_var(--color-paper-shadow)]",
+        "border-rule bg-surface text-ink pointer-events-none z-50 overflow-hidden rounded-sm border text-xs shadow-[0_2px_8px_var(--color-paper-shadow)]",
         position === "fixed" ? "fixed" : "absolute",
         className,
       )}
@@ -56,7 +72,19 @@ export function Popover({
         top: anchorBottom,
       }}
     >
-      {children}
+      {title ? (
+        <>
+          <div className="border-highlight-border bg-highlight-surface relative border-b pr-2 pb-1.5 pl-2">
+            <p className="text-highlight-ink pt-1.5 text-[10px] leading-none font-medium">
+              {title}
+            </p>
+            <BookmarkIcon className="text-highlight-ink absolute top-0 right-3" />
+          </div>
+          <div className="px-2 py-1.5">{children}</div>
+        </>
+      ) : (
+        <div className="px-2 py-1.5">{children}</div>
+      )}
     </motion.div>
   );
 }

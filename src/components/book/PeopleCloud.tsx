@@ -392,6 +392,7 @@ export function PeopleCloud() {
               anchorBottom={chromeAnchor.bottom}
               position="fixed"
               gapPx={8}
+              title="Highlight"
               visible={chromeVisible}
               className="max-w-[200px] leading-snug"
             >

@@ -15,6 +15,18 @@
   font-family: var(--font-caveat);
 }
 
+@utility text-highlight-ink {
+  color: var(--color-highlight-ink);
+}
+
+@utility bg-highlight-surface {
+  background-color: var(--color-highlight-surface);
+}
+
+@utility border-highlight-border {
+  border-color: var(--color-highlight-border);
+}
+
 @theme inline {
   --color-canvas: var(--color-canvas);
   --color-surface: var(--color-surface);
@@ -29,6 +41,9 @@
   --color-paper-edge: var(--color-paper-edge);
   --color-rule: var(--color-rule);
   --color-gutter: var(--color-gutter);
+  --color-highlight-ink: var(--color-highlight-ink);
+  --color-highlight-surface: var(--color-highlight-surface);
+  --color-highlight-border: var(--color-highlight-border);
   --color-cover: var(--color-cover);
   --color-cover-border-inner: var(--color-cover-border-inner);
   --color-cover-ink: var(--color-cover-ink);
