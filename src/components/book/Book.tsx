@@ -48,6 +48,8 @@ export function Book() {
   const [isClosing, setIsClosing] = useState(false);
   const [polaroidPreviewLabelsPlay, setPolaroidPreviewLabelsPlay] = useState(false);
   const [polaroidPreviewLabelsKey, setPolaroidPreviewLabelsKey] = useState(0);
+  const [winterOffsiteLabelsPlay, setWinterOffsiteLabelsPlay] = useState(false);
+  const [winterOffsiteLabelsKey, setWinterOffsiteLabelsKey] = useState(0);
 
   // Refs mirror state so event handlers registered once always see current values.
   const modeRef = useRef<BookMode>("idle");
@@ -94,14 +96,21 @@ export function Book() {
     if (from === 0 && to === 1) {
       setPolaroidPreviewLabelsPlay(true);
       setPolaroidPreviewLabelsKey((k) => k + 1);
+      setWinterOffsiteLabelsPlay(false);
+    } else if (from === 1 && to === 2) {
+      setPolaroidPreviewLabelsPlay(false);
+      setWinterOffsiteLabelsPlay(true);
+      setWinterOffsiteLabelsKey((k) => k + 1);
     } else {
       setPolaroidPreviewLabelsPlay(false);
+      setWinterOffsiteLabelsPlay(false);
     }
     setCurrentPageSync(to);
   }, []);
 
   const goToPrevPage = useCallback(() => {
     setPolaroidPreviewLabelsPlay(false);
+    setWinterOffsiteLabelsPlay(false);
     setCurrentPageSync(Math.max(currentPageRef.current - 1, 0));
   }, []);
 
@@ -111,6 +120,7 @@ export function Book() {
     animate(smoothOpenness, 1, { type: "spring", stiffness: 400, damping: 40 });
     setCurrentPageSync(0);
     setPolaroidPreviewLabelsPlay(false);
+    setWinterOffsiteLabelsPlay(false);
     setIsClosing(false);
     setHoveringBook(false);
     setModeSync("reading");
@@ -138,6 +148,7 @@ export function Book() {
 
     const finishClose = () => {
       setPolaroidPreviewLabelsPlay(false);
+      setWinterOffsiteLabelsPlay(false);
       setModeSync("idle");
       setIsClosing(false);
     };
@@ -268,12 +279,17 @@ export function Book() {
       polaroidPreviewLabelsAnimate:
         mode === "reading" && currentPage === 1 && polaroidPreviewLabelsPlay,
       polaroidPreviewLabelsKey,
+      winterOffsiteLabelsAnimate:
+        mode === "reading" && currentPage === 2 && winterOffsiteLabelsPlay,
+      winterOffsiteLabelsKey,
     }),
     [
       mode,
       currentPage,
       polaroidPreviewLabelsPlay,
       polaroidPreviewLabelsKey,
+      winterOffsiteLabelsPlay,
+      winterOffsiteLabelsKey,
       goToNextPage,
       goToPrevPage,
     ],

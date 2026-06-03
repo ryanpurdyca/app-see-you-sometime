@@ -3,8 +3,10 @@ import { PageSurface } from "@/design-system";
 import { BookPolaroid } from "./BookPolaroid";
 import { PeopleCloud } from "./PeopleCloud";
 import { PolaroidPageLabels } from "./PolaroidPageLabels";
+import { WinterOffsitePageLabels } from "./WinterOffsitePageLabels";
 
 const SPRING_OFFSITE_IMG = "/images/images/2026-spring-offsite";
+const WINTER_OFFSITE_IMG = "/images/images/2026-winter-offsite";
 
 /**
  * The book's content, authored as a flat list of pages.
@@ -105,6 +107,91 @@ function TwoPolaroids() {
   );
 }
 
+/** `bookPages` index for this face (sheet 1 verso) — page 4. */
+const WINTER_OFFSITE_PAGE_4_FACE = 3;
+
+function WinterOffsitePage4() {
+  return (
+    <PageSurface className="overflow-hidden p-6">
+      <div className="relative size-full">
+        <BookPolaroid
+          bookPageIndex={WINTER_OFFSITE_PAGE_4_FACE}
+          className="absolute top-2 right-2 z-30"
+          image={`${WINTER_OFFSITE_IMG}/img-2026-06.png`}
+          alt="Pizza slices with Parker"
+          caption="Pizza slices w/Parker"
+          rotation={2}
+          tape={1}
+          tapeRotation={-1}
+        />
+        <WinterOffsitePageLabels />
+        <BookPolaroid
+          bookPageIndex={WINTER_OFFSITE_PAGE_4_FACE}
+          className="absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2"
+          image={`${WINTER_OFFSITE_IMG}/img-2026-07.jpg`}
+          alt="The brass factory office"
+          caption="The brass factory office"
+          rotation={-1}
+          tape={3}
+          tapeRotation={1}
+        />
+        <BookPolaroid
+          bookPageIndex={WINTER_OFFSITE_PAGE_4_FACE}
+          className="absolute bottom-2 left-2 z-10"
+          image={`${WINTER_OFFSITE_IMG}/img-2026-08.jpg`}
+          alt="IPAs with Moshy"
+          caption="IPAs with Moshy"
+          rotation={-2}
+          tape={5}
+          tapeRotation={2}
+        />
+      </div>
+    </PageSurface>
+  );
+}
+
+/** `bookPages` index for this face (sheet 2 recto) — page 5. */
+const WINTER_OFFSITE_PAGE_5_FACE = 4;
+
+function WinterOffsitePage5() {
+  return (
+    <PageSurface className="overflow-hidden p-6">
+      <div className="relative size-full">
+        <BookPolaroid
+          bookPageIndex={WINTER_OFFSITE_PAGE_5_FACE}
+          className="absolute top-2 left-2 z-30"
+          image={`${WINTER_OFFSITE_IMG}/img-2026-09.jpg`}
+          alt="Central Park sunset"
+          caption="Central Park sunset"
+          rotation={-1}
+          tape={1}
+          tapeRotation={0}
+        />
+        <BookPolaroid
+          bookPageIndex={WINTER_OFFSITE_PAGE_5_FACE}
+          className="absolute top-1/2 right-2 z-20 -translate-y-1/2"
+          image={`${WINTER_OFFSITE_IMG}/img-2026-10.jpg`}
+          alt="Wall Street Bull"
+          caption="Wall Street Bull"
+          rotation={1}
+          tape={3}
+          tapeRotation={-2}
+        />
+        <BookPolaroid
+          bookPageIndex={WINTER_OFFSITE_PAGE_5_FACE}
+          className="absolute bottom-2 left-2 z-10"
+          image={`${WINTER_OFFSITE_IMG}/img-2026-11.jpg`}
+          alt={"Evergreen being born"}
+          caption={'"Evergreen" being born'}
+          rotation={2}
+          tape={5}
+          tapeRotation={1}
+        />
+      </div>
+    </PageSurface>
+  );
+}
+
 function PlaceholderPage({ n }: { n: number }) {
   return (
     <PageSurface className="items-center justify-center">
@@ -117,6 +204,7 @@ export const bookPages: ReactNode[] = [
   <ChapterOpen key="chapter-open" />,
   <PolaroidPreview key="polaroid-preview" />,
   <TwoPolaroids key="two-polaroids" />,
-  <PageSurface key="page-4" />,
-  ...Array.from({ length: 8 }, (_, i) => <PlaceholderPage key={`placeholder-${i}`} n={i + 5} />),
+  <WinterOffsitePage4 key="winter-offsite-page-4" />,
+  <WinterOffsitePage5 key="winter-offsite-page-5" />,
+  ...Array.from({ length: 8 }, (_, i) => <PlaceholderPage key={`placeholder-${i}`} n={i + 6} />),
 ];

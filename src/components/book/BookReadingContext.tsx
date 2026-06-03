@@ -20,6 +20,10 @@ export type BookReadingNav = {
   polaroidPreviewLabelsAnimate: boolean;
   /** Bumps on each 0 → 1 advance so handwriting can replay. */
   polaroidPreviewLabelsKey: number;
+  /** True once after advancing from reading page 1 → 2 (Next or right-page click). */
+  winterOffsiteLabelsAnimate: boolean;
+  /** Bumps on each 1 → 2 advance so handwriting can replay. */
+  winterOffsiteLabelsKey: number;
 };
 
 const BookReadingContext = createContext<BookReadingNav | null>(null);
