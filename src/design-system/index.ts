@@ -9,5 +9,6 @@ export { HalftoneSquare } from "./components/HalftoneSquare";
 export { Button } from "./components/Button";
 export { PageSurface } from "./components/PageSurface";
 export { Tooltip } from "./components/Tooltip";
+export { Popover } from "./components/Popover";
 export { Polaroid } from "./components/Polaroid";
 export type { PolaroidRotation, PolaroidTape, PolaroidTapeRotation } from "./components/Polaroid";

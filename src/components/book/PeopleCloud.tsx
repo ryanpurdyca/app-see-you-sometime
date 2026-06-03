@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { cn, Tooltip } from "@/design-system";
+import { cn, Popover, Tooltip } from "@/design-system";
 import {
   PEOPLE_CLOUD_AREA_FILL,
   PEOPLE_CLOUD_EDGE_PAD_PX,
@@ -14,6 +14,15 @@ import {
 } from "./constants";
 import { useBookReadingNav } from "./BookReadingContext";
 import { people, type Person } from "./people";
+
+/** Matches Tooltip / Popover fade duration (`--duration-fast`). */
+const HOVER_CHROME_FADE_MS = 160;
+
+type HoverChrome = {
+  id: string;
+  name: string;
+  anchor: { x: number; top: number; bottom: number };
+};
 
 type SimBubble = Person & {
   x: number;
@@ -168,18 +177,55 @@ export function PeopleCloud() {
   const bubbleRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const layoutSizeRef = useRef({ width: 0, height: 0 });
   const hoveredIdRef = useRef<string | null>(null);
+  const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [homeBubbles, setHomeBubbles] = useState<SimBubble[]>([]);
   const [baseR, setBaseR] = useState(0);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [tooltipViewport, setTooltipViewport] = useState<{ x: number; y: number } | null>(null);
+  const [hoverAnchor, setHoverAnchor] = useState<{
+    x: number;
+    top: number;
+    bottom: number;
+  } | null>(null);
+  const [hoverChrome, setHoverChrome] = useState<HoverChrome | null>(null);
 
   useEffect(() => {
     hoveredIdRef.current = hoveredId;
   }, [hoveredId]);
 
   const activeHoveredId = interactive ? hoveredId : null;
+
+  const clearDismissTimer = useCallback(() => {
+    if (dismissTimerRef.current !== null) {
+      clearTimeout(dismissTimerRef.current);
+      dismissTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleChromeDismiss = useCallback(() => {
+    clearDismissTimer();
+    dismissTimerRef.current = setTimeout(() => {
+      setHoverChrome(null);
+      dismissTimerRef.current = null;
+    }, HOVER_CHROME_FADE_MS);
+  }, [clearDismissTimer]);
+
+  const mountHoverChrome = useCallback(
+    (id: string, anchor: HoverChrome["anchor"]) => {
+      const person = homeBubbles.find((b) => b.id === id);
+      if (!person) return;
+      clearDismissTimer();
+      setHoverChrome((prev) => {
+        if (prev?.id === id) return prev;
+        return { id, name: person.name, anchor };
+      });
+    },
+    [homeBubbles, clearDismissTimer],
+  );
+
+  const chromeAnchor = hoverAnchor ?? hoverChrome?.anchor ?? null;
+  const chromeVisible = activeHoveredId !== null;
 
   const initLayout = useCallback((width: number, height: number) => {
     const r = computeBaseRadius(width, height, people.length);
@@ -214,8 +260,6 @@ export function PeopleCloud() {
     return () => ro.disconnect();
   }, [initLayout]);
 
-  const hoveredHome = activeHoveredId ? homeBubbles.find((b) => b.id === activeHoveredId) : null;
-
   const setBubbleRef = useCallback((id: string, el: HTMLDivElement | null) => {
     if (el) bubbleRefs.current.set(id, el);
     else bubbleRefs.current.delete(id);
@@ -230,9 +274,14 @@ export function PeopleCloud() {
         if (nextId && prev === null) readingNav?.onRightPagePointer();
         return nextId;
       });
-      if (!nextId) setTooltipViewport(null);
+      if (!nextId) {
+        setHoverAnchor(null);
+        scheduleChromeDismiss();
+      } else {
+        clearDismissTimer();
+      }
     },
-    [readingNav],
+    [readingNav, scheduleChromeDismiss, clearDismissTimer],
   );
 
   useEffect(() => {
@@ -243,7 +292,8 @@ export function PeopleCloud() {
       if (!el || !pointerInCloud(e.clientX, e.clientY, el)) {
         if (hoveredIdRef.current) {
           setHoveredId(null);
-          setTooltipViewport(null);
+          setHoverAnchor(null);
+          scheduleChromeDismiss();
         }
         return;
       }
@@ -251,8 +301,12 @@ export function PeopleCloud() {
     };
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
-    return () => window.removeEventListener("pointermove", onPointerMove);
-  }, [interactive, updateHoverFromPointer]);
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      clearDismissTimer();
+      setHoverChrome(null);
+    };
+  }, [interactive, updateHoverFromPointer, scheduleChromeDismiss, clearDismissTimer]);
 
   useEffect(() => {
     if (!activeHoveredId) return;
@@ -260,25 +314,28 @@ export function PeopleCloud() {
     let rafId = 0;
     let active = true;
 
-    const updateTooltip = () => {
+    const updateHoverChrome = () => {
       if (!active) return;
       const el = bubbleRefs.current.get(activeHoveredId);
       if (el) {
         const box = el.getBoundingClientRect();
-        setTooltipViewport({
+        const anchor = {
           x: box.left + box.width / 2,
-          y: box.top,
-        });
+          top: box.top,
+          bottom: box.bottom,
+        };
+        setHoverAnchor(anchor);
+        mountHoverChrome(activeHoveredId, anchor);
       }
-      rafId = requestAnimationFrame(updateTooltip);
+      rafId = requestAnimationFrame(updateHoverChrome);
     };
 
-    updateTooltip();
+    updateHoverChrome();
     return () => {
       active = false;
       cancelAnimationFrame(rafId);
     };
-  }, [activeHoveredId]);
+  }, [activeHoveredId, mountHoverChrome]);
 
   return (
     <div
@@ -333,18 +390,31 @@ export function PeopleCloud() {
         })}
 
       {interactive &&
-        hoveredHome &&
-        tooltipViewport &&
+        hoverChrome &&
+        chromeAnchor &&
         typeof document !== "undefined" &&
         createPortal(
-          <Tooltip
-            label={hoveredHome.name}
-            x={tooltipViewport.x}
-            y={tooltipViewport.y}
-            position="fixed"
-            gapPx={12}
-            visible={activeHoveredId !== null}
-          />,
+          <>
+            <Tooltip
+              label={hoverChrome.name}
+              x={chromeAnchor.x}
+              y={chromeAnchor.top}
+              position="fixed"
+              gapPx={12}
+              visible={chromeVisible}
+            />
+            <Popover
+              x={chromeAnchor.x}
+              anchorBottom={chromeAnchor.bottom}
+              position="fixed"
+              gapPx={8}
+              visible={chromeVisible}
+              className="max-w-[200px] leading-snug"
+            >
+              A few words about what made working together memorable. Still figuring out the exact
+              copy here.
+            </Popover>
+          </>,
           document.body,
         )}
     </div>
