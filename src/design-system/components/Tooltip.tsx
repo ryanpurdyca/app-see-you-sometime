@@ -32,7 +32,7 @@ export function Tooltip({
       role="tooltip"
       aria-hidden={!visible}
       className={cn(
-        "bg-ink pointer-events-none z-50 rounded px-2 py-1 font-mono text-xs whitespace-nowrap text-white transition-opacity duration-150",
+        "bg-ink pointer-events-none z-50 rounded-sm px-2 py-1 font-mono text-xs whitespace-nowrap text-white transition-opacity duration-150",
         position === "fixed" ? "fixed" : "absolute",
         visible ? "opacity-100" : "opacity-0",
         className,

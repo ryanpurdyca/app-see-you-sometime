@@ -26,7 +26,7 @@ If none of the above apply, the change is probably trivial enough that the pre-c
 
 ## 1. Product
 
-A single-page experience: on load, the user sees a 3D book built with CSS 3D transforms, inline SVG (e.g. halftone), and static SVG cover artwork (`public/images/stickers/vitally-*.svg`) — no raster textures. The book opens and closes following pointer X; at the right edge it closes, at the left it opens fully. The cover and inner pages animate; pages fan out as the book opens. A dotted frame and gutter surround the scene; a “Change Log” label sits at the bottom-right of the frame.
+A single-page experience: on load, the user sees a 3D book built with CSS 3D transforms, inline SVG (e.g. halftone), and static SVG cover artwork (`public/images/stickers/vitally-*.svg`) — no raster textures. The book opens and closes following pointer X; at the right edge it closes, at the left it opens fully. The cover and inner pages animate; pages fan out as the book opens. A dotted frame and gutter surround the scene; a “Stay in touch” label with LinkedIn / X / GitHub icon links sits at the bottom-right of the frame.
 
 Future direction is intentionally open; this is the canvas for an exploration whose product shape will emerge over time.
 
@@ -46,7 +46,7 @@ Browser
                       │    └─ flat overlays (idle click-to-open, reading L/R page regions)
                       ├─ gutter frame     28px `border-gutter` inset
                       ├─ dotted rules     4 edges at 28px (`--color-rule` repeating gradients)
-                      └─ “Change Log”     `text-ink-subtle` label, bottom-right of rule corner
+                      └─ “Stay in touch” + social links  `text-ink-subtle` label + icons, bottom-right of rule corner
 ```
 
 - **Rendering boundary:** `page.tsx` is a server component. `Book` and its interactive children are `"use client"` (pointer events, Framer Motion). Keep the boundary as deep into the tree as possible.
@@ -76,7 +76,7 @@ Browser
 src/
   app/                       Next.js App Router routes
     layout.tsx               Root layout — fonts + globals.css + <html>/<body>
-    page.tsx                 Home — Stage, gutter, dotted rules, Change Log, Book
+    page.tsx                 Home — Stage, gutter, dotted rules, Stay in touch + socials, Book
     globals.css              Tailwind + tokens; @utility font helpers for next/font vars
     layout.tsx               Geist (`--font-sans`), Instrument Serif (`--font-handwritten`), Caveat (`--font-caveat`)
   design-system/             Reusable, app-agnostic primitives
@@ -188,7 +188,7 @@ Append new entries at the bottom. Use the format: `### YYYY-MM-DD — Title`.
 ### 2026-05-28 — Cover branding: black face, Vitally artwork, Caveat labels
 
 - **Cover face** (`Cover.tsx`): black `bg-cover`, white inset frame (`cover-border-inner`), two Vitally SVGs in corners, centred Caveat title (`text-3xl`) via `style={{ fontFamily: "var(--font-caveat)" }}` — same pattern as `LeftPageText`.
-- **`page.tsx` frame label**: “Change Log” in `text-ink-subtle` mono, offset from the bottom-right dotted-rule corner (`bottom: 44px`, `right: 52px` = rule inset 28px + 16px / 24px).
+- **`page.tsx` frame label**: “Stay in touch” in `text-ink-subtle` mono, with LinkedIn / X / GitHub icon links to the right (`public/images/socials/icn-*.svg`), offset from the bottom-right dotted-rule corner (`bottom: 44px`, `right: 52px` = rule inset 28px + 16px / 24px).
 - **`cover-ink` token** for white typography on the black cover.
 
 ### 2026-05-28 — CursorFollower, Button design system component, visual polish
@@ -213,7 +213,7 @@ Historical entries below remain for context; **this list is the source of truth*
 | Cover face           | Black `bg-cover`, outer `border-ink`, white inset `border-cover-border-inner`, corner Vitally SVGs, centred Caveat title “Memories from / my time at Vitally” (`text-3xl`) |
 | Cover inside         | `CoverInside`: `bg-surface-raised`, centred Caveat `text-ink` — “Some of the folks who made my time special.” (visible on the left when open to page 1)                    |
 | Cover fonts          | Caveat via `--font-caveat` inline style — **not** Instrument Serif                                                                                                         |
-| Page chrome          | `page.tsx`: 28px gutter, dotted rules at `top/bottom/left/right-7`, “Change Log” at `bottom: 44px`, `right: 52px`                                                          |
+| Page chrome          | `page.tsx`: 28px gutter, dotted rules at `top/bottom/left/right-7`, “Stay in touch” + social links at `bottom: 44px`, `right: 52px`                                        |
 | Button row           | `top: calc(50vh + var(--book-height) / 2 + 52px)`                                                                                                                          |
 | Page label (reading) | `text-ink-subtle` mono between buttons — not accent blue                                                                                                                   |
 | LeftPageText font    | `--font-caveat` inline style                                                                                                                                               |
