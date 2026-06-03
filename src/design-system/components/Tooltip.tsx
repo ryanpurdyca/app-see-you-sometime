@@ -1,4 +1,9 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { cn } from "../cn";
+
+const FADE_TRANSITION = { duration: 0.22, ease: [0.22, 0.61, 0.36, 1] as const };
 
 type Props = {
   label: string;
@@ -28,13 +33,15 @@ export function Tooltip({
   className,
 }: Props) {
   return (
-    <div
+    <motion.div
       role="tooltip"
       aria-hidden={!visible}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: visible ? 1 : 0 }}
+      transition={FADE_TRANSITION}
       className={cn(
-        "bg-ink pointer-events-none z-50 rounded-sm px-2 py-1 font-mono text-xs whitespace-nowrap text-white transition-opacity duration-150",
+        "bg-ink pointer-events-none z-50 rounded-sm px-2 py-1 font-mono text-xs whitespace-nowrap text-white",
         position === "fixed" ? "fixed" : "absolute",
-        visible ? "opacity-100" : "opacity-0",
         className,
       )}
       style={{
@@ -44,6 +51,6 @@ export function Tooltip({
       }}
     >
       {label}
-    </div>
+    </motion.div>
   );
 }

@@ -41,6 +41,11 @@
   --color-rule: #cfccc6;
   --color-gutter: #f2f0ec;
 
+  /* Popover highlight header (people-cloud hover) */
+  --color-highlight-ink: #965b2e;
+  --color-highlight-surface: #f9f2ec;
+  --color-highlight-border: #f2e1d4;
+
   /* Radii */
   --radius-xs: 4px;
   --radius-sm: 8px;

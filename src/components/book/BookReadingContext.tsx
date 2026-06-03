@@ -14,6 +14,12 @@ export type BookReadingNav = {
   onCoverPagePointer: () => void;
   onCoverPageLeave: () => void;
   onCoverPageClick: () => void;
+  /** `bookPages` face index — true only for the left/right page on the current spread. */
+  isPolaroidFaceActive: (bookPageIndex: number) => boolean;
+  /** True once after advancing from reading page 0 → 1 (Next or right-page click). */
+  polaroidPreviewLabelsAnimate: boolean;
+  /** Bumps on each 0 → 1 advance so handwriting can replay. */
+  polaroidPreviewLabelsKey: number;
 };
 
 const BookReadingContext = createContext<BookReadingNav | null>(null);

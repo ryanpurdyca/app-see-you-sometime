@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { PageSurface } from "@/design-system";
 import { BookPolaroid } from "./BookPolaroid";
 import { PeopleCloud } from "./PeopleCloud";
+import { PolaroidPageLabels } from "./PolaroidPageLabels";
 
 /**
  * The book's content, authored as a flat list of pages.
@@ -19,8 +20,6 @@ import { PeopleCloud } from "./PeopleCloud";
  * <PageSurface>; pass `className` to extend or override it.
  */
 
-const caveat = { fontFamily: "var(--font-caveat)" } as const;
-
 function ChapterOpen() {
   return (
     <PageSurface className="pointer-events-none overflow-hidden p-0">
@@ -29,11 +28,15 @@ function ChapterOpen() {
   );
 }
 
+/** `bookPages` index for this face (sheet 0 verso). */
+const POLAROID_PREVIEW_FACE = 1;
+
 function PolaroidPreview() {
   return (
     <PageSurface className="overflow-hidden p-6">
       <div className="relative size-full">
         <BookPolaroid
+          bookPageIndex={POLAROID_PREVIEW_FACE}
           className="absolute top-2 left-2 z-30"
           image="/images/people/img-laura.png"
           alt="Laura"
@@ -42,14 +45,9 @@ function PolaroidPreview() {
           tape={3}
           tapeRotation={1}
         />
-        <div className="pointer-events-none absolute top-2 right-2 bottom-[calc(50%-5.5rem)] left-[10.5rem] z-25 flex items-start justify-center pt-5">
-          <p className="text-ink text-center text-xl leading-snug font-bold" style={caveat}>
-            Cape
-            <br />
-            Cod
-          </p>
-        </div>
+        <PolaroidPageLabels />
         <BookPolaroid
+          bookPageIndex={POLAROID_PREVIEW_FACE}
           className="absolute top-1/2 right-2 z-20 -translate-y-1/2"
           image="/images/people/img-jason.jpeg"
           alt="Jason"
@@ -59,6 +57,7 @@ function PolaroidPreview() {
           tapeRotation={-1}
         />
         <BookPolaroid
+          bookPageIndex={POLAROID_PREVIEW_FACE}
           className="absolute bottom-2 left-2 z-10"
           image="/images/people/img-anna.jpeg"
           alt="Anna"
@@ -67,23 +66,20 @@ function PolaroidPreview() {
           tape={5}
           tapeRotation={2}
         />
-        <div className="pointer-events-none absolute top-[calc(50%+4.5rem)] right-2 bottom-2 left-[10.5rem] z-15 flex items-center justify-center">
-          <p className="text-ink text-center text-xl leading-snug font-bold" style={caveat}>
-            2023
-            <br />
-            Offsite
-          </p>
-        </div>
       </div>
     </PageSurface>
   );
 }
+
+/** `bookPages` index for this face (sheet 1 recto). */
+const TWO_POLAROIDS_FACE = 2;
 
 function TwoPolaroids() {
   return (
     <PageSurface className="overflow-hidden p-6">
       <div className="relative size-full">
         <BookPolaroid
+          bookPageIndex={TWO_POLAROIDS_FACE}
           className="absolute top-10 right-6 z-20"
           image="/images/people/img-parker.jpeg"
           alt="Parker"
@@ -93,6 +89,7 @@ function TwoPolaroids() {
           tapeRotation={0}
         />
         <BookPolaroid
+          bookPageIndex={TWO_POLAROIDS_FACE}
           className="absolute bottom-10 left-6 z-10"
           image="/images/people/img-mimi.jpeg"
           alt="Mimi"

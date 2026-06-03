@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { animate, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Cover } from "./Cover";
 import { Page } from "./Page";
@@ -16,9 +16,7 @@ import {
   NUM_PAGES,
   OPEN_CENTRE_OFFSET,
   OPENNESS_SPRING,
-  READING_SCENE_TILT_X,
   SCENE_PERSPECTIVE_PX,
-  SCENE_TILT_Z_DEG,
 } from "./constants";
 
 /**
@@ -48,6 +46,8 @@ export function Book() {
   // "about-to-flip" page doesn't stay tilted at -25° throughout the close and
   // then snap back to flat once mode finally flips to idle.
   const [isClosing, setIsClosing] = useState(false);
+  const [polaroidPreviewLabelsPlay, setPolaroidPreviewLabelsPlay] = useState(false);
+  const [polaroidPreviewLabelsKey, setPolaroidPreviewLabelsKey] = useState(0);
 
   // Refs mirror state so event handlers registered once always see current values.
   const modeRef = useRef<BookMode>("idle");
@@ -88,11 +88,29 @@ export function Book() {
     };
   }, [openness]);
 
+  const goToNextPage = useCallback(() => {
+    const from = currentPageRef.current;
+    const to = Math.min(from + 1, NUM_PAGES);
+    if (from === 0 && to === 1) {
+      setPolaroidPreviewLabelsPlay(true);
+      setPolaroidPreviewLabelsKey((k) => k + 1);
+    } else {
+      setPolaroidPreviewLabelsPlay(false);
+    }
+    setCurrentPageSync(to);
+  }, []);
+
+  const goToPrevPage = useCallback(() => {
+    setPolaroidPreviewLabelsPlay(false);
+    setCurrentPageSync(Math.max(currentPageRef.current - 1, 0));
+  }, []);
+
   const handleRead = () => {
     openness.set(1);
     // Directly drive smoothOpenness: useSpring tracking stalls when source jumps from 0.
     animate(smoothOpenness, 1, { type: "spring", stiffness: 400, damping: 40 });
     setCurrentPageSync(0);
+    setPolaroidPreviewLabelsPlay(false);
     setIsClosing(false);
     setHoveringBook(false);
     setModeSync("reading");
@@ -106,11 +124,11 @@ export function Book() {
   };
 
   const handleNext = () => {
-    setCurrentPageSync(Math.min(currentPageRef.current + 1, NUM_PAGES));
+    goToNextPage();
   };
 
   const handleBack = () => {
-    setCurrentPageSync(Math.max(currentPageRef.current - 1, 0));
+    goToPrevPage();
   };
 
   const handleClose = () => {
@@ -119,6 +137,7 @@ export function Book() {
     animate(readingTiltX, 0, { type: "spring", ...OPENNESS_SPRING });
 
     const finishClose = () => {
+      setPolaroidPreviewLabelsPlay(false);
       setModeSync("idle");
       setIsClosing(false);
     };
@@ -172,12 +191,12 @@ export function Book() {
     const onKeyDown = (e: KeyboardEvent) => {
       if (modeRef.current !== "reading") return;
       if (e.key === "ArrowRight") {
-        setCurrentPageSync(Math.min(currentPageRef.current + 1, NUM_PAGES));
+        goToNextPage();
       } else if (e.key === "ArrowLeft") {
         if (currentPageRef.current === 0) {
           handleClose();
         } else {
-          setCurrentPageSync(currentPageRef.current - 1);
+          goToPrevPage();
         }
       }
     };
@@ -221,18 +240,18 @@ export function Book() {
         const spine = window.innerWidth / 2;
         if (clientX < spine) {
           if (currentPageRef.current > 0) {
-            setCurrentPageSync(currentPageRef.current - 1);
+            goToPrevPage();
           } else {
             handleCloseRef.current();
           }
         } else if (currentPageRef.current < NUM_PAGES) {
-          setCurrentPageSync(Math.min(currentPageRef.current + 1, NUM_PAGES));
+          goToNextPage();
         }
       },
       onRightPagePointer: () => setHoveredSide("right"),
       onRightPageClick: () => {
         if (currentPageRef.current < NUM_PAGES) {
-          setCurrentPageSync(Math.min(currentPageRef.current + 1, NUM_PAGES));
+          goToNextPage();
         }
       },
       peopleCloudInteractive: mode === "reading" && currentPage === 0,
@@ -240,8 +259,24 @@ export function Book() {
       onCoverPagePointer: () => setHoveredSide("left"),
       onCoverPageLeave: () => setHoveredSide(null),
       onCoverPageClick: () => handleCloseRef.current(),
+      isPolaroidFaceActive: (bookPageIndex: number) => {
+        if (mode !== "reading") return false;
+        const rightFace = currentPage * 2;
+        const leftFace = currentPage > 0 ? currentPage * 2 - 1 : -1;
+        return bookPageIndex === rightFace || bookPageIndex === leftFace;
+      },
+      polaroidPreviewLabelsAnimate:
+        mode === "reading" && currentPage === 1 && polaroidPreviewLabelsPlay,
+      polaroidPreviewLabelsKey,
     }),
-    [mode, currentPage],
+    [
+      mode,
+      currentPage,
+      polaroidPreviewLabelsPlay,
+      polaroidPreviewLabelsKey,
+      goToNextPage,
+      goToPrevPage,
+    ],
   );
 
   return (
