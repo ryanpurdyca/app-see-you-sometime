@@ -240,6 +240,12 @@ export function Book() {
       onCoverPagePointer: () => setHoveredSide("left"),
       onCoverPageLeave: () => setHoveredSide(null),
       onCoverPageClick: () => handleCloseRef.current(),
+      isPolaroidFaceActive: (bookPageIndex: number) => {
+        if (mode !== "reading") return false;
+        const rightFace = currentPage * 2;
+        const leftFace = currentPage > 0 ? currentPage * 2 - 1 : -1;
+        return bookPageIndex === rightFace || bookPageIndex === leftFace;
+      },
     }),
     [mode, currentPage],
   );

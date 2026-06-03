@@ -14,6 +14,8 @@ export type BookReadingNav = {
   onCoverPagePointer: () => void;
   onCoverPageLeave: () => void;
   onCoverPageClick: () => void;
+  /** `bookPages` face index — true only for the left/right page on the current spread. */
+  isPolaroidFaceActive: (bookPageIndex: number) => boolean;
 };
 
 const BookReadingContext = createContext<BookReadingNav | null>(null);

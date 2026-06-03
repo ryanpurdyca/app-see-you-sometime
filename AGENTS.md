@@ -277,7 +277,7 @@ Historical entries below remain for context; **this list is the source of truth*
 
 **Tokens** (`src/design-system/tokens.css`):
 
-- Colors: `canvas`, `surface`, `surface-raised`, `ink`, `ink-muted`, `ink-subtle`, `accent`, `accent-strong`, `accent-soft`, `paper`, `paper-edge`, `cover` (black), `cover-border-inner` (white), `cover-ink` (white), `rule` (`#cfccc6` dotted frame), `gutter` (frame fill).
+- Colors: `canvas`, `surface`, `surface-raised`, `ink`, `ink-muted`, `ink-subtle`, `accent`, `accent-strong`, `accent-soft`, `paper`, `paper-edge`, `cover` (black), `cover-border-inner` (white), `cover-ink` (white), `rule` (`#cfccc6` dotted frame), `gutter` (frame fill), `highlight-ink`, `highlight-surface`, `highlight-border` (popover title bar).
 - Radii: `radius-xs`, `-sm`, `-md`, `-lg`.
 - Book geometry: `--book-width`, `--book-height`, `--book-spine`.
 - Motion: `--ease-out-soft`, `--ease-page`, `--duration-fast|base|slow`.
@@ -289,8 +289,9 @@ Historical entries below remain for context; **this list is the source of truth*
 - `Button` — Generic button with `variant` prop: `primary` (filled ink, hover/active opacity), `secondary` (outlined ink; hover fills ink/white text; active matches primary `bg-ink/75`), `supporting` (ghost; hover 2px ink border, no fill; active light ink tint). Optional `disabled` (40% opacity, `cursor-not-allowed`, hover/active suppressed; native `disabled` blocks clicks). Always use this over raw `<button>` elements.
 - `PageSurface` — The "paper card" frame for every book page (paper bg, ink border, `rounded-[10px]`, `p-8`, `flex flex-col`). Fills its parent (a leaf's 3D face wrapper) via `absolute inset-0`; owns no 3D transform. Authored pages in `book/pages.tsx` wrap content in this and extend it via `className`. Accepts all `div` props.
 - `Tooltip` — Presentational label above an anchor (`left`/`top`, Framer Motion fade ~220ms). `pointer-events: none`. People-cloud names on hover.
-- `Popover` — Card below an anchor (`anchorBottom`, centered via motion `x: -50%`). Framer Motion fade + 6px slide up/down (~220ms). `border-rule`, `bg-surface`, `text-xs`, subtle `paper-shadow`. `pointer-events: none`; people-cloud note copy on hover.
+- `Popover` — Card below an anchor (`anchorBottom`, centered via motion `x: -50%`). Framer Motion fade + 6px slide up/down (~220ms). Optional `title` header: `highlight-ink` / `highlight-surface` / `highlight-border` tokens (10px medium), small bookmark icon right-aligned. Body: `border-rule`, `bg-surface`, `text-xs`, subtle `paper-shadow`. `pointer-events: none`; people-cloud uses title **Highlight** + note copy on hover.
 - `Polaroid` — A photo print card with a white frame, `rounded-[8px]`, 1px `border-rule` (same token as the page dotted frame), and optional Caveat-font caption. Props: `image` (src), `alt`, `caption`, `rotation` (`-3` … `3` degrees, default `0`), `tape` (`1` … `6` → `public/images/tape/tape-N.webp`), `tapeRotation` (`2` … `-2` degrees, default `0`). Tape is absolutely positioned on the top edge. Image area is 140×108px with matching 1px border and `rounded-[3px]`. Subtle box shadow.
+- `ImageLightbox` — Portaled viewer: scrim fade; image slides up on open / down on close (~400ms, ~480×520px cap). Chrome row is `w-fit` with the image; caption is Caveat (`text-3xl`) with staggered per-letter “handwriting”; dismiss control is an **×** icon (top-right of image). Escape / backdrop / ×; body scroll lock.
 
 **Utilities:**
 
@@ -311,13 +312,19 @@ When you add a primitive or token, update this section and add it to the design-
 - **`preserve-3d` perspective container must have `pointerEvents: "none"`** — 3D-transformed children are hit-tested in screen space, so visually overlapping 3D book elements capture pointer events before flat overlay `<div>`s behind them in the DOM. Setting `pointerEvents: "none"` on the perspective container delegates all interaction to the purpose-built flat overlays (idle click region, reading-mode left/right regions) which are rendered outside the perspective container as siblings. **Exceptions:** page-0 `CoverInside` re-enables `pointer-events: auto` for Close; `Polaroid` uses `pointer-events-auto` on prints. `PeopleCloud` does **not** re-enable pointer events — hover is window-driven; clicks fall through to nav overlays.
 - **Cover and left-page Caveat** — use `style={{ fontFamily: "var(--font-caveat)" }}` on cover title and `LeftPageText`; do not use `--font-handwritten` for those surfaces.
 - **§5 history vs current** — entries before “Canonical current state” may describe superseded accent borders, Instrument Serif on the cover, or “Read” labelling; trust the canonical table and §1–§4 over older decision bullets.
-- **`Polaroid` hover / peel / click** — `Page.tsx` face wrappers are `pointer-events-none`; `Polaroid` uses `pointer-events-auto` for image zoom. Reading-mode peel comes from `Book.tsx` `pointermove`. Book pages use `BookPolaroid`, which forwards clicks to `onPageFaceClick` (left half = Back/Close, right half = Next) so prints do not block page turns.
+- **`Polaroid` hover / peel / click** — `Page.tsx` face wrappers are `pointer-events-none`; `Polaroid` uses `pointer-events-auto` only when `BookPolaroid`'s `bookPageIndex` matches the active spread (`isPolaroidFaceActive`: right = `currentPage * 2`, left = `currentPage * 2 - 1`). Otherwise `pointer-events-none` so buried faces cannot open the lightbox. Opens `ImageLightbox` on click; lightbox auto-closes on page turn.
 
 ### 2026-06-01 — Polaroid component; page 2 cleared
 
 - **`Polaroid` design-system primitive** (`src/design-system/components/Polaroid.tsx`). White frame, 8px radius, 1px `border-rule`, 140×108px image, centered bold Caveat caption (`text-base`). Optional `rotation`: `-3` … `3` degrees (default `0`). Optional masking tape: `tape` `1`–`6`, `tapeRotation` `2` … `-2` (default `0`). Tape assets in `public/images/tape/`. Exported from the design-system barrel.
 - **Page 2 (`bookPages[1]`)** — `PolaroidPreview`: three `<Polaroid>`s at upper-left, middle-right, and bottom-left; Caveat labels **Cape Cod** and **2023 Offsite** (two lines each) in flex regions beside the stack.
 - **Page 3 (`bookPages[2]`)** — `TwoPolaroids`: two prints at upper-right and bottom-left, inset toward center.
+
+### 2026-06-02 — Polaroid image lightbox
+
+- **`ImageLightbox`** (`src/design-system/components/ImageLightbox.tsx`) — portaled scrim + enlarged photo; Escape / backdrop / Close; body scroll lock.
+- **`BookPolaroid`** opens the lightbox on click instead of `onPageFaceClick` so prints are viewable without advancing the book.
+- **Active-face gating.** Each `BookPolaroid` takes `bookPageIndex` (`bookPages` flat index). `isPolaroidFaceActive` enables `pointer-events` only on the current spread (right `2 × currentPage`, left `2 × currentPage − 1`). Buried 3D faces stay inert; lightbox closes when the spread changes.
 
 ## 8. Quality gates
 
