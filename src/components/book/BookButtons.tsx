@@ -11,7 +11,7 @@ import {
 } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Button } from "@/design-system";
-import { NUM_PAGES } from "./constants";
+import { NUM_PAGES, READING_PAGE_COUNT } from "./constants";
 
 export type BookMode = "idle" | "reading";
 
@@ -64,9 +64,17 @@ export function BookButtons({
       readingLabelOpacity.set(0);
     }
   }, [isReading, readingLabelOpacity]);
-  const pageWord = currentPage === 0 ? "Page" : "Pages";
-  const pageLeft = currentPage === 0 ? "1" : `${currentPage * 2}`;
-  const pageRight = currentPage === 0 ? null : `${currentPage * 2 + 1}`;
+  const pageWord = isAtBackCover || currentPage > 0 ? "Pages" : "Page";
+  const pageLeft = isAtBackCover
+    ? `${READING_PAGE_COUNT - 1}`
+    : currentPage === 0
+      ? "1"
+      : `${currentPage * 2}`;
+  const pageRight = isAtBackCover
+    ? `${READING_PAGE_COUNT}`
+    : currentPage === 0
+      ? null
+      : `${currentPage * 2 + 1}`;
 
   // Track direction so numbers roll up on Next and down on Back.
   // Render-phase state update: React re-renders immediately, letting us
@@ -139,10 +147,11 @@ export function BookButtons({
           </AnimatePresence>
         </div>
 
-        {/* Centered page label — hidden at back cover. Parent motion.div fades
-            with openness on close so exit fires at near-zero opacity already. */}
+        {/* Centered page label — at back cover shows the last spread (page 16 +
+            inside back cover as page 17). Parent motion.div fades with openness
+            on close so exit fires at near-zero opacity already. */}
         <AnimatePresence>
-          {isReading && !isAtBackCover && (
+          {isReading && (
             <motion.span
               key="page-label"
               className="text-ink-subtle pointer-events-none absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center font-mono text-sm"

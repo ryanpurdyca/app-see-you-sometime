@@ -16,6 +16,9 @@ import { bookPages } from "./pages";
  */
 export const NUM_PAGES = Math.ceil(bookPages.length / 2);
 
+/** Authored page faces plus the inside of the back cover (final reading spread). */
+export const READING_PAGE_COUNT = bookPages.length + 1;
+
 /** Maximum opening angle for the front cover (degrees, negative = swings left). */
 export const COVER_OPEN_ANGLE = -174;
 

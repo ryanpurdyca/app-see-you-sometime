@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { PageSurface } from "@/design-system";
 import { BookPolaroid } from "./BookPolaroid";
 import { PeopleCloud } from "./PeopleCloud";
+import { AutocampOffsitePageLabels } from "./AutocampOffsitePageLabels";
 import { LeadershipOffsitePageLabels } from "./LeadershipOffsitePageLabels";
 import { NashvilleOffsitePageLabels } from "./NashvilleOffsitePageLabels";
 import { PolaroidPageLabels } from "./PolaroidPageLabels";
@@ -556,7 +557,7 @@ function LeadershipOffsitePage14() {
       <div className="relative size-full">
         <BookPolaroid
           bookPageIndex={LEADERSHIP_OFFSITE_PAGE_14_FACE}
-          className="absolute top-10 right-6 z-20"
+          className="absolute top-2 right-2 z-30"
           image={`${FALL_2023_OFFSITE_IMG}/img-2023-03.jpg`}
           alt="Featherball bar"
           caption="Featherball bar"
@@ -566,7 +567,7 @@ function LeadershipOffsitePage14() {
         />
         <BookPolaroid
           bookPageIndex={LEADERSHIP_OFFSITE_PAGE_14_FACE}
-          className="absolute bottom-10 left-6 z-10"
+          className="absolute top-[42%] left-2 z-20 -translate-y-1/2"
           image={`${FALL_2023_OFFSITE_IMG}/img-2023-04.jpg`}
           alt="Sort of team photo"
           caption="Sort of team photo"
@@ -574,7 +575,35 @@ function LeadershipOffsitePage14() {
           tape={5}
           tapeRotation={-1}
         />
+        <BookPolaroid
+          bookPageIndex={LEADERSHIP_OFFSITE_PAGE_14_FACE}
+          className="absolute bottom-2 left-1/2 z-25 -translate-x-1/2"
+          image={`${FALL_2023_OFFSITE_IMG}/img-2023-05.jpg`}
+          alt="My beloved Essex Pizza"
+          caption="My beloved Essex Pizza"
+          rotation={-1}
+          tape={3}
+          tapeRotation={2}
+        />
       </div>
+    </PageSurface>
+  );
+}
+
+function AutocampOffsitePage15() {
+  return (
+    <PageSurface className="overflow-hidden p-6">
+      <div className="relative size-full">
+        <AutocampOffsitePageLabels />
+      </div>
+    </PageSurface>
+  );
+}
+
+function PlaceholderPage({ n }: { n: number }) {
+  return (
+    <PageSurface className="items-center justify-center">
+      <span className="text-ink-subtle font-mono text-sm">Page {n}</span>
     </PageSurface>
   );
 }
@@ -594,4 +623,6 @@ export const bookPages: ReactNode[] = [
   <SummerOffsitePage12 key="summer-offsite-page-12" />,
   <LeadershipOffsitePage13 key="leadership-offsite-page-13" />,
   <LeadershipOffsitePage14 key="leadership-offsite-page-14" />,
+  <AutocampOffsitePage15 key="autocamp-offsite-page-15" />,
+  <PlaceholderPage key="placeholder-16" n={16} />,
 ];
