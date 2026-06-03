@@ -8,7 +8,7 @@ import { WinterOffsitePageLabels } from "./WinterOffsitePageLabels";
 
 const SPRING_OFFSITE_IMG = "/images/images/2026-spring-offsite";
 const WINTER_OFFSITE_IMG = "/images/images/2026-winter-offsite";
-const NASHVILLE_OFFSITE_IMG = "/images/images/2022-winter-offsite";
+const NASHVILLE_OFFSITE_IMG = "/images/images/2025-winter-offsite";
 
 /**
  * The book's content, authored as a flat list of pages.
@@ -204,8 +204,9 @@ function NashvilleOffsitePage6() {
         <BookPolaroid
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_6_FACE}
           className="absolute top-10 right-6 z-20"
-          image={`${NASHVILLE_OFFSITE_IMG}/img-2022-01.jpg`}
-          alt="Nashville PDE offsite"
+          image={`${NASHVILLE_OFFSITE_IMG}/img-2025-01.JPEG`}
+          alt="PDE team rooftop photo"
+          caption="PDE team rooftop photo"
           rotation={-1}
           tape={2}
           tapeRotation={0}
@@ -214,8 +215,9 @@ function NashvilleOffsitePage6() {
         <BookPolaroid
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_6_FACE}
           className="absolute bottom-10 left-6 z-10"
-          image={`${NASHVILLE_OFFSITE_IMG}/img-2022-02.jpg`}
-          alt="Nashville PDE offsite"
+          image={`${NASHVILLE_OFFSITE_IMG}/img-2026-02.jpg`}
+          alt="Team dinner"
+          caption="Team dinner"
           rotation={2}
           tape={4}
           tapeRotation={-2}
@@ -235,8 +237,9 @@ function NashvilleOffsitePage7() {
         <BookPolaroid
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_7_FACE}
           className="absolute top-2 left-2 z-30"
-          image={`${NASHVILLE_OFFSITE_IMG}/img-2022-03.jpg`}
-          alt="Nashville PDE offsite"
+          image={`${NASHVILLE_OFFSITE_IMG}/img-2026-03.jpg`}
+          alt="Predators hockey game"
+          caption="Predators hockey game"
           rotation={-1}
           tape={1}
           tapeRotation={0}
@@ -244,8 +247,9 @@ function NashvilleOffsitePage7() {
         <BookPolaroid
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_7_FACE}
           className="absolute top-1/2 right-2 z-20 -translate-y-1/2"
-          image={`${NASHVILLE_OFFSITE_IMG}/img-2022-04.jpg`}
-          alt="Nashville PDE offsite"
+          image={`${NASHVILLE_OFFSITE_IMG}/img-2026-04.jpg`}
+          alt="Anomia match"
+          caption="Anomia match"
           rotation={1}
           tape={3}
           tapeRotation={-2}
@@ -253,8 +257,9 @@ function NashvilleOffsitePage7() {
         <BookPolaroid
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_7_FACE}
           className="absolute bottom-2 left-2 z-10"
-          image={`${NASHVILLE_OFFSITE_IMG}/img-2022-05.jpg`}
-          alt="Nashville PDE offsite"
+          image={`${NASHVILLE_OFFSITE_IMG}/img-2026-05.jpg`}
+          alt="Head to head Scrabble"
+          caption="Head to head Scrabble"
           rotation={2}
           tape={5}
           tapeRotation={1}
@@ -274,8 +279,9 @@ function NashvilleOffsitePage8() {
         <BookPolaroid
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_8_FACE}
           className="absolute top-2 left-2 z-30"
-          image={`${NASHVILLE_OFFSITE_IMG}/img-2022-06.jpg`}
-          alt="Nashville PDE offsite"
+          image={`${NASHVILLE_OFFSITE_IMG}/img-2026-06.jpg`}
+          alt="Insanely hot chicken"
+          caption="Insanely hot chicken"
           rotation={2}
           tape={1}
           tapeRotation={-1}
@@ -283,8 +289,9 @@ function NashvilleOffsitePage8() {
         <BookPolaroid
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_8_FACE}
           className="absolute top-1/2 right-2 z-20 -translate-y-1/2"
-          image={`${NASHVILLE_OFFSITE_IMG}/img.png`}
-          alt="Nashville PDE offsite"
+          image={`${NASHVILLE_OFFSITE_IMG}/img-2026-07.jpg`}
+          alt="Scooter gang"
+          caption="Scooter gang"
           rotation={-1}
           tape={3}
           tapeRotation={1}
@@ -292,8 +299,9 @@ function NashvilleOffsitePage8() {
         <BookPolaroid
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_8_FACE}
           className="absolute bottom-2 left-2 z-10"
-          image={`${NASHVILLE_OFFSITE_IMG}/img-2022-02.jpg`}
-          alt="Nashville PDE offsite"
+          image={`${NASHVILLE_OFFSITE_IMG}/img-2026-08.JPEG`}
+          alt="Beers and jamming"
+          caption="Beers and jamming"
           rotation={1}
           tape={5}
           tapeRotation={0}
@@ -313,8 +321,9 @@ function NashvilleOffsitePage9() {
         <BookPolaroid
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_9_FACE}
           className="absolute top-1 right-1 z-40"
-          image={`${NASHVILLE_OFFSITE_IMG}/img-2022-01.jpg`}
-          alt="Nashville PDE offsite"
+          image={`${NASHVILLE_OFFSITE_IMG}/img-2026-09.JPEG`}
+          alt="Designers designing"
+          caption="Designers designing"
           rotation={3}
           tape={2}
           tapeRotation={2}
@@ -322,8 +331,9 @@ function NashvilleOffsitePage9() {
         <BookPolaroid
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_9_FACE}
           className="absolute top-[22%] left-1 z-35"
-          image={`${NASHVILLE_OFFSITE_IMG}/img-2022-04.jpg`}
-          alt="Nashville PDE offsite"
+          image={`${NASHVILLE_OFFSITE_IMG}/img-2026-10.jpg`}
+          alt="Broadway bar crawl"
+          caption="Broadway bar crawl"
           rotation={-2}
           tape={1}
           tapeRotation={-2}
@@ -331,8 +341,9 @@ function NashvilleOffsitePage9() {
         <BookPolaroid
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_9_FACE}
           className="absolute top-[61%] right-8 z-30 -translate-y-[42%]"
-          image={`${NASHVILLE_OFFSITE_IMG}/img-2022-03.jpg`}
-          alt="Nashville PDE offsite"
+          image={`${NASHVILLE_OFFSITE_IMG}/img-2026-11.jpg`}
+          alt="First ever honky tonk"
+          caption="First ever honky tonk"
           rotation={2}
           tape={4}
           tapeRotation={1}
@@ -340,8 +351,9 @@ function NashvilleOffsitePage9() {
         <BookPolaroid
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_9_FACE}
           className="absolute bottom-2 left-2 z-25"
-          image={`${NASHVILLE_OFFSITE_IMG}/img-2022-05.jpg`}
-          alt="Nashville PDE offsite"
+          image={`${NASHVILLE_OFFSITE_IMG}/img-2026-12.jpg`}
+          alt="Morning after bar crawl"
+          caption="Morning after bar crawl"
           rotation={-3}
           tape={6}
           tapeRotation={-1}
