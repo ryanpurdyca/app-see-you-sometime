@@ -24,6 +24,9 @@ export type BookReadingNav = {
   winterOffsiteLabelsAnimate: boolean;
   /** Bumps on each 1 → 2 advance so handwriting can replay. */
   winterOffsiteLabelsKey: number;
+  /** True while any polaroid lightbox on the active spread is open. */
+  polaroidLightboxOpen: boolean;
+  setPolaroidLightboxOpen: (open: boolean) => void;
 };
 
 const BookReadingContext = createContext<BookReadingNav | null>(null);

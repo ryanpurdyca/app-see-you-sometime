@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ComponentProps } from "react";
+import { useEffect, useState, type ComponentProps } from "react";
 import { cn, ImageLightbox, Polaroid } from "@/design-system";
 import { useBookReadingNav } from "./BookReadingContext";
 
@@ -26,6 +26,11 @@ export function BookPolaroid({
   const interactive = readingNav?.isPolaroidFaceActive(bookPageIndex) ?? false;
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const isLightboxOpen = lightboxOpen && interactive;
+  const anyLightboxOpen = readingNav?.polaroidLightboxOpen ?? false;
+
+  useEffect(() => {
+    readingNav?.setPolaroidLightboxOpen(isLightboxOpen);
+  }, [isLightboxOpen, readingNav]);
 
   return (
     <>
@@ -34,7 +39,7 @@ export function BookPolaroid({
         image={image}
         alt={alt}
         caption={caption}
-        showViewCursor={interactive && !isLightboxOpen}
+        showViewCursor={interactive && !anyLightboxOpen}
         className={cn(interactive ? "pointer-events-auto" : "pointer-events-none", className)}
         onClick={(e) => {
           if (!interactive) return;

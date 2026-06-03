@@ -50,6 +50,7 @@ export function Book() {
   const [polaroidPreviewLabelsKey, setPolaroidPreviewLabelsKey] = useState(0);
   const [winterOffsiteLabelsPlay, setWinterOffsiteLabelsPlay] = useState(false);
   const [winterOffsiteLabelsKey, setWinterOffsiteLabelsKey] = useState(0);
+  const [polaroidLightboxOpen, setPolaroidLightboxOpen] = useState(false);
 
   // Refs mirror state so event handlers registered once always see current values.
   const modeRef = useRef<BookMode>("idle");
@@ -121,6 +122,7 @@ export function Book() {
     setCurrentPageSync(0);
     setPolaroidPreviewLabelsPlay(false);
     setWinterOffsiteLabelsPlay(false);
+    setPolaroidLightboxOpen(false);
     setIsClosing(false);
     setHoveringBook(false);
     setModeSync("reading");
@@ -149,6 +151,7 @@ export function Book() {
     const finishClose = () => {
       setPolaroidPreviewLabelsPlay(false);
       setWinterOffsiteLabelsPlay(false);
+      setPolaroidLightboxOpen(false);
       setModeSync("idle");
       setIsClosing(false);
     };
@@ -282,6 +285,8 @@ export function Book() {
       winterOffsiteLabelsAnimate:
         mode === "reading" && currentPage === 2 && winterOffsiteLabelsPlay,
       winterOffsiteLabelsKey,
+      polaroidLightboxOpen,
+      setPolaroidLightboxOpen,
     }),
     [
       mode,
@@ -290,6 +295,7 @@ export function Book() {
       polaroidPreviewLabelsKey,
       winterOffsiteLabelsPlay,
       winterOffsiteLabelsKey,
+      polaroidLightboxOpen,
       goToNextPage,
       goToPrevPage,
     ],

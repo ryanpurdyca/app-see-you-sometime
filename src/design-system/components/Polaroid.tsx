@@ -33,8 +33,6 @@ const TAPE_SRC: Record<PolaroidTape, string> = {
   6: "/images/tape/tape-6.webp",
 };
 
-const VIEW_CURSOR_SPRING = { stiffness: 250, damping: 25 } as const;
-
 interface PolaroidProps extends HTMLAttributes<HTMLDivElement> {
   /** Path or URL to the photo. */
   image: string;
@@ -48,7 +46,7 @@ interface PolaroidProps extends HTMLAttributes<HTMLDivElement> {
   tape?: PolaroidTape;
   /** Tape strip rotation in degrees. Defaults to 0. */
   tapeRotation?: PolaroidTapeRotation;
-  /** When true, hovering the photo shows a spring-smoothed "View" cursor pill. */
+  /** When true, hovering the photo shows a "View" cursor pill that tracks the pointer. */
   showViewCursor?: boolean;
 }
 
@@ -98,11 +96,9 @@ export function Polaroid({
   ...rest
 }: PolaroidProps) {
   const [imageHovered, setImageHovered] = useState(false);
-  const hasSnappedRef = useRef(false);
-  const rawX = useMotionValue(0);
-  const rawY = useMotionValue(0);
-  const x = useSpring(rawX, VIEW_CURSOR_SPRING);
-  const y = useSpring(rawY, VIEW_CURSOR_SPRING);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
   const cursorOpacity = useSpring(0, { stiffness: 400, damping: 30 });
 
   const cursorVisible = showViewCursor && imageHovered;
@@ -111,24 +107,39 @@ export function Polaroid({
     animate(cursorOpacity, cursorVisible ? 1 : 0, { duration: 0.15 });
   }, [cursorVisible, cursorOpacity]);
 
+  // Lightbox / overlay can hide the cursor without a pointerleave firing; sync hover
+  // from the live window pointer so the pill disappears and reappears correctly.
+  useEffect(() => {
+    if (!showViewCursor) {
+      cursorOpacity.set(0);
+      return;
+    }
+
+    const syncHoverFromPointer = (e: globalThis.PointerEvent) => {
+      const img = imageRef.current;
+      if (!img) return;
+      const over = document.elementFromPoint(e.clientX, e.clientY) === img;
+      setImageHovered(over);
+      if (over) {
+        x.set(e.clientX);
+        y.set(e.clientY);
+      }
+    };
+
+    window.addEventListener("pointermove", syncHoverFromPointer, { passive: true });
+    return () => window.removeEventListener("pointermove", syncHoverFromPointer);
+  }, [showViewCursor, cursorOpacity, x, y]);
+
   const handleImagePointerMove = (e: PointerEvent<HTMLImageElement>) => {
     if (!showViewCursor) return;
-    if (!hasSnappedRef.current) {
-      hasSnappedRef.current = true;
-      x.set(e.clientX);
-      y.set(e.clientY);
-    }
-    rawX.set(e.clientX);
-    rawY.set(e.clientY);
+    x.set(e.clientX);
+    y.set(e.clientY);
   };
 
   const handleImagePointerLeave = (e: PointerEvent<HTMLImageElement>) => {
-    // Ignore leave events when moving to a child (shouldn't happen on img) or
-    // when the pointer is still over this image (e.g. sub-pixel / transformed bounds).
     const related = e.relatedTarget;
     if (related instanceof Node && e.currentTarget.contains(related)) return;
     setImageHovered(false);
-    hasSnappedRef.current = false;
   };
 
   return (
@@ -160,6 +171,7 @@ export function Polaroid({
 
         <div className="border-rule relative mx-1.5 mt-1.5 h-[108px] w-[140px] overflow-hidden rounded-[3px] border">
           <img
+            ref={imageRef}
             src={image}
             alt={alt}
             className={cn(
@@ -191,6 +203,7 @@ export function Polaroid({
 
       {typeof document !== "undefined" &&
         showViewCursor &&
+        imageHovered &&
         createPortal(<PolaroidViewCursor x={x} y={y} opacity={cursorOpacity} />, document.body)}
     </>
   );
