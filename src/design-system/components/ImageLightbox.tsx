@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "../cn";
+import { HandwrittenText } from "./HandwrittenText";
 
 const EASE = [0.22, 0.61, 0.36, 1] as const;
 const SCRIM_TRANSITION = { duration: 0.28, ease: EASE };
@@ -12,50 +13,8 @@ const SLIDE_EXIT_PX = 96;
 const IMAGE_TRANSITION = { duration: 0.4, ease: EASE };
 const CHROME_FADE_IN = { duration: 0.22, ease: EASE };
 const CHROME_FADE_OUT = { duration: 0.12, ease: EASE };
-
-const LETTER_STAGGER_S = 0.048;
 /** Letters begin as the chrome row fades in (after the image slide). */
 const HANDWRITING_DELAY_S = IMAGE_TRANSITION.duration;
-
-const letterVariants = {
-  hidden: { opacity: 0, y: 5, rotate: -10, scale: 0.72 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    rotate: 0,
-    scale: 1,
-    transition: { duration: 0.14, ease: EASE },
-  },
-};
-
-function HandwrittenCaption({ text }: { text: string }) {
-  return (
-    <motion.span
-      className="text-cover-ink inline-flex max-w-full min-w-0 truncate text-3xl leading-none font-bold"
-      style={{ fontFamily: "var(--font-caveat)" }}
-      aria-hidden
-      initial="hidden"
-      animate="visible"
-      variants={{
-        hidden: {},
-        visible: {
-          transition: { staggerChildren: LETTER_STAGGER_S, delayChildren: HANDWRITING_DELAY_S },
-        },
-      }}
-    >
-      {Array.from(text).map((char, i) => (
-        <motion.span
-          key={`${i}-${char}`}
-          className="inline-block origin-bottom-left"
-          variants={letterVariants}
-        >
-          {char === " " ? "\u00A0" : char}
-        </motion.span>
-      ))}
-      <span className="sr-only">{text}</span>
-    </motion.span>
-  );
-}
 
 const panelVariants = {
   hidden: {},
@@ -156,7 +115,11 @@ export function ImageLightbox({ open, onClose, image, alt = "", caption, classNa
               >
                 {caption ? (
                   <div key={caption} className="flex min-w-0 flex-1 items-center self-stretch">
-                    <HandwrittenCaption text={caption} />
+                    <HandwrittenText
+                      text={caption}
+                      delayChildren={HANDWRITING_DELAY_S}
+                      className="text-cover-ink max-w-full min-w-0 truncate text-3xl leading-none"
+                    />
                   </div>
                 ) : (
                   <span className="sr-only">{alt || "Photo"}</span>

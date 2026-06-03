@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { PageSurface } from "@/design-system";
 import { BookPolaroid } from "./BookPolaroid";
 import { PeopleCloud } from "./PeopleCloud";
+import { PolaroidPageLabels } from "./PolaroidPageLabels";
 
 /**
  * The book's content, authored as a flat list of pages.
@@ -18,8 +19,6 @@ import { PeopleCloud } from "./PeopleCloud";
  * `bookPages`. Every page inherits its frame (paper, border, padding) from
  * <PageSurface>; pass `className` to extend or override it.
  */
-
-const caveat = { fontFamily: "var(--font-caveat)" } as const;
 
 function ChapterOpen() {
   return (
@@ -46,13 +45,7 @@ function PolaroidPreview() {
           tape={3}
           tapeRotation={1}
         />
-        <div className="pointer-events-none absolute top-2 right-2 bottom-[calc(50%-5.5rem)] left-[10.5rem] z-25 flex items-start justify-center pt-5">
-          <p className="text-ink text-center text-2xl leading-snug font-bold" style={caveat}>
-            Cape
-            <br />
-            Cod
-          </p>
-        </div>
+        <PolaroidPageLabels />
         <BookPolaroid
           bookPageIndex={POLAROID_PREVIEW_FACE}
           className="absolute top-1/2 right-2 z-20 -translate-y-1/2"
@@ -73,13 +66,6 @@ function PolaroidPreview() {
           tape={5}
           tapeRotation={2}
         />
-        <div className="pointer-events-none absolute top-[calc(50%+4.5rem)] right-2 bottom-2 left-[10.5rem] z-15 flex items-center justify-center">
-          <p className="text-ink text-center text-2xl leading-snug font-bold" style={caveat}>
-            2023
-            <br />
-            Offsite
-          </p>
-        </div>
       </div>
     </PageSurface>
   );

@@ -291,7 +291,8 @@ Historical entries below remain for context; **this list is the source of truth*
 - `Tooltip` — Presentational label above an anchor (`left`/`top`, Framer Motion fade ~220ms). `pointer-events: none`. People-cloud names on hover.
 - `Popover` — Card below an anchor (`anchorBottom`, centered via motion `x: -50%`). Framer Motion fade + 6px slide up/down (~220ms). Optional `title` header: `highlight-ink` / `highlight-surface` / `highlight-border` tokens (10px medium), small bookmark icon right-aligned. Body: `border-rule`, `bg-surface`, `text-xs`, subtle `paper-shadow`. `pointer-events: none`; people-cloud uses title **Highlight** + note copy on hover.
 - `Polaroid` — A photo print card with a white frame, `rounded-[8px]`, 1px `border-rule` (same token as the page dotted frame), and optional Caveat-font caption. Props: `image` (src), `alt`, `caption`, `rotation` (`-3` … `3` degrees, default `0`), `tape` (`1` … `6` → `public/images/tape/tape-N.webp`), `tapeRotation` (`2` … `-2` degrees, default `0`). Tape is absolutely positioned on the top edge. Image area is 140×108px with matching 1px border and `rounded-[3px]`. Subtle box shadow.
-- `ImageLightbox` — Portaled viewer: scrim fade; image slides up on open / down on close (~400ms, ~480×520px cap). Chrome row is `w-fit` with the image; caption is Caveat (`text-3xl`) with staggered per-letter “handwriting”; dismiss control is an **×** icon (top-right of image). Escape / backdrop / ×; body scroll lock.
+- `HandwrittenText` — Caveat (`--font-caveat` inline) with optional per-letter stagger reveal. Props: `text`, `animate` (default true), `delayChildren` (seconds). Used by lightbox caption and polaroid spread labels.
+- `ImageLightbox` — Portaled viewer: scrim fade; image slides up on open / down on close (~400ms, ~480×520px cap). Chrome row is `w-fit` with the image; caption uses `HandwrittenText` (`text-3xl`); dismiss control is an **×** icon (top-right of image). Escape / backdrop / ×; body scroll lock.
 
 **Utilities:**
 
@@ -326,6 +327,7 @@ When you add a primitive or token, update this section and add it to the design-
 - **`ImageLightbox`** (`src/design-system/components/ImageLightbox.tsx`) — portaled scrim + enlarged photo; Escape / backdrop / Close; body scroll lock.
 - **`BookPolaroid`** opens the lightbox on click instead of `onPageFaceClick` so prints are viewable without advancing the book.
 - **Active-face gating.** Each `BookPolaroid` takes `bookPageIndex` (`bookPages` flat index). `isPolaroidFaceActive` enables `pointer-events` only on the current spread (right `2 × currentPage`, left `2 × currentPage − 1`). Buried 3D faces stay inert; lightbox closes when the spread changes.
+- **Polaroid spread labels.** `PolaroidPageLabels` on `bookPages[1]`: **Cape Cod** / **2023 Offsite** use `HandwrittenText` only when advancing from reading page 0 → 1 via Next, right-page click, or ArrowRight (`polaroidPreviewLabelsAnimate` + key in `BookReadingContext`). Otherwise static Caveat. Cape Cod lines first, then 2023 Offsite; 0.35s delay after flip (constant in `PolaroidPageLabels.tsx`, not `constants.ts` — avoids import cycle with `pages.tsx`).
 
 ## 8. Quality gates
 

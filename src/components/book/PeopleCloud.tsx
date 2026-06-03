@@ -269,11 +269,15 @@ export function PeopleCloud() {
     (clientX: number, clientY: number) => {
       const hit = hitTestBubble(clientX, clientY, bubbleRefs.current, hoveredIdRef.current);
       const nextId = hit?.id ?? null;
-      setHoveredId((prev) => {
-        if (prev === nextId) return prev;
-        if (nextId && prev === null) readingNav?.onRightPagePointer();
-        return nextId;
-      });
+      const prevId = hoveredIdRef.current;
+      if (prevId === nextId) return;
+
+      if (nextId && prevId === null) {
+        readingNav?.onRightPagePointer();
+      }
+
+      hoveredIdRef.current = nextId;
+      setHoveredId(nextId);
       if (!nextId) {
         setHoverAnchor(null);
         scheduleChromeDismiss();
