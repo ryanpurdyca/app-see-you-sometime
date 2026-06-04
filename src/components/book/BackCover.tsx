@@ -42,7 +42,7 @@ export function BackCover({ openness }: Props) {
           className="z-10"
           image={BYE_POLAROID_IMG}
           alt="Portrait"
-          caption="Until next time"
+          caption="See you sometime"
           rotation={-2}
           tape={2}
           tapeRotation={1}
