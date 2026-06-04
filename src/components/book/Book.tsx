@@ -5,6 +5,7 @@ import { animate, motion, useMotionValue, useSpring, useTransform } from "framer
 import { Cover } from "./Cover";
 import { Page } from "./Page";
 import { BackCover } from "./BackCover";
+import { BackCoverInsidePage } from "./BackCoverInsidePage";
 import { BookButtons, type BookMode } from "./BookButtons";
 import { CursorFollower } from "./CursorFollower";
 import { BookReadingProvider } from "./BookReadingContext";
@@ -392,29 +393,35 @@ export function Book() {
             }}
           >
             <BackCover openness={smoothOpenness} />
-            {Array.from({ length: NUM_PAGES }, (_, i) => (
-              <Page
-                key={i}
-                index={i}
-                openness={smoothOpenness}
-                readingPage={readingPage}
-                front={bookPages[i * 2] ?? <PageSurface />}
-                back={bookPages[i * 2 + 1] ?? <PageSurface />}
-                peeled={
-                  !isClosing &&
-                  readingPage !== null &&
-                  ((i === readingPage - 1 && readingPage > 0) || i === readingPage)
-                }
-                subPeeled={
-                  !isClosing && readingPage !== null && i === readingPage + 1 && i < NUM_PAGES
-                }
-                hovered={
-                  readingPage !== null &&
-                  ((i === readingPage - 1 && readingPage > 0 && hoveredSide === "left") ||
-                    (i === readingPage && hoveredSide === "right"))
-                }
-              />
-            ))}
+            {Array.from({ length: NUM_PAGES }, (_, i) => {
+              const isOddTailSheet = i === NUM_PAGES - 1 && bookPages.length % 2 === 1;
+              return (
+                <Page
+                  key={i}
+                  index={i}
+                  openness={smoothOpenness}
+                  readingPage={readingPage}
+                  front={bookPages[i * 2] ?? <PageSurface />}
+                  back={
+                    bookPages[i * 2 + 1] ??
+                    (isOddTailSheet ? <BackCoverInsidePage /> : <PageSurface />)
+                  }
+                  peeled={
+                    !isClosing &&
+                    readingPage !== null &&
+                    ((i === readingPage - 1 && readingPage > 0) || i === readingPage)
+                  }
+                  subPeeled={
+                    !isClosing && readingPage !== null && i === readingPage + 1 && i < NUM_PAGES
+                  }
+                  hovered={
+                    readingPage !== null &&
+                    ((i === readingPage - 1 && readingPage > 0 && hoveredSide === "left") ||
+                      (i === readingPage && hoveredSide === "right"))
+                  }
+                />
+              );
+            })}
             <Cover
               openness={smoothOpenness}
               closePeelActive={

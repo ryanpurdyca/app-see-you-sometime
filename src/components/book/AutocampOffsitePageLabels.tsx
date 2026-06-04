@@ -11,7 +11,7 @@ const TOP_REGION_CLASS =
 const BOTTOM_REGION_CLASS =
   "pointer-events-none absolute bottom-18 left-[11rem] z-15 flex w-[6.5rem] items-center justify-center";
 
-/** Autocamp / Cape Cod / Offsite + Spring 2023 labels on page 15 (`bookPages[14]`). */
+/** Autocamp / Cape Cod / Offsite + Spring 2023 labels on display page 16 (`bookPages[14]`). */
 export function AutocampOffsitePageLabels() {
   return (
     <SpreadPageLabels

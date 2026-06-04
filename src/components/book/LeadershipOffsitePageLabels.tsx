@@ -11,7 +11,7 @@ const TOP_REGION_CLASS =
 const BOTTOM_REGION_CLASS =
   "pointer-events-none absolute bottom-18 left-[11rem] z-15 flex w-[6.5rem] items-center justify-center";
 
-/** Leadership / Offsite + Fall 2023 labels on page 13 (`bookPages[12]`). */
+/** Leadership / Offsite + Fall 2023 labels on display page 14 (`bookPages[12]`). */
 export function LeadershipOffsitePageLabels() {
   return (
     <SpreadPageLabels

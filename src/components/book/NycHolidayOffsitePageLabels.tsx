@@ -11,7 +11,7 @@ const TOP_REGION_CLASS =
 const BOTTOM_REGION_CLASS =
   "pointer-events-none absolute bottom-18 left-[11rem] z-15 flex w-[6.5rem] items-center justify-center";
 
-/** NYC / Holiday / Offsite + Winter 2022 labels on page 18 (`bookPages[17]`). */
+/** NYC / Holiday / Offsite + Winter 2022 labels on display page 19 (`bookPages[17]`). */
 export function NycHolidayOffsitePageLabels() {
   return (
     <SpreadPageLabels
