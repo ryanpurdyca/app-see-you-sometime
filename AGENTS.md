@@ -330,11 +330,12 @@ When you add a primitive or token, update this section and add it to the design-
 - **Page 10 (`bookPages[9]`)** — `SummerOffsitePage10`: _Roadmap session_, _2hr morning walk_, _Padel match_ (`img-2024-01` … `03`); `SummerOffsitePageLabels` (**Product** / **Team** / **Offsite**, **Summer** / **2024**, centered).
 - **Page 11 (`bookPages[10]`)** — `SummerOffsitePage11`: _Post padel beers_, _Late night sushi_, _Two bad dart players_, _Early night team photo_ (`img-2024-04` … `07`).
 - **Page 12 (`bookPages[11]`)** — `SummerOffsitePage12`: _Late night team photo_, _Photo booth pics_, _Second dinner of the night_, _Fancy drinks_ (`img-2024-08` … `11`).
-- **Page 13 (`bookPages[12]`)** — `LeadershipOffsitePage13`: _First time in Dumbo_, _Brooklyn Bridge_ (`2023-fall-offsite` `img-2023-01`, `02`); `LeadershipOffsitePageLabels` (**Leadership** / **Offsite**, **Fall** / **2023**).
-- **Page 14 (`bookPages[13]`)** — `LeadershipOffsitePage14`: _Featherball bar_, _Sort of team photo_, _My beloved Essex Pizza_ (`img-2023-03` … `05`); top-right / mid-left / bottom-center.
-- **Page 15 (`bookPages[14]`)** — `AutocampOffsitePage15`: centered Caveat labels only — **Autocamp** / **Cape Cod** / **Offsite** (top block), **Spring** / **2023** (bottom block) via `AutocampOffsitePageLabels`.
-- **Page 16 (`bookPages[15]`)** — `PlaceholderPage` (mono “Page 16”); back-of-book slot for future content.
-- **Page count (reading UI).** `READING_PAGE_COUNT = bookPages.length + 1` in `constants.ts` — the inside of the back cover is the final numbered page. At `currentPage >= NUM_PAGES` the centered label shows **Pages 16–17** (updates automatically as faces are added).
+- **Page 13 (`bookPages[12]`)** — `LeadershipOffsitePage13`: _First time in Dumbo_, _Brooklyn Bridge_ (`2023-fall-offsite` `img-2023-10`, `11`); `LeadershipOffsitePageLabels` (**Leadership** / **Offsite**, **Fall** / **2023**).
+- **Page 14 (`bookPages[13]`)** — `LeadershipOffsitePage14`: _Featherball bar_, _Sort of team photo_, _My beloved Essex Pizza_ (`img-2023-12` … `14`); top-right / mid-left / bottom-center.
+- **Page 15 (`bookPages[14]`)** — `AutocampOffsitePage15`: _Gorgeous weather_, _PDE team photo_ (`2023-spring-offsite` `img-2023-01`, `02`); `AutocampOffsitePageLabels` (**Autocamp** / **Cape Cod** / **Offsite**, **Spring** / **2023**).
+- **Page 16 (`bookPages[15]`)** — `AutocampOffsitePage16`: _Team at work_, _BFFs_, _Late night drinks_, _Beer pong origins_ (`img-2023-03` … `06`).
+- **Page 17 (`bookPages[16]`)** — `AutocampOffsitePage17`: _Sums up the relationship_, _Morning gym crew_, _Bunch of awesome folks_ (`img-2023-07` … `09`).
+- **Page count (reading UI).** `READING_PAGE_COUNT = bookPages.length + 1` in `constants.ts` — the inside of the back cover is the final numbered page. At `currentPage >= NUM_PAGES` the centered label shows the last spread (e.g. **Pages 18–19** with 17 authored faces; updates automatically).
 
 ### 2026-06-03 — Polaroid View cursor: direct tracking + lightbox gate
 
