@@ -89,14 +89,10 @@ export function BookButtons({
       {isReading && (
         <>
           <motion.span
-            className="text-ink-subtle pointer-events-none absolute font-mono text-sm"
-            style={{
-              opacity: labelOpacity,
-              left: "calc(50vw - var(--book-width))",
-              top: "calc(50vh - var(--book-height) / 2 - 56px)",
-            }}
+            className="text-ink-subtle pointer-events-none absolute bottom-[44px] left-[52px] font-mono text-sm"
+            style={{ opacity: labelOpacity }}
           >
-            Ryan Purdy
+            Ryan P.
           </motion.span>
           <motion.span
             className="text-ink-subtle pointer-events-none absolute font-mono text-sm"
@@ -108,12 +104,12 @@ export function BookButtons({
           >
             2022-2026
           </motion.span>
-          {/* Centered page label — final spread is Pages 21–22 (last verso +
-              inside back cover). Fades with labelOpacity on close. */}
+          {/* Page label — final spread is Pages 21–22 (last verso + inside back cover). */}
           <motion.span
-            className="text-ink-subtle pointer-events-none absolute left-1/2 flex -translate-x-1/2 items-center font-mono text-sm"
+            className="text-ink-subtle pointer-events-none absolute flex items-center font-mono text-sm"
             style={{
               opacity: labelOpacity,
+              left: "calc(50vw - var(--book-width))",
               top: "calc(50vh - var(--book-height) / 2 - 56px)",
             }}
           >
