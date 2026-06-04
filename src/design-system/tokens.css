@@ -41,6 +41,10 @@
   --color-rule: #cfccc6;
   --color-gutter: #f2f0ec;
 
+  /* Reading-mode page stepper (between bottom buttons) */
+  --color-stepper: #ceccc4;
+  --color-stepper-active: #807e7b;
+
   /* Popover highlight header (people-cloud hover) */
   --color-highlight-ink: #965b2e;
   --color-highlight-surface: #f9f2ec;

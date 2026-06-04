@@ -41,6 +41,8 @@
   --color-paper-edge: var(--color-paper-edge);
   --color-rule: var(--color-rule);
   --color-gutter: var(--color-gutter);
+  --color-stepper: var(--color-stepper);
+  --color-stepper-active: var(--color-stepper-active);
   --color-highlight-ink: var(--color-highlight-ink);
   --color-highlight-surface: var(--color-highlight-surface);
   --color-highlight-border: var(--color-highlight-border);

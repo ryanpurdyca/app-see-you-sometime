@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 import { Button } from "@/design-system";
 import { MAX_READING_PAGE_INDEX, spreadPageRange } from "./constants";
+import { PageStepper } from "./PageStepper";
 
 export type BookMode = "idle" | "reading";
 
@@ -24,6 +25,7 @@ type Props = {
   onNext: () => void;
   onBack: () => void;
   onClose: () => void;
+  onGoToDisplayPage: (displayPage: number) => void;
 };
 
 export function BookButtons({
@@ -35,6 +37,7 @@ export function BookButtons({
   onNext,
   onBack,
   onClose,
+  onGoToDisplayPage,
 }: Props) {
   const [interactive, setInteractive] = useState(false);
 
@@ -86,14 +89,10 @@ export function BookButtons({
       {isReading && (
         <>
           <motion.span
-            className="text-ink-subtle pointer-events-none absolute font-mono text-sm"
-            style={{
-              opacity: labelOpacity,
-              left: "calc(50vw - var(--book-width))",
-              top: "calc(50vh - var(--book-height) / 2 - 56px)",
-            }}
+            className="text-ink-subtle pointer-events-none absolute bottom-[44px] left-[52px] font-mono text-sm"
+            style={{ opacity: labelOpacity }}
           >
-            Ryan Purdy
+            Ryan P.
           </motion.span>
           <motion.span
             className="text-ink-subtle pointer-events-none absolute font-mono text-sm"
@@ -104,6 +103,24 @@ export function BookButtons({
             }}
           >
             2022-2026
+          </motion.span>
+          {/* Page label — final spread is Pages 21–22 (last verso + inside back cover). */}
+          <motion.span
+            className="text-ink-subtle pointer-events-none absolute flex items-center font-mono text-sm"
+            style={{
+              opacity: labelOpacity,
+              left: "calc(50vw - var(--book-width))",
+              top: "calc(50vh - var(--book-height) / 2 - 56px)",
+            }}
+          >
+            <span>{pageWord}&nbsp;</span>
+            <AnimatedNumber value={pageLeft} dir={dir} />
+            {pageRight && (
+              <>
+                <span>-</span>
+                <AnimatedNumber value={pageRight} dir={dir} staggerOffset={1} />
+              </>
+            )}
           </motion.span>
         </>
       )}
@@ -140,30 +157,11 @@ export function BookButtons({
           </AnimatePresence>
         </div>
 
-        {/* Centered page label — final spread is Pages 21–22 (last verso +
-            inside back cover). Parent motion.div fades
-            with openness on close so exit fires at near-zero opacity already. */}
-        <AnimatePresence>
-          {isReading && (
-            <motion.span
-              key="page-label"
-              className="text-ink-subtle pointer-events-none absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center font-mono text-sm"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.35 }}
-            >
-              <span>{pageWord}&nbsp;</span>
-              <AnimatedNumber value={pageLeft} dir={dir} />
-              {pageRight && (
-                <>
-                  <span>-</span>
-                  <AnimatedNumber value={pageRight} dir={dir} staggerOffset={1} />
-                </>
-              )}
-            </motion.span>
-          )}
-        </AnimatePresence>
+        {isReading && (
+          <div className="pointer-events-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <PageStepper currentPage={currentPage} onGoToDisplayPage={onGoToDisplayPage} />
+          </div>
+        )}
 
         {/* Right button */}
         <Button variant="secondary" onClick={isReading ? onClose : onCancel}>
