@@ -5,6 +5,7 @@ import { PeopleCloud } from "./PeopleCloud";
 import { AutocampOffsitePageLabels } from "./AutocampOffsitePageLabels";
 import { LeadershipOffsitePageLabels } from "./LeadershipOffsitePageLabels";
 import { NashvilleOffsitePageLabels } from "./NashvilleOffsitePageLabels";
+import { NycHolidayOffsitePageLabels } from "./NycHolidayOffsitePageLabels";
 import { PolaroidPageLabels } from "./PolaroidPageLabels";
 import { SummerOffsitePageLabels } from "./SummerOffsitePageLabels";
 import { WinterOffsitePageLabels } from "./WinterOffsitePageLabels";
@@ -15,6 +16,7 @@ const NASHVILLE_OFFSITE_IMG = "/images/images/2025-winter-offsite";
 const SUMMER_OFFSITE_IMG = "/images/images/2024-summer-offsite";
 const FALL_2023_OFFSITE_IMG = "/images/images/2023-fall-offsite";
 const SPRING_2023_OFFSITE_IMG = "/images/images/2023-spring-offsite";
+const WINTER_2022_OFFSITE_IMG = "/images/images/2022-winter-offsite";
 
 /**
  * The book's content, authored as a flat list of pages.
@@ -92,7 +94,7 @@ function TwoPolaroids() {
       <div className="relative size-full">
         <BookPolaroid
           bookPageIndex={TWO_POLAROIDS_FACE}
-          className="absolute top-10 right-6 z-20"
+          className="absolute top-2 right-2 z-30"
           image={`${SPRING_OFFSITE_IMG}/img-2026-04.jpg`}
           alt="Flip cup tournament"
           caption="Flip cup tournament"
@@ -102,13 +104,23 @@ function TwoPolaroids() {
         />
         <BookPolaroid
           bookPageIndex={TWO_POLAROIDS_FACE}
-          className="absolute bottom-10 left-6 z-10"
+          className="absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2"
           image={`${SPRING_OFFSITE_IMG}/img-2026-05.jpg`}
           alt="Morning work sessions"
           caption="Morning work sessions"
-          rotation={2}
-          tape={4}
-          tapeRotation={-2}
+          rotation={1}
+          tape={3}
+          tapeRotation={-1}
+        />
+        <BookPolaroid
+          bookPageIndex={TWO_POLAROIDS_FACE}
+          className="absolute bottom-2 left-2 z-10"
+          image={`${SPRING_OFFSITE_IMG}/img-2026-06.jpg`}
+          alt="Axe throwing"
+          caption="Axe throwing"
+          rotation={-2}
+          tape={5}
+          tapeRotation={2}
         />
       </div>
     </PageSurface>
@@ -125,7 +137,7 @@ function WinterOffsitePage4() {
         <BookPolaroid
           bookPageIndex={WINTER_OFFSITE_PAGE_4_FACE}
           className="absolute top-2 right-2 z-30"
-          image={`${WINTER_OFFSITE_IMG}/img-2026-06.png`}
+          image={`${WINTER_OFFSITE_IMG}/img-2026-07.png`}
           alt="Pizza slices with Parker"
           caption="Pizza slices w/Parker"
           rotation={2}
@@ -136,7 +148,7 @@ function WinterOffsitePage4() {
         <BookPolaroid
           bookPageIndex={WINTER_OFFSITE_PAGE_4_FACE}
           className="absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2"
-          image={`${WINTER_OFFSITE_IMG}/img-2026-07.jpg`}
+          image={`${WINTER_OFFSITE_IMG}/img-2026-08.jpg`}
           alt="The brass factory office"
           caption="The brass factory office"
           rotation={-1}
@@ -146,7 +158,7 @@ function WinterOffsitePage4() {
         <BookPolaroid
           bookPageIndex={WINTER_OFFSITE_PAGE_4_FACE}
           className="absolute bottom-2 left-2 z-10"
-          image={`${WINTER_OFFSITE_IMG}/img-2026-08.jpg`}
+          image={`${WINTER_OFFSITE_IMG}/img-2026-09.jpg`}
           alt="IPAs with Moshy"
           caption="IPAs with Moshy"
           rotation={-2}
@@ -168,7 +180,7 @@ function WinterOffsitePage5() {
         <BookPolaroid
           bookPageIndex={WINTER_OFFSITE_PAGE_5_FACE}
           className="absolute top-2 left-2 z-30"
-          image={`${WINTER_OFFSITE_IMG}/img-2026-09.jpg`}
+          image={`${WINTER_OFFSITE_IMG}/img-2026-10.jpg`}
           alt="Central Park sunset"
           caption="Central Park sunset"
           rotation={-1}
@@ -178,7 +190,7 @@ function WinterOffsitePage5() {
         <BookPolaroid
           bookPageIndex={WINTER_OFFSITE_PAGE_5_FACE}
           className="absolute top-1/2 right-2 z-20 -translate-y-1/2"
-          image={`${WINTER_OFFSITE_IMG}/img-2026-10.jpg`}
+          image={`${WINTER_OFFSITE_IMG}/img-2026-11.jpg`}
           alt="Wall Street Bull"
           caption="Wall Street Bull"
           rotation={1}
@@ -188,7 +200,7 @@ function WinterOffsitePage5() {
         <BookPolaroid
           bookPageIndex={WINTER_OFFSITE_PAGE_5_FACE}
           className="absolute bottom-2 left-2 z-10"
-          image={`${WINTER_OFFSITE_IMG}/img-2026-11.jpg`}
+          image={`${WINTER_OFFSITE_IMG}/img-2026-12.jpg`}
           alt={"Evergreen being born"}
           caption={'"Evergreen" being born'}
           rotation={2}
@@ -665,8 +677,8 @@ function AutocampOffsitePage16() {
           bookPageIndex={AUTOCAMP_OFFSITE_PAGE_16_FACE}
           className="absolute right-2 bottom-2 z-25"
           image={`${SPRING_2023_OFFSITE_IMG}/img-2023-06.jpg`}
-          alt="Beer pong origins"
-          caption="Beer pong origins"
+          alt="Flip cup origins"
+          caption="Flip cup origins"
           rotation={-3}
           tape={6}
           tapeRotation={-1}
@@ -718,6 +730,81 @@ function AutocampOffsitePage17() {
   );
 }
 
+/** `bookPages` index for this face (sheet 9 recto) — page 18. */
+const NYC_HOLIDAY_OFFSITE_PAGE_18_FACE = 17;
+
+function NycHolidayOffsitePage18() {
+  return (
+    <PageSurface className="overflow-hidden p-6">
+      <div className="relative size-full">
+        <BookPolaroid
+          bookPageIndex={NYC_HOLIDAY_OFFSITE_PAGE_18_FACE}
+          className="absolute top-10 right-6 z-20"
+          image={`${WINTER_2022_OFFSITE_IMG}/img-2022-01.jpg`}
+          alt="Series B era Vitally"
+          caption="Series B era Vitally"
+          rotation={-1}
+          tape={2}
+          tapeRotation={0}
+        />
+        <NycHolidayOffsitePageLabels />
+        <BookPolaroid
+          bookPageIndex={NYC_HOLIDAY_OFFSITE_PAGE_18_FACE}
+          className="absolute bottom-10 left-6 z-10"
+          image={`${WINTER_2022_OFFSITE_IMG}/img-2022-02.jpg`}
+          alt="122 Rivington St. office"
+          caption="122 Rivington St. office"
+          rotation={2}
+          tape={4}
+          tapeRotation={-2}
+        />
+      </div>
+    </PageSurface>
+  );
+}
+
+/** `bookPages` index for this face (sheet 9 verso) — page 19. */
+const NYC_HOLIDAY_OFFSITE_PAGE_19_FACE = 18;
+
+function NycHolidayOffsitePage19() {
+  return (
+    <PageSurface className="overflow-hidden p-6">
+      <div className="relative size-full">
+        <BookPolaroid
+          bookPageIndex={NYC_HOLIDAY_OFFSITE_PAGE_19_FACE}
+          className="absolute top-2 right-2 z-30"
+          image={`${WINTER_2022_OFFSITE_IMG}/img-2022-03.jpg`}
+          alt="Post shuffleboard beers"
+          caption="Post shuffleboard beers"
+          rotation={2}
+          tape={1}
+          tapeRotation={-1}
+        />
+        <BookPolaroid
+          bookPageIndex={NYC_HOLIDAY_OFFSITE_PAGE_19_FACE}
+          className="absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2"
+          image={`${WINTER_2022_OFFSITE_IMG}/img-2022-04.jpg`}
+          alt="First NYC pizza ever"
+          caption="First NYC pizza ever"
+          rotation={-1}
+          tape={3}
+          tapeRotation={1}
+        />
+        <BookPolaroid
+          bookPageIndex={NYC_HOLIDAY_OFFSITE_PAGE_19_FACE}
+          className="absolute bottom-2 left-2 z-10"
+          image={`${WINTER_2022_OFFSITE_IMG}/img-2022-05.jpg`}
+          alt="OG Vitally swag"
+          caption="OG Vitally swag"
+          rotation={-2}
+          tape={5}
+          tapeRotation={2}
+        />
+      </div>
+    </PageSurface>
+  );
+}
+
 export const bookPages: ReactNode[] = [
   <ChapterOpen key="chapter-open" />,
   <PolaroidPreview key="polaroid-preview" />,
@@ -736,4 +823,6 @@ export const bookPages: ReactNode[] = [
   <AutocampOffsitePage15 key="autocamp-offsite-page-15" />,
   <AutocampOffsitePage16 key="autocamp-offsite-page-16" />,
   <AutocampOffsitePage17 key="autocamp-offsite-page-17" />,
+  <NycHolidayOffsitePage18 key="nyc-holiday-offsite-page-18" />,
+  <NycHolidayOffsitePage19 key="nyc-holiday-offsite-page-19" />,
 ];

@@ -320,9 +320,9 @@ When you add a primitive or token, update this section and add it to the design-
 
 - **`Polaroid` design-system primitive** (`src/design-system/components/Polaroid.tsx`). White frame, 8px radius, 1px `border-rule`, 140×108px image, centered bold Caveat caption (`text-base`). Optional `rotation`: `-3` … `3` degrees (default `0`). Optional masking tape: `tape` `1`–`6`, `tapeRotation` `2` … `-2` (default `0`). Tape assets in `public/images/tape/`. Exported from the design-system barrel.
 - **Page 2 (`bookPages[1]`)** — `PolaroidPreview`: three offsite `<Polaroid>`s (`img-2026-01` … `03`) with captions _Product redesign & vision_, _Celebratory tequila_, _One of many great meals_; Caveat spread labels **Autocamp** / **Catskills** / **Offsite** and **Spring** / **2026** beside the stack.
-- **Page 3 (`bookPages[2]`)** — `TwoPolaroids`: _Flip cup tournament_, _Morning work sessions_ (`img-2026-04`, `05`) at upper-right and bottom-left.
-- **Page 4 (`bookPages[3]`)** — `WinterOffsitePage4`: three winter offsite `<Polaroid>`s from `2026-winter-offsite` (`img-2026-06` … `08`) at top-right, center, and bottom-left; labels in the open corners (**Product** / **Team** / **Offsite** top-left, **Winter** / **2026** bottom-right).
-- **Page 5 (`bookPages[4]`)** — `WinterOffsitePage5`: three more winter prints from `2026-winter-offsite` (`img-2026-09` … `11`).
+- **Page 3 (`bookPages[2]`)** — `TwoPolaroids`: _Flip cup tournament_, _Morning work sessions_, _Axe throwing_ (`img-2026-04` … `06`) at top-right / center / bottom-left.
+- **Page 4 (`bookPages[3]`)** — `WinterOffsitePage4`: three winter offsite `<Polaroid>`s from `2026-winter-offsite` (`img-2026-07` … `09`) at top-right, center, and bottom-left; labels in the open corners (**Product** / **Team** / **Offsite** top-left, **Winter** / **2026** bottom-right).
+- **Page 5 (`bookPages[4]`)** — `WinterOffsitePage5`: three more winter prints from `2026-winter-offsite` (`img-2026-10` … `12`).
 - **Page 6 (`bookPages[5]`)** — `NashvilleOffsitePage6`: two Nashville PDE offsite `<Polaroid>`s from `2025-winter-offsite` (`img-2025-01.JPEG`, `img-2025-02`) — _PDE team rooftop photo_, _Team dinner_; `NashvilleOffsitePageLabels` (**Nashville** / **PDE** / **Offsite**, **Winter** / **2025**).
 - **Page 7 (`bookPages[6]`)** — `NashvilleOffsitePage7`: _Predators hockey game_, _Anomia match_, _Head to head Scrabble_ (`img-2025-03` … `05`).
 - **Page 8 (`bookPages[7]`)** — `NashvilleOffsitePage8`: _Insanely hot chicken_, _Scooter gang_, _Beers and jamming_ (`img-2025-06` … `08`).
@@ -333,9 +333,11 @@ When you add a primitive or token, update this section and add it to the design-
 - **Page 13 (`bookPages[12]`)** — `LeadershipOffsitePage13`: _First time in Dumbo_, _Brooklyn Bridge_ (`2023-fall-offsite` `img-2023-10`, `11`); `LeadershipOffsitePageLabels` (**Leadership** / **Offsite**, **Fall** / **2023**).
 - **Page 14 (`bookPages[13]`)** — `LeadershipOffsitePage14`: _Featherball bar_, _Sort of team photo_, _My beloved Essex Pizza_ (`img-2023-12` … `14`); top-right / mid-left / bottom-center.
 - **Page 15 (`bookPages[14]`)** — `AutocampOffsitePage15`: _Gorgeous weather_, _PDE team photo_ (`2023-spring-offsite` `img-2023-01`, `02`); `AutocampOffsitePageLabels` (**Autocamp** / **Cape Cod** / **Offsite**, **Spring** / **2023**).
-- **Page 16 (`bookPages[15]`)** — `AutocampOffsitePage16`: _Team at work_, _BFFs_, _Late night drinks_, _Beer pong origins_ (`img-2023-03` … `06`).
+- **Page 16 (`bookPages[15]`)** — `AutocampOffsitePage16`: _Team at work_, _BFFs_, _Late night drinks_, _Flip cup origins_ (`img-2023-03` … `06`).
 - **Page 17 (`bookPages[16]`)** — `AutocampOffsitePage17`: _Sums up the relationship_, _Morning gym crew_, _Bunch of awesome folks_ (`img-2023-07` … `09`).
-- **Page count (reading UI).** `READING_PAGE_COUNT = bookPages.length + 1` in `constants.ts` — the inside of the back cover is the final numbered page. At `currentPage >= NUM_PAGES` the centered label shows the last spread (e.g. **Pages 18–19** with 17 authored faces; updates automatically).
+- **Page 18 (`bookPages[17]`)** — `NycHolidayOffsitePage18`: _Series B era Vitally_, _122 Rivington St. office_ (`2022-winter-offsite` `img-2022-01`, `02`); `NycHolidayOffsitePageLabels` (**NYC** / **Holiday** / **Offsite**, **Winter** / **2022**).
+- **Page 19 (`bookPages[18]`)** — `NycHolidayOffsitePage19`: _Post shuffleboard beers_, _First NYC pizza ever_, _OG Vitally swag_ (`img-2022-03` … `05`).
+- **Page count (reading UI).** `READING_PAGE_COUNT = bookPages.length + 2` in `constants.ts` — final spread is the last sheet verso (`length + 1`) and the inside of the back cover (`length + 2`). At `currentPage >= NUM_PAGES` the label updates automatically (e.g. **Pages 20–21** with 19 authored faces).
 
 ### 2026-06-03 — Polaroid View cursor: direct tracking + lightbox gate
 

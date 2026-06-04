@@ -147,8 +147,8 @@ export function BookButtons({
           </AnimatePresence>
         </div>
 
-        {/* Centered page label — at back cover shows the last spread (page 16 +
-            inside back cover as page 17). Parent motion.div fades with openness
+        {/* Centered page label — at back cover shows the final verso and inside
+            back cover (e.g. Pages 18–19). Parent motion.div fades with openness
             on close so exit fires at near-zero opacity already. */}
         <AnimatePresence>
           {isReading && (
