@@ -438,6 +438,7 @@ export function Book() {
                 <Page
                   key={i}
                   index={i}
+                  numPages={numPages}
                   openness={smoothOpenness}
                   readingPage={readingPage}
                   front={pages[i * 2] ?? <PageSurface />}
@@ -463,6 +464,8 @@ export function Book() {
             })}
             <Cover
               openness={smoothOpenness}
+              numPages={numPages}
+              isMobile={isMobile}
               closePeelActive={
                 mode === "reading" && currentPage === 0 && hoveredSide === "left" && !isClosing
               }

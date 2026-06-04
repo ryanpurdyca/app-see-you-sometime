@@ -4,7 +4,6 @@ import { animate, motion, useMotionValue, useTransform, type MotionValue } from 
 import { useEffect, type ReactNode } from "react";
 import {
   COVER_OPEN_ANGLE,
-  NUM_PAGES,
   PAGE_BASE_PEEL_LEFT_DEG,
   PAGE_BASE_PEEL_RIGHT_DEG,
   PAGE_FAN_FAR_DEG,
@@ -16,6 +15,8 @@ import {
 
 type Props = {
   index: number;
+  /** Sheet count for fan depth and z-order (must match Book's active page list). */
+  numPages: number;
   openness: MotionValue<number>;
   /**
    * null  → idle fan mode.
@@ -38,6 +39,7 @@ type Props = {
 
 export function Page({
   index,
+  numPages,
   openness,
   readingPage,
   peeled,
@@ -53,7 +55,7 @@ export function Page({
   // PAGE_FAN_NEAR_DEG), monotonic in index so the fan reads in reading order
   // left → right. A mid-book sheet lands near 90° (edge-on) — accepted for an
   // even riffle.
-  const depth = NUM_PAGES > 1 ? index / (NUM_PAGES - 1) : 0;
+  const depth = numPages > 1 ? index / (numPages - 1) : 0;
   const finalAngle = -(PAGE_FAN_FAR_DEG - (PAGE_FAN_FAR_DEG - PAGE_FAN_NEAR_DEG) * depth);
 
   // Pages cascade out behind the cover: page 1 starts spreading first (just
@@ -110,10 +112,10 @@ export function Page({
   if (readingPage !== null) {
     translateZ =
       index >= readingPage
-        ? (NUM_PAGES - (index - readingPage)) * PAGE_Z_STEP
+        ? (numPages - (index - readingPage)) * PAGE_Z_STEP
         : (index + 1) * PAGE_Z_STEP;
   } else {
-    translateZ = (NUM_PAGES - index) * PAGE_Z_STEP;
+    translateZ = (numPages - index) * PAGE_Z_STEP;
   }
 
   return (

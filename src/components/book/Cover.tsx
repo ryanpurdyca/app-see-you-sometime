@@ -15,7 +15,6 @@ import { useBookReadingNav } from "./BookReadingContext";
 import {
   COVER_OPEN_ANGLE,
   COVER_SHEEN_SPRING,
-  NUM_PAGES,
   PAGE_BASE_PEEL_LEFT_DEG,
   PAGE_HOVER_BOOST_DEG,
   PAGE_Z_STEP,
@@ -34,6 +33,10 @@ const coverTitleClass = cn(
 
 type Props = {
   openness: MotionValue<number>;
+  /** Sheet count — cover z must sit above the full stack (see Book). */
+  numPages: number;
+  /** Hides the CoverInside text on mobile where the left page is off-screen. */
+  isMobile?: boolean;
   /** Page 0 only: peel the open cover when the left page is hovered (close affordance). */
   closePeelActive?: boolean;
 };
@@ -46,7 +49,7 @@ type Props = {
  * The cover opens during the first half of the openness range so the inner
  * pages can fan during the second half — see {@link Page} and constants.ts.
  */
-export function Cover({ openness, closePeelActive = false }: Props) {
+export function Cover({ openness, numPages, isMobile = false, closePeelActive = false }: Props) {
   const rotateY = useTransform(openness, [0, 0.55], [0, COVER_OPEN_ANGLE], { clamp: true });
   const hoverPeel = useMotionValue(0);
   const combinedRotY = useTransform(
@@ -61,7 +64,7 @@ export function Cover({ openness, closePeelActive = false }: Props) {
   }, [closePeelActive, hoverPeel]);
 
   // Translate forward so the cover sits above the page stack when closed.
-  const translateZ = (NUM_PAGES + 1) * PAGE_Z_STEP;
+  const translateZ = (numPages + 1) * PAGE_Z_STEP;
 
   // Iridescent sheen that tracks the pointer across the cover face. The cover
   // can't receive its own pointer events (the perspective container sets
@@ -157,7 +160,7 @@ export function Cover({ openness, closePeelActive = false }: Props) {
         sheenBackground={sheenBackground}
         sheenBrightness={sheenBrightness}
       />
-      <CoverInside />
+      <CoverInside hideText={isMobile} />
     </motion.div>
   );
 }
@@ -214,7 +217,7 @@ function CoverFace({ faceRef, sheenBackground, sheenBrightness }: CoverFaceProps
   );
 }
 
-function CoverInside() {
+function CoverInside({ hideText = false }: { hideText?: boolean }) {
   const readingNav = useBookReadingNav();
 
   return (
@@ -231,12 +234,14 @@ function CoverInside() {
       onMouseLeave={readingNav?.coverPageInteractive ? readingNav.onCoverPageLeave : undefined}
       onClick={readingNav?.coverPageInteractive ? readingNav.onCoverPageClick : undefined}
     >
-      <p
-        className="text-ink pointer-events-none px-4 text-center text-2xl leading-snug font-bold"
-        style={coverTextStyle}
-      >
-        Some of the folks who made my time special.
-      </p>
+      {!hideText && (
+        <p
+          className="text-ink pointer-events-none px-4 text-center text-2xl leading-snug font-bold"
+          style={coverTextStyle}
+        >
+          Some of the folks who made my time special.
+        </p>
+      )}
     </div>
   );
 }

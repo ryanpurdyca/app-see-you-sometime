@@ -370,7 +370,8 @@ When you add a primitive or token, update this section and add it to the design-
 - **Problem.** The open spread is ~640px wide; on mobile only the recto is centered in the closed-book footprint, but navigation advanced by **spreads**, so odd faces (versos) were off-screen left and never seen.
 - **Fix.** `bookPagesMobile` in `pages.tsx` interleaves each desktop face with a blank `<PageSurface>` verso, then appends `ThankYouPage` + blank. `Book.tsx` selects `pages = isMobile ? bookPagesMobile : bookPages` and derives `numPages`, `maxReadingPageIndex`, and `insideBackCoverIndex` at runtime (passed to `BookButtons` / `BackCover`). Same open animation and leaf flip; each **Next** shows the next memory on the centered recto.
 - **Polaroid gating on mobile.** `isPolaroidFaceActive`: `bookPageIndex === currentPage` (reading index matches original `bookPages` face index on each recto) or final spread `bookPageIndex === insideBackCoverIndex` on `BackCover`. Reading tap overlays use the centered recto halves (`50vw ± book-width/2`, half-width each).
-- **Desktop unchanged.** `bookPages` + build-time `NUM_PAGES` in `constants.ts` still drive `Page.tsx` / `Cover.tsx` idle fan; only `Book` uses the runtime list.
+- **`numPages` prop on `Page` / `Cover`.** Fan depth, stack `translateZ`, and cover elevation must use `Book`'s runtime sheet count — not build-time `NUM_PAGES` from `constants.ts` — or mobile's extra leaves get negative z and peek beside the closed cover.
+- **Desktop unchanged.** `bookPages` + build-time `NUM_PAGES` in `constants.ts` still drive tests and `Cover.tsx`-unrelated geometry; `Book` passes `numPages` into `Page` / `Cover`.
 
 ## 8. Quality gates
 
