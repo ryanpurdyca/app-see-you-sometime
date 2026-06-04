@@ -1,6 +1,7 @@
 "use client";
 
 import { animate, motion, useMotionValue, useSpring, type MotionValue } from "framer-motion";
+import Image from "next/image";
 import { useEffect, useRef, useState, type HTMLAttributes, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "../cn";
@@ -170,12 +171,14 @@ export function Polaroid({
         )}
 
         <div className="border-rule relative mx-1.5 mt-1.5 h-[108px] w-[140px] overflow-hidden rounded-[3px] border">
-          <img
+          <Image
             ref={imageRef}
             src={image}
             alt={alt}
+            fill
+            sizes="160px"
             className={cn(
-              "absolute inset-0 h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-110",
+              "object-cover transition-transform duration-300 ease-out group-hover:scale-110",
               showViewCursor && "pointer-events-auto cursor-pointer",
             )}
             draggable={false}

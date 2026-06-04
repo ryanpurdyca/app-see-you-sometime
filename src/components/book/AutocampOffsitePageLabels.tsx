@@ -2,7 +2,7 @@
 
 import { SpreadPageLabels } from "./SpreadPageLabels";
 
-const AUTOCAMP_LINES = ["Autocamp", "Cape Cod", "Offsite"] as const;
+const AUTOCAMP_LINES = ["AutoCamp", "Cape Cod", "Offsite"] as const;
 const SPRING_LINES = ["Spring", "2023"] as const;
 
 const TOP_REGION_CLASS =

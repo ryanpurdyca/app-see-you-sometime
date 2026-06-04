@@ -153,8 +153,8 @@ function WinterOffsitePage5() {
           bookPageIndex={WINTER_OFFSITE_PAGE_5_FACE}
           className="absolute top-1/2 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2"
           image={`${WINTER_OFFSITE_IMG}/img-2026-08.jpg`}
-          alt="The brass factory office"
-          caption="The brass factory office"
+          alt="The Brass Factory office"
+          caption="The Brass Factory office"
           rotation={-1}
           tape={3}
           tapeRotation={1}
@@ -280,8 +280,8 @@ function NashvilleOffsitePage8() {
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_8_FACE}
           className="absolute bottom-2 left-2 z-10"
           image={`${NASHVILLE_OFFSITE_IMG}/img-2025-05.jpg`}
-          alt="Head to head Scrabble"
-          caption="Head to head Scrabble"
+          alt="Head-to-head Scrabble"
+          caption="Head-to-head Scrabble"
           rotation={2}
           tape={5}
           tapeRotation={1}
@@ -364,8 +364,8 @@ function NashvilleOffsitePage10() {
           bookPageIndex={NASHVILLE_OFFSITE_PAGE_10_FACE}
           className="absolute top-[61%] right-8 z-30 -translate-y-[42%]"
           image={`${NASHVILLE_OFFSITE_IMG}/img-2025-11.jpg`}
-          alt="First ever honky tonk"
-          caption="First ever honky tonk"
+          alt="First ever honky-tonk"
+          caption="First ever honky-tonk"
           rotation={2}
           tape={4}
           tapeRotation={1}

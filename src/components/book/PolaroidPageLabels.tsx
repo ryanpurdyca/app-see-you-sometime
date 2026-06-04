@@ -3,7 +3,7 @@
 import { useBookReadingNav } from "./BookReadingContext";
 import { SpreadPageLabels } from "./SpreadPageLabels";
 
-const AUTOCAMP_LINES = ["Autocamp", "Catskills", "Offsite"] as const;
+const AUTOCAMP_LINES = ["AutoCamp", "Catskills", "Offsite"] as const;
 const SPRING_LINES = ["Spring", "2026"] as const;
 
 /** Autocamp / Catskills / Offsite + Spring 2026 labels on the polaroid preview spread (bookPages[1]). */

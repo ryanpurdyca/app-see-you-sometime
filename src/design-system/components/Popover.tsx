@@ -8,19 +8,6 @@ const POPOVER_TRANSITION = { duration: 0.22, ease: [0.22, 0.61, 0.36, 1] as cons
 /** Extra Y (px) when hidden — slides up into place on show, down on hide. */
 const SLIDE_OFFSET_PX = 6;
 
-function BookmarkIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden
-      viewBox="0 0 10 16"
-      className={cn("h-4 w-[10px] shrink-0", className)}
-      fill="currentColor"
-    >
-      <path d="M0 0h10v15Q10 16 9 16L5 12L1 16Q0 16 0 15V0z" />
-    </svg>
-  );
-}
-
 type Props = {
   /** Center X in the positioning parent's coordinate space (px). */
   x: number;
@@ -74,11 +61,10 @@ export function Popover({
     >
       {title ? (
         <>
-          <div className="border-highlight-border bg-highlight-surface relative border-b pr-2 pb-1.5 pl-2">
+          <div className="border-highlight-border bg-highlight-surface border-b px-2 pb-1.5">
             <p className="text-highlight-ink pt-1.5 text-[10px] leading-none font-medium">
               {title}
             </p>
-            <BookmarkIcon className="text-highlight-ink absolute top-0 right-3" />
           </div>
           <div className="px-2 py-1.5">{children}</div>
         </>
