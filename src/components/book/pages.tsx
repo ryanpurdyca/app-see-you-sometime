@@ -651,9 +651,9 @@ function AutocampOffsitePage17() {
         <BookPolaroid
           bookPageIndex={AUTOCAMP_OFFSITE_PAGE_17_FACE}
           className="absolute top-1 left-1 z-40"
-          image={`${SPRING_2023_OFFSITE_IMG}/img-2023-03.JPG`}
+          image={`${SPRING_2023_OFFSITE_IMG}/img-2023-03.png`}
           alt="Team at work"
-          caption="Team at work"
+          caption="The dynamic duo"
           rotation={3}
           tape={2}
           tapeRotation={2}

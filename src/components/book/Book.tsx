@@ -120,23 +120,34 @@ export function Book() {
     };
   }, [openness, isMobile]);
 
-  const applySpreadLabelState = useCallback((index: number, bumpKeys: boolean) => {
-    setPolaroidPreviewLabelsPlay(index === 1);
-    setWinterOffsiteLabelsPlay(index === 2);
-    setNashvilleOffsiteLabelsPlay(index === 3);
-    setSummerOffsiteLabelsPlay(index === 5);
-    if (!bumpKeys) return;
-    if (index === 1) setPolaroidPreviewLabelsKey((k) => k + 1);
-    else if (index === 2) setWinterOffsiteLabelsKey((k) => k + 1);
-    else if (index === 3) setNashvilleOffsiteLabelsKey((k) => k + 1);
-    else if (index === 5) setSummerOffsiteLabelsKey((k) => k + 1);
-  }, []);
+  const applySpreadLabelState = useCallback(
+    (index: number, options: { bumpKeys?: boolean; enableReveal?: boolean }) => {
+      const { bumpKeys = false, enableReveal = false } = options;
+      if (!enableReveal) {
+        setPolaroidPreviewLabelsPlay(false);
+        setWinterOffsiteLabelsPlay(false);
+        setNashvilleOffsiteLabelsPlay(false);
+        setSummerOffsiteLabelsPlay(false);
+        return;
+      }
+      setPolaroidPreviewLabelsPlay(index === 1);
+      setWinterOffsiteLabelsPlay(index === 2);
+      setNashvilleOffsiteLabelsPlay(index === 3);
+      setSummerOffsiteLabelsPlay(index === 5);
+      if (!bumpKeys) return;
+      if (index === 1) setPolaroidPreviewLabelsKey((k) => k + 1);
+      else if (index === 2) setWinterOffsiteLabelsKey((k) => k + 1);
+      else if (index === 3) setNashvilleOffsiteLabelsKey((k) => k + 1);
+      else if (index === 5) setSummerOffsiteLabelsKey((k) => k + 1);
+    },
+    [],
+  );
 
   const goToReadingPageIndex = useCallback(
-    (target: number, options?: { bumpLabelKeys?: boolean }) => {
+    (target: number, options?: { enableLabelReveal?: boolean }) => {
       const to = Math.max(0, Math.min(target, maxReadingPageIndex));
       if (to === currentPageRef.current) return;
-      applySpreadLabelState(to, options?.bumpLabelKeys ?? false);
+      applySpreadLabelState(to, { enableReveal: options?.enableLabelReveal ?? false });
       setCurrentPageSync(to);
     },
     [applySpreadLabelState, maxReadingPageIndex],
@@ -144,7 +155,7 @@ export function Book() {
 
   const goToDisplayPage = useCallback(
     (displayPage: number) => {
-      goToReadingPageIndex(displayPageToReadingIndex(displayPage));
+      goToReadingPageIndex(displayPageToReadingIndex(displayPage), { enableLabelReveal: false });
     },
     [goToReadingPageIndex],
   );
@@ -153,13 +164,13 @@ export function Book() {
     const from = currentPageRef.current;
     const to = Math.min(from + 1, maxReadingPageIndex);
     if (to === from) return;
-    applySpreadLabelState(to, true);
+    applySpreadLabelState(to, { bumpKeys: true, enableReveal: true });
     setCurrentPageSync(to);
   }, [applySpreadLabelState, maxReadingPageIndex]);
 
   const goToPrevPage = useCallback(() => {
     const to = Math.max(currentPageRef.current - 1, 0);
-    applySpreadLabelState(to, false);
+    applySpreadLabelState(to, { enableReveal: false });
     setCurrentPageSync(to);
   }, [applySpreadLabelState]);
 
