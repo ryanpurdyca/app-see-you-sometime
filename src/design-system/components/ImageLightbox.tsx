@@ -1,10 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "../cn";
 import { HandwrittenText } from "./HandwrittenText";
+
+const MotionImage = motion.create(Image);
 
 const EASE = [0.22, 0.61, 0.36, 1] as const;
 const SCRIM_TRANSITION = { duration: 0.28, ease: EASE };
@@ -143,11 +146,15 @@ export function ImageLightbox({ open, onClose, image, alt = "", caption, classNa
                   </svg>
                 </button>
               </motion.div>
-              <motion.img
+              <MotionImage
                 variants={imageVariants}
                 src={image}
                 alt={alt}
+                width={0}
+                height={0}
+                sizes="(max-width: 600px) 90vw, 560px"
                 className="block h-auto max-h-[min(72vh,520px)] w-auto max-w-[min(88vw,480px)] rounded-md object-contain shadow-[0_8px_32px_var(--color-paper-shadow)]"
+                style={{ width: "auto", height: "auto" }}
                 draggable={false}
               />
             </div>
