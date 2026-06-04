@@ -48,6 +48,10 @@ export const people: Person[] = [
     "A wonderful person and an exceptional mom. The kind of parent we aspire to be, that very few are, and someone who makes us genuinely excited about that future.",
   ),
   person(
+    "img-curtis.png",
+    "We're real-life friends so there's a lot I can say, but our Nashville honky tonk bar crawl was one of my favorite offsite memories ever.",
+  ),
+  person(
     "img-daniel.jpeg",
     "Balto, and the entire backstory that created your passion for a better system.",
   ),
