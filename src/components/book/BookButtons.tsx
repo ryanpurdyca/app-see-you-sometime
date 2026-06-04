@@ -131,7 +131,7 @@ export function BookButtons({
           className="absolute"
           style={{
             left: MOBILE_BUTTON_ROW_LEFT,
-            top: "calc(50vh + var(--book-height) / 2 + 16px)",
+            top: "calc(50vh + var(--book-height) / 2 + 48px)",
             width: MOBILE_BUTTON_ROW_WIDTH,
           }}
         >
@@ -146,7 +146,7 @@ export function BookButtons({
           className="absolute flex items-center justify-between"
           style={{
             left: MOBILE_BUTTON_ROW_LEFT,
-            top: "calc(50vh + var(--book-height) / 2 + 16px)",
+            top: "calc(50vh + var(--book-height) / 2 + 48px)",
             width: MOBILE_BUTTON_ROW_WIDTH,
           }}
         >
