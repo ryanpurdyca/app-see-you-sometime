@@ -20,6 +20,33 @@ const socialLinks = [
   },
 ] as const;
 
+const MOBILE_CHROME_ABOVE_BOOK_TOP = "calc(50vh - var(--book-height) / 2 - 48px)";
+
+function SocialLinks() {
+  return (
+    <>
+      {socialLinks.map(({ href, label, icon }) => (
+        <a
+          key={label}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={label}
+          className="group relative opacity-80 hover:opacity-100 focus-visible:opacity-100"
+        >
+          <img src={icon} alt="" width={20} height={20} className="size-5" />
+          <span
+            role="tooltip"
+            className="bg-ink pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 rounded-sm px-2 py-1 font-mono text-xs whitespace-nowrap text-white opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+          >
+            {label}
+          </span>
+        </a>
+      ))}
+    </>
+  );
+}
+
 export default function HomePage() {
   return (
     <Stage>
@@ -64,28 +91,21 @@ export default function HomePage() {
             "repeating-linear-gradient(180deg, var(--color-rule) 0, var(--color-rule) 6px, transparent 6px, transparent 13px)",
         }}
       />
-      <span className="text-ink-subtle pointer-events-none absolute bottom-4 left-[calc(50vw-var(--book-width)/2)] font-mono text-sm md:bottom-[44px] md:left-[52px]">
+      {/* Mobile: author + socials in one row above the closed-book footprint */}
+      <div
+        className="absolute left-[calc(50vw-var(--book-width)/2)] flex w-[var(--book-width)] items-center justify-between md:hidden"
+        style={{ top: MOBILE_CHROME_ABOVE_BOOK_TOP }}
+      >
+        <span className="text-ink-subtle font-mono text-sm">Ryan P.</span>
+        <div className="flex items-center gap-2">
+          <SocialLinks />
+        </div>
+      </div>
+      <span className="text-ink-subtle pointer-events-none absolute bottom-4 left-[calc(50vw-var(--book-width)/2)] hidden font-mono text-sm md:bottom-[44px] md:left-[52px] md:block">
         Ryan P.
       </span>
-      <div className="absolute right-[calc(50vw-var(--book-width)/2)] bottom-4 flex items-center gap-2 md:right-[52px] md:bottom-[44px]">
-        {socialLinks.map(({ href, label, icon }) => (
-          <a
-            key={label}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={label}
-            className="group relative opacity-80 hover:opacity-100 focus-visible:opacity-100"
-          >
-            <img src={icon} alt="" width={20} height={20} className="size-5" />
-            <span
-              role="tooltip"
-              className="bg-ink pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 rounded-sm px-2 py-1 font-mono text-xs whitespace-nowrap text-white opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
-            >
-              {label}
-            </span>
-          </a>
-        ))}
+      <div className="absolute right-[calc(50vw-var(--book-width)/2)] bottom-4 hidden items-center gap-2 md:right-[52px] md:bottom-[44px] md:flex">
+        <SocialLinks />
       </div>
     </Stage>
   );
