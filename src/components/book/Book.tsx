@@ -5,6 +5,7 @@ import { animate, motion, useMotionValue, useSpring, useTransform } from "framer
 import { Cover } from "./Cover";
 import { Page } from "./Page";
 import { BackCover } from "./BackCover";
+import { BackCoverInsidePage } from "./BackCoverInsidePage";
 import { BookButtons, type BookMode } from "./BookButtons";
 import { CursorFollower } from "./CursorFollower";
 import { BookReadingProvider } from "./BookReadingContext";
@@ -13,6 +14,7 @@ import { bookPages } from "./pages";
 import {
   BOOK_HEIGHT_PX,
   BOOK_WIDTH_PX,
+  MAX_READING_PAGE_INDEX,
   NUM_PAGES,
   OPEN_CENTRE_OFFSET,
   OPENNESS_SPRING,
@@ -48,6 +50,13 @@ export function Book() {
   const [isClosing, setIsClosing] = useState(false);
   const [polaroidPreviewLabelsPlay, setPolaroidPreviewLabelsPlay] = useState(false);
   const [polaroidPreviewLabelsKey, setPolaroidPreviewLabelsKey] = useState(0);
+  const [winterOffsiteLabelsPlay, setWinterOffsiteLabelsPlay] = useState(false);
+  const [winterOffsiteLabelsKey, setWinterOffsiteLabelsKey] = useState(0);
+  const [nashvilleOffsiteLabelsPlay, setNashvilleOffsiteLabelsPlay] = useState(false);
+  const [nashvilleOffsiteLabelsKey, setNashvilleOffsiteLabelsKey] = useState(0);
+  const [summerOffsiteLabelsPlay, setSummerOffsiteLabelsPlay] = useState(false);
+  const [summerOffsiteLabelsKey, setSummerOffsiteLabelsKey] = useState(0);
+  const [polaroidLightboxOpen, setPolaroidLightboxOpen] = useState(false);
 
   // Refs mirror state so event handlers registered once always see current values.
   const modeRef = useRef<BookMode>("idle");
@@ -90,18 +99,42 @@ export function Book() {
 
   const goToNextPage = useCallback(() => {
     const from = currentPageRef.current;
-    const to = Math.min(from + 1, NUM_PAGES);
+    const to = Math.min(from + 1, MAX_READING_PAGE_INDEX);
     if (from === 0 && to === 1) {
       setPolaroidPreviewLabelsPlay(true);
       setPolaroidPreviewLabelsKey((k) => k + 1);
+      setWinterOffsiteLabelsPlay(false);
+    } else if (from === 1 && to === 2) {
+      setPolaroidPreviewLabelsPlay(false);
+      setWinterOffsiteLabelsPlay(true);
+      setWinterOffsiteLabelsKey((k) => k + 1);
+      setNashvilleOffsiteLabelsPlay(false);
+    } else if (from === 2 && to === 3) {
+      setPolaroidPreviewLabelsPlay(false);
+      setWinterOffsiteLabelsPlay(false);
+      setNashvilleOffsiteLabelsPlay(true);
+      setNashvilleOffsiteLabelsKey((k) => k + 1);
+      setSummerOffsiteLabelsPlay(false);
+    } else if (from === 4 && to === 5) {
+      setPolaroidPreviewLabelsPlay(false);
+      setWinterOffsiteLabelsPlay(false);
+      setNashvilleOffsiteLabelsPlay(false);
+      setSummerOffsiteLabelsPlay(true);
+      setSummerOffsiteLabelsKey((k) => k + 1);
     } else {
       setPolaroidPreviewLabelsPlay(false);
+      setWinterOffsiteLabelsPlay(false);
+      setNashvilleOffsiteLabelsPlay(false);
+      setSummerOffsiteLabelsPlay(false);
     }
     setCurrentPageSync(to);
   }, []);
 
   const goToPrevPage = useCallback(() => {
     setPolaroidPreviewLabelsPlay(false);
+    setWinterOffsiteLabelsPlay(false);
+    setNashvilleOffsiteLabelsPlay(false);
+    setSummerOffsiteLabelsPlay(false);
     setCurrentPageSync(Math.max(currentPageRef.current - 1, 0));
   }, []);
 
@@ -111,6 +144,10 @@ export function Book() {
     animate(smoothOpenness, 1, { type: "spring", stiffness: 400, damping: 40 });
     setCurrentPageSync(0);
     setPolaroidPreviewLabelsPlay(false);
+    setWinterOffsiteLabelsPlay(false);
+    setNashvilleOffsiteLabelsPlay(false);
+    setSummerOffsiteLabelsPlay(false);
+    setPolaroidLightboxOpen(false);
     setIsClosing(false);
     setHoveringBook(false);
     setModeSync("reading");
@@ -138,6 +175,10 @@ export function Book() {
 
     const finishClose = () => {
       setPolaroidPreviewLabelsPlay(false);
+      setWinterOffsiteLabelsPlay(false);
+      setNashvilleOffsiteLabelsPlay(false);
+      setSummerOffsiteLabelsPlay(false);
+      setPolaroidLightboxOpen(false);
       setModeSync("idle");
       setIsClosing(false);
     };
@@ -244,13 +285,13 @@ export function Book() {
           } else {
             handleCloseRef.current();
           }
-        } else if (currentPageRef.current < NUM_PAGES) {
+        } else if (currentPageRef.current < MAX_READING_PAGE_INDEX) {
           goToNextPage();
         }
       },
       onRightPagePointer: () => setHoveredSide("right"),
       onRightPageClick: () => {
-        if (currentPageRef.current < NUM_PAGES) {
+        if (currentPageRef.current < MAX_READING_PAGE_INDEX) {
           goToNextPage();
         }
       },
@@ -268,12 +309,30 @@ export function Book() {
       polaroidPreviewLabelsAnimate:
         mode === "reading" && currentPage === 1 && polaroidPreviewLabelsPlay,
       polaroidPreviewLabelsKey,
+      winterOffsiteLabelsAnimate:
+        mode === "reading" && currentPage === 2 && winterOffsiteLabelsPlay,
+      winterOffsiteLabelsKey,
+      nashvilleOffsiteLabelsAnimate:
+        mode === "reading" && currentPage === 3 && nashvilleOffsiteLabelsPlay,
+      nashvilleOffsiteLabelsKey,
+      summerOffsiteLabelsAnimate:
+        mode === "reading" && currentPage === 5 && summerOffsiteLabelsPlay,
+      summerOffsiteLabelsKey,
+      polaroidLightboxOpen,
+      setPolaroidLightboxOpen,
     }),
     [
       mode,
       currentPage,
       polaroidPreviewLabelsPlay,
       polaroidPreviewLabelsKey,
+      winterOffsiteLabelsPlay,
+      winterOffsiteLabelsKey,
+      nashvilleOffsiteLabelsPlay,
+      nashvilleOffsiteLabelsKey,
+      summerOffsiteLabelsPlay,
+      summerOffsiteLabelsKey,
+      polaroidLightboxOpen,
       goToNextPage,
       goToPrevPage,
     ],
@@ -307,7 +366,7 @@ export function Book() {
                 width: "var(--book-width)",
                 height: "var(--book-height)",
               }}
-              onClick={currentPage < NUM_PAGES ? handleNext : undefined}
+              onClick={currentPage < MAX_READING_PAGE_INDEX ? handleNext : undefined}
               onMouseEnter={() => setHoveredSide("right")}
               onMouseLeave={() => setHoveredSide(null)}
             />
@@ -335,29 +394,35 @@ export function Book() {
             }}
           >
             <BackCover openness={smoothOpenness} />
-            {Array.from({ length: NUM_PAGES }, (_, i) => (
-              <Page
-                key={i}
-                index={i}
-                openness={smoothOpenness}
-                readingPage={readingPage}
-                front={bookPages[i * 2] ?? <PageSurface />}
-                back={bookPages[i * 2 + 1] ?? <PageSurface />}
-                peeled={
-                  !isClosing &&
-                  readingPage !== null &&
-                  ((i === readingPage - 1 && readingPage > 0) || i === readingPage)
-                }
-                subPeeled={
-                  !isClosing && readingPage !== null && i === readingPage + 1 && i < NUM_PAGES
-                }
-                hovered={
-                  readingPage !== null &&
-                  ((i === readingPage - 1 && readingPage > 0 && hoveredSide === "left") ||
-                    (i === readingPage && hoveredSide === "right"))
-                }
-              />
-            ))}
+            {Array.from({ length: NUM_PAGES }, (_, i) => {
+              const isOddTailSheet = i === NUM_PAGES - 1 && bookPages.length % 2 === 1;
+              return (
+                <Page
+                  key={i}
+                  index={i}
+                  openness={smoothOpenness}
+                  readingPage={readingPage}
+                  front={bookPages[i * 2] ?? <PageSurface />}
+                  back={
+                    bookPages[i * 2 + 1] ??
+                    (isOddTailSheet ? <BackCoverInsidePage /> : <PageSurface />)
+                  }
+                  peeled={
+                    !isClosing &&
+                    readingPage !== null &&
+                    ((i === readingPage - 1 && readingPage > 0) || i === readingPage)
+                  }
+                  subPeeled={
+                    !isClosing && readingPage !== null && i === readingPage + 1 && i < NUM_PAGES
+                  }
+                  hovered={
+                    readingPage !== null &&
+                    ((i === readingPage - 1 && readingPage > 0 && hoveredSide === "left") ||
+                      (i === readingPage && hoveredSide === "right"))
+                  }
+                />
+              );
+            })}
             <Cover
               openness={smoothOpenness}
               closePeelActive={

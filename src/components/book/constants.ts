@@ -16,6 +16,32 @@ import { bookPages } from "./pages";
  */
 export const NUM_PAGES = Math.ceil(bookPages.length / 2);
 
+/**
+ * Display page numbers in reading mode:
+ * - Page 1: inside front cover (not in `bookPages`)
+ * - Pages 2…`bookPages.length + 1`: `bookPages[0]` … `bookPages[length − 1]`
+ * - Page `bookPages.length + 2`: last sheet verso (`BackCoverInsidePage`)
+ * - Page `bookPages.length + 3`: inside back cover
+ *
+ * Spread labels use non-overlapping pairs: `currentPage` 0 → Pages 1–2, …
+ */
+export const INSIDE_FRONT_COVER_PAGE = 1;
+export const BACK_VERSE_PAGE = bookPages.length + 2;
+export const READING_PAGE_COUNT = bookPages.length + 3;
+
+/** Highest `currentPage` index — final spread shows pages 21–22 (verso + back). */
+export const MAX_READING_PAGE_INDEX = NUM_PAGES;
+
+/** Display page number for a `bookPages` face index. */
+export function faceDisplayPage(faceIndex: number): number {
+  return faceIndex + 2;
+}
+
+/** Footer spread label for reading `currentPage` (0-based). */
+export function spreadPageRange(currentPage: number): { left: number; right: number } {
+  return { left: currentPage * 2 + 1, right: currentPage * 2 + 2 };
+}
+
 /** Maximum opening angle for the front cover (degrees, negative = swings left). */
 export const COVER_OPEN_ANGLE = -174;
 
