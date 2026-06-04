@@ -29,6 +29,12 @@ export const INSIDE_FRONT_COVER_PAGE = 1;
 export const BACK_VERSE_PAGE = bookPages.length + 2;
 export const READING_PAGE_COUNT = bookPages.length + 3;
 
+/**
+ * Sentinel `bookPageIndex` for the inside back cover polaroid (display page 22).
+ * Not an entry in `bookPages`; active on the final reading spread only.
+ */
+export const INSIDE_BACK_COVER_BOOK_PAGE_INDEX = bookPages.length;
+
 /** Highest `currentPage` index — final spread shows pages 21–22 (verso + back). */
 export const MAX_READING_PAGE_INDEX = NUM_PAGES;
 

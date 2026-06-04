@@ -1,5 +1,11 @@
+"use client";
+
 import { motion, useTransform, type MotionValue } from "framer-motion";
 import { cn } from "@/design-system";
+import { BookPolaroid } from "./BookPolaroid";
+import { INSIDE_BACK_COVER_BOOK_PAGE_INDEX } from "./constants";
+
+const BYE_POLAROID_IMG = "/images/images/Portrait/portrait.png";
 
 type Props = {
   openness: MotionValue<number>;
@@ -29,6 +35,19 @@ export function BackCover({ openness }: Props) {
         transform: "translateZ(0px)",
         opacity,
       }}
-    />
+    >
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-6">
+        <BookPolaroid
+          bookPageIndex={INSIDE_BACK_COVER_BOOK_PAGE_INDEX}
+          className="z-10"
+          image={BYE_POLAROID_IMG}
+          alt="Portrait"
+          caption="Until next time"
+          rotation={-2}
+          tape={2}
+          tapeRotation={1}
+        />
+      </div>
+    </motion.div>
   );
 }

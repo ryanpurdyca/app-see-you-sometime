@@ -89,12 +89,6 @@ export function BookButtons({
       {isReading && (
         <>
           <motion.span
-            className="text-ink-subtle pointer-events-none absolute bottom-[44px] left-[52px] font-mono text-sm"
-            style={{ opacity: labelOpacity }}
-          >
-            Ryan P.
-          </motion.span>
-          <motion.span
             className="text-ink-subtle pointer-events-none absolute font-mono text-sm"
             style={{
               opacity: labelOpacity,

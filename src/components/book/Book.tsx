@@ -15,6 +15,7 @@ import {
   BOOK_HEIGHT_PX,
   BOOK_WIDTH_PX,
   displayPageToReadingIndex,
+  INSIDE_BACK_COVER_BOOK_PAGE_INDEX,
   MAX_READING_PAGE_INDEX,
   NUM_PAGES,
   OPEN_CENTRE_OFFSET,
@@ -307,7 +308,10 @@ export function Book() {
         if (mode !== "reading") return false;
         const rightFace = currentPage * 2;
         const leftFace = currentPage > 0 ? currentPage * 2 - 1 : -1;
-        return bookPageIndex === rightFace || bookPageIndex === leftFace;
+        const insideBackActive =
+          currentPage === MAX_READING_PAGE_INDEX &&
+          bookPageIndex === INSIDE_BACK_COVER_BOOK_PAGE_INDEX;
+        return bookPageIndex === rightFace || bookPageIndex === leftFace || insideBackActive;
       },
       polaroidPreviewLabelsAnimate:
         mode === "reading" && currentPage === 1 && polaroidPreviewLabelsPlay,
