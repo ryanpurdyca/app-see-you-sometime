@@ -99,7 +99,8 @@ src/
       PeopleCloud.tsx        Page-1 collision-packed coworker portrait bubbles
       people.ts              Portrait list + display names (`public/images/people/`)
       BackCover.tsx          Static back cover
-      BookButtons.tsx        Fade-in Open|Next/Close/Back button pair
+      BookButtons.tsx        Fade-in Open|Next/Close/Back button pair + `PageStepper`
+      PageStepper.tsx        Reading-mode hover ticks (one per display page)
       CursorFollower.tsx     Custom cursor pill ("Open"); fades in near fully-open
       LeftPageText.tsx       Handwritten text behind the open cover (DOM-layered)
       constants.ts           All tunable layout/motion constants (incl. `PEOPLE_CLOUD_*`)
@@ -207,17 +208,18 @@ Append new entries at the bottom. Use the format: `### YYYY-MM-DD — Title`.
 
 Historical entries below remain for context; **this list is the source of truth** for the design-system branch:
 
-| Topic                | Current behavior                                                                                                                                                           |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Book piece borders   | `border-ink` on Cover, Page, BackCover (not `border-accent`)                                                                                                               |
-| Cover face           | Black `bg-cover`, outer `border-ink`, white inset `border-cover-border-inner`, corner Vitally SVGs, centred Caveat title “Memories from / my time at Vitally” (`text-3xl`) |
-| Cover inside         | `CoverInside`: `bg-surface-raised`, centred Caveat `text-ink` — “Some of the folks who made my time special.” (visible on the left when open to page 1)                    |
-| Cover fonts          | Caveat via `--font-caveat` inline style — **not** Instrument Serif                                                                                                         |
-| Page chrome          | `page.tsx`: 28px gutter, dotted rules at `top/bottom/left/right-7`, “Stay in touch” + social links at `bottom: 44px`, `right: 52px`                                        |
-| Button row           | `top: calc(50vh + var(--book-height) / 2 + 52px)`                                                                                                                          |
-| Page label (reading) | `text-ink-subtle` mono between buttons — not accent blue                                                                                                                   |
-| LeftPageText font    | `--font-caveat` inline style                                                                                                                                               |
-| Static assets        | `public/images/stickers/vitally-01.svg`, `vitally-02.svg` on cover only                                                                                                    |
+| Topic                  | Current behavior                                                                                                                                                                    |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Book piece borders     | `border-ink` on Cover, Page, BackCover (not `border-accent`)                                                                                                                        |
+| Cover face             | Black `bg-cover`, outer `border-ink`, white inset `border-cover-border-inner`, corner Vitally SVGs, centred Caveat title “Memories from / my time at Vitally” (`text-3xl`)          |
+| Cover inside           | `CoverInside`: `bg-surface-raised`, centred Caveat `text-ink` — “Some of the folks who made my time special.” (visible on the left when open to page 1)                             |
+| Cover fonts            | Caveat via `--font-caveat` inline style — **not** Instrument Serif                                                                                                                  |
+| Page chrome            | `page.tsx`: 28px gutter, dotted rules at `top/bottom/left/right-7`, “Stay in touch” + social links at `bottom: 44px`, `right: 52px`                                                 |
+| Button row             | `top: calc(50vh + var(--book-height) / 2 + 52px)`                                                                                                                                   |
+| Page label (reading)   | `text-ink-subtle` mono centered above book (`top: calc(50vh - var(--book-height) / 2 - 56px)`, same row as metadata)                                                                |
+| Page stepper (reading) | `PageStepper` centered between bottom buttons — 22 ticks (`READING_PAGE_COUNT`), 4×12px, 8px gap, `bg-stepper` / `bg-stepper-active`; hover/focus navigates via `onGoToDisplayPage` |
+| LeftPageText font      | `--font-caveat` inline style                                                                                                                                                        |
+| Static assets          | `public/images/stickers/vitally-01.svg`, `vitally-02.svg` on cover only                                                                                                             |
 
 ### 2026-05-28 — Customizable pages (two-faced leaves + content list)
 
@@ -277,7 +279,7 @@ Historical entries below remain for context; **this list is the source of truth*
 
 **Tokens** (`src/design-system/tokens.css`):
 
-- Colors: `canvas`, `surface`, `surface-raised`, `ink`, `ink-muted`, `ink-subtle`, `accent`, `accent-strong`, `accent-soft`, `paper`, `paper-edge`, `cover` (black), `cover-border-inner` (white), `cover-ink` (white), `rule` (`#cfccc6` dotted frame), `gutter` (frame fill), `highlight-ink`, `highlight-surface`, `highlight-border` (popover title bar).
+- Colors: `canvas`, `surface`, `surface-raised`, `ink`, `ink-muted`, `ink-subtle`, `accent`, `accent-strong`, `accent-soft`, `paper`, `paper-edge`, `cover` (black), `cover-border-inner` (white), `cover-ink` (white), `rule` (`#cfccc6` dotted frame), `gutter` (frame fill), `stepper` / `stepper-active` (reading-mode page ticks between bottom buttons), `highlight-ink`, `highlight-surface`, `highlight-border` (popover title bar).
 - Radii: `radius-xs`, `-sm`, `-md`, `-lg`.
 - Book geometry: `--book-width`, `--book-height`, `--book-spine`.
 - Motion: `--ease-out-soft`, `--ease-page`, `--duration-fast|base|slow`.
@@ -330,6 +332,10 @@ When you add a primitive or token, update this section and add it to the design-
 - **Display pages 16–18 (`bookPages[14]`–`[16]`)** — `AutocampOffsitePage16` … `AutocampOffsitePage18`; `AutocampOffsitePageLabels` on page 16.
 - **Display pages 19–20 (`bookPages[17]`–`[18]`)** — `NycHolidayOffsitePage19` / `NycHolidayOffsitePage20`; `NycHolidayOffsitePageLabels` on page 19. Page **21** = last-sheet verso; page **22** = inside back cover.
 - **Page count (reading UI).** Page **1** = inside front cover; `bookPages[i]` = page **`i + 2`**; page **`length + 2`** = last-sheet verso (`BackCoverInsidePage`); page **`length + 3`** = inside back cover (`READING_PAGE_COUNT`). Spreads **Pages 1–2** … **21–22** (final spread = verso + back). `MAX_READING_PAGE_INDEX = NUM_PAGES`.
+
+### 2026-06-03 — Reading-mode page stepper between bottom buttons
+
+- **`PageStepper`** (`src/components/book/PageStepper.tsx`) — one 4×12px rounded tick per display page (`READING_PAGE_COUNT`, currently 22), 8px gap, tokens `stepper` / `stepper-active`. Centered in the button row while reading; `mouseenter` (and focus/click for keyboard) calls `goToDisplayPage` → `displayPageToReadingIndex`. Both ticks on the current spread highlight. Stepper jumps do not re-bump spread label animation keys (Next/Back still do).
 
 ### 2026-06-03 — Polaroid View cursor: direct tracking + lightbox gate
 

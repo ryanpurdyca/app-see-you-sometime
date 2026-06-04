@@ -14,6 +14,7 @@ import { bookPages } from "./pages";
 import {
   BOOK_HEIGHT_PX,
   BOOK_WIDTH_PX,
+  displayPageToReadingIndex,
   MAX_READING_PAGE_INDEX,
   NUM_PAGES,
   OPEN_CENTRE_OFFSET,
@@ -97,46 +98,48 @@ export function Book() {
     };
   }, [openness]);
 
+  const applySpreadLabelState = useCallback((index: number, bumpKeys: boolean) => {
+    setPolaroidPreviewLabelsPlay(index === 1);
+    setWinterOffsiteLabelsPlay(index === 2);
+    setNashvilleOffsiteLabelsPlay(index === 3);
+    setSummerOffsiteLabelsPlay(index === 5);
+    if (!bumpKeys) return;
+    if (index === 1) setPolaroidPreviewLabelsKey((k) => k + 1);
+    else if (index === 2) setWinterOffsiteLabelsKey((k) => k + 1);
+    else if (index === 3) setNashvilleOffsiteLabelsKey((k) => k + 1);
+    else if (index === 5) setSummerOffsiteLabelsKey((k) => k + 1);
+  }, []);
+
+  const goToReadingPageIndex = useCallback(
+    (target: number, options?: { bumpLabelKeys?: boolean }) => {
+      const to = Math.max(0, Math.min(target, MAX_READING_PAGE_INDEX));
+      if (to === currentPageRef.current) return;
+      applySpreadLabelState(to, options?.bumpLabelKeys ?? false);
+      setCurrentPageSync(to);
+    },
+    [applySpreadLabelState],
+  );
+
+  const goToDisplayPage = useCallback(
+    (displayPage: number) => {
+      goToReadingPageIndex(displayPageToReadingIndex(displayPage));
+    },
+    [goToReadingPageIndex],
+  );
+
   const goToNextPage = useCallback(() => {
     const from = currentPageRef.current;
     const to = Math.min(from + 1, MAX_READING_PAGE_INDEX);
-    if (from === 0 && to === 1) {
-      setPolaroidPreviewLabelsPlay(true);
-      setPolaroidPreviewLabelsKey((k) => k + 1);
-      setWinterOffsiteLabelsPlay(false);
-    } else if (from === 1 && to === 2) {
-      setPolaroidPreviewLabelsPlay(false);
-      setWinterOffsiteLabelsPlay(true);
-      setWinterOffsiteLabelsKey((k) => k + 1);
-      setNashvilleOffsiteLabelsPlay(false);
-    } else if (from === 2 && to === 3) {
-      setPolaroidPreviewLabelsPlay(false);
-      setWinterOffsiteLabelsPlay(false);
-      setNashvilleOffsiteLabelsPlay(true);
-      setNashvilleOffsiteLabelsKey((k) => k + 1);
-      setSummerOffsiteLabelsPlay(false);
-    } else if (from === 4 && to === 5) {
-      setPolaroidPreviewLabelsPlay(false);
-      setWinterOffsiteLabelsPlay(false);
-      setNashvilleOffsiteLabelsPlay(false);
-      setSummerOffsiteLabelsPlay(true);
-      setSummerOffsiteLabelsKey((k) => k + 1);
-    } else {
-      setPolaroidPreviewLabelsPlay(false);
-      setWinterOffsiteLabelsPlay(false);
-      setNashvilleOffsiteLabelsPlay(false);
-      setSummerOffsiteLabelsPlay(false);
-    }
+    if (to === from) return;
+    applySpreadLabelState(to, true);
     setCurrentPageSync(to);
-  }, []);
+  }, [applySpreadLabelState]);
 
   const goToPrevPage = useCallback(() => {
-    setPolaroidPreviewLabelsPlay(false);
-    setWinterOffsiteLabelsPlay(false);
-    setNashvilleOffsiteLabelsPlay(false);
-    setSummerOffsiteLabelsPlay(false);
-    setCurrentPageSync(Math.max(currentPageRef.current - 1, 0));
-  }, []);
+    const to = Math.max(currentPageRef.current - 1, 0);
+    applySpreadLabelState(to, false);
+    setCurrentPageSync(to);
+  }, [applySpreadLabelState]);
 
   const handleRead = () => {
     openness.set(1);
@@ -460,6 +463,7 @@ export function Book() {
           onNext={handleNext}
           onBack={handleBack}
           onClose={handleClose}
+          onGoToDisplayPage={goToDisplayPage}
         />
 
         <CursorFollower openness={smoothOpenness} mode={mode} hoveringBook={hoveringBook} />

@@ -42,6 +42,22 @@ export function spreadPageRange(currentPage: number): { left: number; right: num
   return { left: currentPage * 2 + 1, right: currentPage * 2 + 2 };
 }
 
+/** Reading spread index (0-based) for a 1-based display page number. */
+export function displayPageToReadingIndex(displayPage: number): number {
+  return Math.floor((displayPage - 1) / 2);
+}
+
+/** Whether a display page is visible on the current spread. */
+export function isDisplayPageInSpread(displayPage: number, readingIndex: number): boolean {
+  const { left, right } = spreadPageRange(readingIndex);
+  return displayPage >= left && displayPage <= right;
+}
+
+/** Page stepper tick dimensions (px). */
+export const PAGE_STEPPER_HEIGHT_PX = 12;
+export const PAGE_STEPPER_WIDTH_PX = 4;
+export const PAGE_STEPPER_GAP_PX = 8;
+
 /** Maximum opening angle for the front cover (degrees, negative = swings left). */
 export const COVER_OPEN_ANGLE = -174;
 
