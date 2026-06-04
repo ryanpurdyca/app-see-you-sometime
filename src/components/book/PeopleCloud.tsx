@@ -21,6 +21,7 @@ const HOVER_CHROME_FADE_MS = 220;
 type HoverChrome = {
   id: string;
   name: string;
+  highlight: string;
   anchor: { x: number; top: number; bottom: number };
 };
 
@@ -218,7 +219,7 @@ export function PeopleCloud() {
       clearDismissTimer();
       setHoverChrome((prev) => {
         if (prev?.id === id) return prev;
-        return { id, name: person.name, anchor };
+        return { id, name: person.name, highlight: person.highlight, anchor };
       });
     },
     [homeBubbles, clearDismissTimer],
@@ -400,8 +401,7 @@ export function PeopleCloud() {
               visible={chromeVisible}
               className="max-w-[200px] leading-snug"
             >
-              A few words about what made working together memorable. Still figuring out the exact
-              copy here.
+              {hoverChrome.highlight}
             </Popover>
           </>,
           document.body,
