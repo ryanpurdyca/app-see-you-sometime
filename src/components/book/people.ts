@@ -68,6 +68,10 @@ export const people: Person[] = [
     "Going to see Thornhill and reviving my love of metal, introducing me to loads of new bands.",
   ),
   person(
+    "img-jackie.jpeg",
+    'Our club ("cluuurb") night staying out until 4am seeing Wax Motif at Marquee in Manhattan.',
+  ),
+  person(
     "img-jason-k.png",
     "Literally never ceasing to be a walking meme and constantly hilarious.",
   ),
