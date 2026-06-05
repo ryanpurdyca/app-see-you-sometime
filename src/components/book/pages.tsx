@@ -205,7 +205,7 @@ function WinterOffsitePage6() {
         <BookPolaroid
           bookPageIndex={WINTER_OFFSITE_PAGE_6_FACE}
           className="absolute bottom-2 left-2 z-10"
-          image={`${WINTER_OFFSITE_IMG}/img-2026-12.jpg`}
+          image={`${WINTER_OFFSITE_IMG}/img-2026-12.png`}
           alt={"Evergreen being born"}
           caption={'"Evergreen" being born'}
           rotation={2}
