@@ -20,8 +20,6 @@ const socialLinks = [
   },
 ] as const;
 
-const MOBILE_CHROME_ABOVE_BOOK_TOP = "calc(50vh - var(--book-height) / 2 - 48px)";
-
 function SocialLinks() {
   return (
     <>
@@ -91,16 +89,6 @@ export default function HomePage() {
             "repeating-linear-gradient(180deg, var(--color-rule) 0, var(--color-rule) 6px, transparent 6px, transparent 13px)",
         }}
       />
-      {/* Mobile: author + socials in one row above the closed-book footprint */}
-      <div
-        className="absolute left-[calc(50vw-var(--book-width)/2)] flex w-[var(--book-width)] items-center justify-between md:hidden"
-        style={{ top: MOBILE_CHROME_ABOVE_BOOK_TOP }}
-      >
-        <span className="text-ink-subtle font-mono text-sm">Ryan P.</span>
-        <div className="flex items-center gap-2">
-          <SocialLinks />
-        </div>
-      </div>
       <span className="text-ink-subtle pointer-events-none absolute bottom-4 left-[calc(50vw-var(--book-width)/2)] hidden font-mono text-sm md:bottom-[44px] md:left-[52px] md:block">
         Ryan P.
       </span>

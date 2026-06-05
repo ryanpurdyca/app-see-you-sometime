@@ -11,7 +11,7 @@ import {
 } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Button } from "@/design-system";
-import { spreadPageRange } from "./constants";
+import { MOBILE_BUTTON_ROW_TOP, spreadPageRange } from "./constants";
 import { PageStepper } from "./PageStepper";
 
 export type BookMode = "idle" | "reading";
@@ -131,7 +131,7 @@ export function BookButtons({
           className="absolute"
           style={{
             left: MOBILE_BUTTON_ROW_LEFT,
-            top: "calc(50vh + var(--book-height) / 2 + 48px)",
+            top: MOBILE_BUTTON_ROW_TOP,
             width: MOBILE_BUTTON_ROW_WIDTH,
           }}
         >
@@ -146,7 +146,7 @@ export function BookButtons({
           className="absolute flex items-center justify-between"
           style={{
             left: MOBILE_BUTTON_ROW_LEFT,
-            top: "calc(50vh + var(--book-height) / 2 + 48px)",
+            top: MOBILE_BUTTON_ROW_TOP,
             width: MOBILE_BUTTON_ROW_WIDTH,
           }}
         >

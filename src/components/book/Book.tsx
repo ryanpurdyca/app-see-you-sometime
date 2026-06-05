@@ -9,12 +9,13 @@ import { BackCoverInsidePage } from "./BackCoverInsidePage";
 import { BookButtons, type BookMode } from "./BookButtons";
 import { CursorFollower } from "./CursorFollower";
 import { BookReadingProvider } from "./BookReadingContext";
-import { PageSurface } from "@/design-system";
+import { cn, PageSurface } from "@/design-system";
 import { bookPages, bookPagesMobile } from "./pages";
 import {
   BOOK_HEIGHT_PX,
   BOOK_WIDTH_PX,
   displayPageToReadingIndex,
+  MOBILE_BOOK_TOP,
   OPEN_CENTRE_OFFSET,
   OPENNESS_SPRING,
   SCENE_PERSPECTIVE_PX,
@@ -399,7 +400,7 @@ export function Book() {
                 left: isMobile
                   ? "calc(50vw - var(--book-width) / 2)"
                   : "calc(50vw - var(--book-width))",
-                top: "calc(50vh - var(--book-height) / 2)",
+                top: isMobile ? MOBILE_BOOK_TOP : "calc(50vh - var(--book-height) / 2)",
                 width: isMobile ? "calc(var(--book-width) / 2)" : "var(--book-width)",
                 height: "var(--book-height)",
               }}
@@ -411,7 +412,7 @@ export function Book() {
               className="absolute cursor-pointer"
               style={{
                 left: "50vw",
-                top: "calc(50vh - var(--book-height) / 2)",
+                top: isMobile ? MOBILE_BOOK_TOP : "calc(50vh - var(--book-height) / 2)",
                 width: isMobile ? "calc(var(--book-width) / 2)" : "var(--book-width)",
                 height: "var(--book-height)",
               }}
@@ -424,11 +425,12 @@ export function Book() {
 
         {/* 3D scene — centred within the viewport-filling wrapper */}
         <div
-          className="flex h-full items-center justify-center"
+          className={cn("flex h-full justify-center", isMobile ? "items-start" : "items-center")}
           style={{
             perspective: `${SCENE_PERSPECTIVE_PX}px`,
             perspectiveOrigin: "50% 45%",
             pointerEvents: "none",
+            ...(isMobile ? { paddingTop: MOBILE_BOOK_TOP } : {}),
           }}
         >
           <motion.div
@@ -493,7 +495,7 @@ export function Book() {
               left: isMobile
                 ? "calc(50vw - var(--book-width) / 2)"
                 : "calc(50vw - var(--book-width))",
-              top: "calc(50vh - var(--book-height) / 2)",
+              top: isMobile ? MOBILE_BOOK_TOP : "calc(50vh - var(--book-height) / 2)",
               width: isMobile ? "var(--book-width)" : "calc(var(--book-width) * 2)",
               height: "var(--book-height)",
             }}
