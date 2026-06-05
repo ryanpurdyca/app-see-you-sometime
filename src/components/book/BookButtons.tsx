@@ -11,15 +11,25 @@ import {
 } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Button } from "@/design-system";
-import { MAX_READING_PAGE_INDEX, spreadPageRange } from "./constants";
+import {
+  DESKTOP_BUTTON_ROW_TOP,
+  DESKTOP_READING_LABEL_TOP,
+  MOBILE_BUTTON_ROW_TOP,
+  spreadPageRange,
+} from "./constants";
 import { PageStepper } from "./PageStepper";
 
 export type BookMode = "idle" | "reading";
+
+const MOBILE_BUTTON_ROW_LEFT = "calc(50vw - var(--book-width) / 2)";
+const MOBILE_BUTTON_ROW_WIDTH = "var(--book-width)";
 
 type Props = {
   openness: MotionValue<number>;
   mode: BookMode;
   currentPage: number;
+  isMobile: boolean;
+  maxReadingPageIndex: number;
   onRead: () => void;
   onCancel: () => void;
   onNext: () => void;
@@ -32,6 +42,8 @@ export function BookButtons({
   openness,
   mode,
   currentPage,
+  isMobile,
+  maxReadingPageIndex,
   onRead,
   onCancel,
   onNext,
@@ -46,7 +58,7 @@ export function BookButtons({
   });
 
   const isReading = mode === "reading";
-  const isAtEnd = isReading && currentPage >= MAX_READING_PAGE_INDEX;
+  const isAtEnd = isReading && currentPage >= maxReadingPageIndex;
   const showBack = isReading && currentPage > 0;
 
   // Starts at 0 each time reading mode is entered so labels fade in even when
@@ -86,14 +98,14 @@ export function BookButtons({
     <>
       {/* Book metadata labels — only visible in reading mode, fade in on enter
           and fade out with openness as the book closes. */}
-      {isReading && (
+      {isReading && !isMobile && (
         <>
           <motion.span
             className="text-ink-subtle pointer-events-none absolute font-mono text-sm"
             style={{
               opacity: labelOpacity,
               right: "calc(50vw - var(--book-width))",
-              top: "calc(50vh - var(--book-height) / 2 - 56px)",
+              top: DESKTOP_READING_LABEL_TOP,
             }}
           >
             2022-2026
@@ -104,7 +116,7 @@ export function BookButtons({
             style={{
               opacity: labelOpacity,
               left: "calc(50vw - var(--book-width))",
-              top: "calc(50vh - var(--book-height) / 2 - 56px)",
+              top: DESKTOP_READING_LABEL_TOP,
             }}
           >
             <span>{pageWord}&nbsp;</span>
@@ -119,49 +131,101 @@ export function BookButtons({
         </>
       )}
 
-      <motion.div
-        className="absolute flex items-center justify-between"
-        style={{
-          left: "calc(50vw - var(--book-width))",
-          top: "calc(50vh + var(--book-height) / 2 + 52px)",
-          width: "calc(var(--book-width) * 2)",
-          opacity: openness,
-          pointerEvents: interactive ? "auto" : "none",
-        }}
-      >
-        {/* Left group — Next disabled at back cover; Back fades in once past page 0 */}
-        <div className="flex items-center gap-2">
-          <Button variant="primary" onClick={isReading ? onNext : onRead} disabled={isAtEnd}>
-            {isReading ? "Next" : "Open"}
+      {isMobile && !isReading && (
+        <div
+          className="absolute"
+          style={{
+            left: MOBILE_BUTTON_ROW_LEFT,
+            top: MOBILE_BUTTON_ROW_TOP,
+            width: MOBILE_BUTTON_ROW_WIDTH,
+          }}
+        >
+          <Button variant="primary" className="w-full" onClick={onRead}>
+            Open
           </Button>
-          <AnimatePresence>
-            {showBack && (
-              <motion.div
-                key="back"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-              >
-                <Button variant="supporting" onClick={onBack}>
-                  Back
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
+      )}
 
-        {isReading && (
-          <div className="pointer-events-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <PageStepper currentPage={currentPage} onGoToDisplayPage={onGoToDisplayPage} />
+      {isMobile && isReading && (
+        <div
+          className="absolute flex items-center justify-between"
+          style={{
+            left: MOBILE_BUTTON_ROW_LEFT,
+            top: MOBILE_BUTTON_ROW_TOP,
+            width: MOBILE_BUTTON_ROW_WIDTH,
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <Button variant="primary" onClick={onNext} disabled={isAtEnd}>
+              Next
+            </Button>
+            <AnimatePresence>
+              {showBack && (
+                <motion.div
+                  key="back"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <Button variant="supporting" onClick={onBack}>
+                    Back
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        )}
+          <Button variant="secondary" onClick={onClose}>
+            Close
+          </Button>
+        </div>
+      )}
 
-        {/* Right button */}
-        <Button variant="secondary" onClick={isReading ? onClose : onCancel}>
-          Close
-        </Button>
-      </motion.div>
+      {!isMobile && (
+        <motion.div
+          className="absolute flex items-center justify-between"
+          style={{
+            left: "calc(50vw - var(--book-width))",
+            top: DESKTOP_BUTTON_ROW_TOP,
+            width: "calc(var(--book-width) * 2)",
+            opacity: openness,
+            pointerEvents: interactive ? "auto" : "none",
+          }}
+        >
+          {/* Left group — Next disabled at back cover; Back fades in once past page 0 */}
+          <div className="flex items-center gap-2">
+            <Button variant="primary" onClick={isReading ? onNext : onRead} disabled={isAtEnd}>
+              {isReading ? "Next" : "Open"}
+            </Button>
+            <AnimatePresence>
+              {showBack && (
+                <motion.div
+                  key="back"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <Button variant="supporting" onClick={onBack}>
+                    Back
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {isReading && (
+            <div className="pointer-events-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+              <PageStepper currentPage={currentPage} onGoToDisplayPage={onGoToDisplayPage} />
+            </div>
+          )}
+
+          {/* Right button */}
+          <Button variant="secondary" onClick={isReading ? onClose : onCancel}>
+            Close
+          </Button>
+        </motion.div>
+      )}
     </>
   );
 }

@@ -20,6 +20,31 @@ const socialLinks = [
   },
 ] as const;
 
+function SocialLinks() {
+  return (
+    <>
+      {socialLinks.map(({ href, label, icon }) => (
+        <a
+          key={label}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={label}
+          className="group relative opacity-80 hover:opacity-100 focus-visible:opacity-100"
+        >
+          <img src={icon} alt="" width={20} height={20} className="size-5" />
+          <span
+            role="tooltip"
+            className="bg-ink pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 rounded-sm px-2 py-1 font-mono text-xs whitespace-nowrap text-white opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+          >
+            {label}
+          </span>
+        </a>
+      ))}
+    </>
+  );
+}
+
 export default function HomePage() {
   return (
     <Stage>
@@ -29,12 +54,12 @@ export default function HomePage() {
       {/* Gutter frame — sits above content, 28px border fills the edge zones */}
       <div
         aria-hidden
-        className="border-gutter pointer-events-none absolute inset-0 border-[28px]"
+        className="border-gutter pointer-events-none absolute inset-0 hidden border-[28px] md:block"
       />
       {/* Decorative rules — above gutter so they run fully edge to edge */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-7 h-px"
+        className="pointer-events-none absolute inset-x-0 top-7 hidden h-px md:block"
         style={{
           background:
             "repeating-linear-gradient(90deg, var(--color-rule) 0, var(--color-rule) 6px, transparent 6px, transparent 13px)",
@@ -42,7 +67,7 @@ export default function HomePage() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-7 h-px"
+        className="pointer-events-none absolute inset-x-0 bottom-7 hidden h-px md:block"
         style={{
           background:
             "repeating-linear-gradient(90deg, var(--color-rule) 0, var(--color-rule) 6px, transparent 6px, transparent 13px)",
@@ -50,7 +75,7 @@ export default function HomePage() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-7 w-px"
+        className="pointer-events-none absolute inset-y-0 left-7 hidden w-px md:block"
         style={{
           background:
             "repeating-linear-gradient(180deg, var(--color-rule) 0, var(--color-rule) 6px, transparent 6px, transparent 13px)",
@@ -58,34 +83,17 @@ export default function HomePage() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-7 w-px"
+        className="pointer-events-none absolute inset-y-0 right-7 hidden w-px md:block"
         style={{
           background:
             "repeating-linear-gradient(180deg, var(--color-rule) 0, var(--color-rule) 6px, transparent 6px, transparent 13px)",
         }}
       />
-      <span className="text-ink-subtle pointer-events-none absolute bottom-[44px] left-[52px] font-mono text-sm">
+      <span className="text-ink-subtle pointer-events-none absolute bottom-4 left-[calc(50vw-var(--book-width)/2)] hidden font-mono text-sm md:bottom-[44px] md:left-[52px] md:block">
         Ryan P.
       </span>
-      <div className="absolute right-[52px] bottom-[44px] flex items-center gap-2">
-        {socialLinks.map(({ href, label, icon }) => (
-          <a
-            key={label}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={label}
-            className="group relative opacity-80 hover:opacity-100 focus-visible:opacity-100"
-          >
-            <img src={icon} alt="" width={20} height={20} className="size-5" />
-            <span
-              role="tooltip"
-              className="bg-ink pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 rounded-sm px-2 py-1 font-mono text-xs whitespace-nowrap text-white opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
-            >
-              {label}
-            </span>
-          </a>
-        ))}
+      <div className="absolute right-[calc(50vw-var(--book-width)/2)] bottom-4 hidden items-center gap-2 md:right-[52px] md:bottom-[44px] md:flex">
+        <SocialLinks />
       </div>
     </Stage>
   );

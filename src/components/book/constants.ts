@@ -142,6 +142,22 @@ export const BOOK_HEIGHT_PX = 440;
  */
 export const OPEN_CENTRE_OFFSET = "calc(var(--book-width) / 2)";
 
+/** Vertically center book + button row as one unit in the viewport (matches Stage `dvh`). */
+export const MOBILE_BOOK_TOP =
+  "calc(50dvh - (var(--book-height) + var(--mobile-stack-gap) + var(--button-row-height)) / 2)";
+
+export const MOBILE_BUTTON_ROW_TOP =
+  "calc(50dvh - (var(--book-height) + var(--mobile-stack-gap) + var(--button-row-height)) / 2 + var(--book-height) + var(--mobile-stack-gap))";
+
+export const DESKTOP_BOOK_TOP =
+  "calc(50dvh - (var(--book-height) + var(--desktop-stack-gap) + var(--button-row-height)) / 2)";
+
+export const DESKTOP_BUTTON_ROW_TOP =
+  "calc(50dvh - (var(--book-height) + var(--desktop-stack-gap) + var(--button-row-height)) / 2 + var(--book-height) + var(--desktop-stack-gap))";
+
+export const DESKTOP_READING_LABEL_TOP =
+  "calc(50dvh - (var(--book-height) + var(--desktop-stack-gap) + var(--button-row-height)) / 2 - var(--desktop-reading-label-offset))";
+
 /** Additional rotateX applied to the scene in reading mode to give pages subtle depth. */
 export const READING_SCENE_TILT_X = -12;
 

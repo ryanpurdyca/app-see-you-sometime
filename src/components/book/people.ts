@@ -60,6 +60,10 @@ export const people: Person[] = [
     "Using ChatGPT to run your own electrical for your backyard shed, and passing the safety inspection, when your actual licensed electrician didn't.",
   ),
   person(
+    "img-hally.jpeg",
+    'Creating your own incredible clothing brand from scratch and getting "Plain Jane" featured in Vogue!',
+  ),
+  person(
     "img-jamie.jpeg",
     "Going to see Thornhill and reviving my love of metal, introducing me to loads of new bands.",
   ),

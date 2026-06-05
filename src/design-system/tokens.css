@@ -60,6 +60,11 @@
   --book-width: 320px;
   --book-height: 440px;
   --book-spine: 14px;
+  /* Book + gap + button row centered as one stack in dvh (mobile / desktop) */
+  --mobile-stack-gap: 32px;
+  --desktop-stack-gap: 52px;
+  --button-row-height: 34px;
+  --desktop-reading-label-offset: 56px;
 
   /* Motion */
   --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);

@@ -270,7 +270,7 @@ Historical entries below remain for context; **this list is the source of truth*
 
 ### 2026-05-29 — Page 1 people bubble cloud
 
-- **Page 1 content** (`ChapterOpen` in `pages.tsx`) is a full-bleed `PeopleCloud` of 26 coworker portraits from `public/images/people/`, listed in `people.ts` with display names derived from filenames. "Chapter One" copy removed.
+- **Page 1 content** (`ChapterOpen` in `pages.tsx`) is a full-bleed `PeopleCloud` of 27 coworker portraits from `public/images/people/`, listed in `people.ts` with display names derived from filenames. "Chapter One" copy removed.
 - **Layout engine.** Golden-angle seed + static collision solve to a stable **home** layout (`homeX`/`homeY`, shared `baseR`). Measure with `clientWidth`/`clientHeight` (not projected `getBoundingClientRect`); skip re-seed on sub-12px resize or while a bubble is hovered. DOM bubbles are fixed at home with no hover resize or reposition.
 - **Hover / tooltip.** Window `pointermove` + screen-space **ellipse** hit test on each bubble’s painted box (3D tilt foreshortens circles); sticky hover keeps the current bubble during peel. **Tooltip** 8px above; **Popover** 8px below (12px placeholder copy) — both portaled to `document.body`, anchored via RAF to `getBoundingClientRect()`. Chrome stays mounted 220ms after hover ends so fade/slide can finish.
 - **Pointer-events tradeoff.** Page faces and the people cloud stay `pointer-events: none` (bubbles included). Hover/tooltip/popover use a window `pointermove` listener + ellipse hit-test when `peopleCloudInteractive` (`reading` + `currentPage === 0`); entering a bubble calls `onRightPagePointer` for peel only. Clicks anywhere on the page footprint pass through to reading-mode L/R nav overlays **behind** the 3D scene (same as empty paper). After page 0, `interactive` is false and hover chrome is disabled so the verso face does not show stale UI.
@@ -317,6 +317,7 @@ When you add a primitive or token, update this section and add it to the design-
 - **`preserve-3d` perspective container must have `pointerEvents: "none"`** — 3D-transformed children are hit-tested in screen space, so visually overlapping 3D book elements capture pointer events before flat overlay `<div>`s behind them in the DOM. Setting `pointerEvents: "none"` on the perspective container delegates all interaction to the purpose-built flat overlays (idle click region, reading-mode left/right regions) which are rendered outside the perspective container as siblings. **Exceptions:** page-0 `CoverInside` re-enables `pointer-events: auto` for Close; `Polaroid` uses `pointer-events-auto` on prints. `PeopleCloud` does **not** re-enable pointer events — hover is window-driven; clicks fall through to nav overlays.
 - **Cover and left-page Caveat** — use `style={{ fontFamily: "var(--font-caveat)" }}` on cover title and `LeftPageText`; do not use `--font-handwritten` for those surfaces.
 - **§5 history vs current** — entries before “Canonical current state” may describe superseded accent borders, Instrument Serif on the cover, or “Read” labelling; trust the canonical table and §1–§4 over older decision bullets.
+- **`useIsMobile` in jsdom** — `window.matchMedia` is missing in Vitest/jsdom; guard with `typeof window.matchMedia === "function"` before subscribing or tests throw.
 - **`Polaroid` hover / peel / click** — `Page.tsx` face wrappers are `pointer-events-none`; `Polaroid` uses `pointer-events-auto` only when `BookPolaroid`'s `bookPageIndex` matches the active spread (`isPolaroidFaceActive`: right = `currentPage * 2`, left = `currentPage * 2 - 1`). Otherwise `pointer-events-none` so buried faces cannot open the lightbox. Active spreads pass `showViewCursor={interactive && !polaroidLightboxOpen}` (`polaroidLightboxOpen` on `BookReadingContext`, set by any open `BookPolaroid` lightbox). **View** pill tracks the inner `<img>` only; a window `pointermove` + `elementFromPoint` listener re-syncs hover after lightbox close (no `pointerleave` on the image). Do **not** drive pill position with `useSpring(source)` + `source.set()` — the spring restarts from its internal state and the pill flies in from (0,0). Opens `ImageLightbox` on click; lightbox auto-closes on page turn.
 
 ### 2026-06-01 — Polaroid component; page 2 cleared
@@ -355,6 +356,38 @@ When you add a primitive or token, update this section and add it to the design-
 - **`BookPolaroid`** opens the lightbox on click instead of `onPageFaceClick` so prints are viewable without advancing the book.
 - **Active-face gating.** Each `BookPolaroid` takes `bookPageIndex` (`bookPages` flat index). `isPolaroidFaceActive` enables `pointer-events` only on the current spread (right `2 × currentPage`, left `2 × currentPage − 1`). Buried 3D faces stay inert; lightbox closes when the spread changes.
 - **Polaroid spread labels.** `SpreadPageLabels` (shared layout) powers `PolaroidPageLabels` (`bookPages[1]`), `WinterOffsitePageLabels` (`bookPages[3]`), `NashvilleOffsitePageLabels` (`bookPages[5]`), and `SummerOffsitePageLabels` (`bookPages[9]`). Spring spread animates on reading page 0 → 1 (`polaroidPreviewLabelsAnimate`); winter spread on 1 → 2 (`winterOffsiteLabelsAnimate`); Nashville spread on 2 → 3 (`nashvilleOffsiteLabelsAnimate`); summer spread on 4 → 5 (`summerOffsiteLabelsAnimate`). Otherwise static Caveat. Top block first, then bottom; 0.35s initial delay (`SpreadPageLabels.tsx`, not `constants.ts`).
+
+### 2026-06-04 — Mobile layout (below `md`, 768px)
+
+- **Breakpoint split.** Tailwind `md:` (768px+) keeps the desktop experience. Below that, `Book.tsx` uses `useIsMobile()` (`matchMedia('(max-width: 767px)')`) for behaviour that cannot be expressed in CSS alone (pointer fan, book centre offset, `CursorFollower`, `BookButtons` layout).
+- **Chrome stripped on mobile.** `page.tsx`: gutter border and four dotted rules are `hidden md:block`. `LeftPageText` is `hidden md:flex`. **Ryan P.** and social links are `hidden` below `md` (desktop frame insets only). Book + button row are vertically centered as one stack in `dvh` (`MOBILE_BOOK_TOP` / `MOBILE_BUTTON_ROW_TOP`; tokens `--mobile-stack-gap`, `--button-row-height`). Desktop uses the same pattern (`DESKTOP_BOOK_TOP`, `--desktop-stack-gap`); `LeftPageText` shares `DESKTOP_BOOK_TOP`.
+- **Idle book on mobile.** No pointer/touch `openness` fan — book stays closed until **Open**. Book root uses `left: 0` (not `OPEN_CENTRE_OFFSET`) so the flex parent centres the closed cover. No `CursorFollower`.
+- **Controls on mobile.** Idle: full-width **Open** below the book (`BookButtons`, always visible, not openness-gated). Reading: **Next** / **Back** / **Close** in a row under the closed-book width; no `PageStepper`, no animated page/date labels. Desktop button row, stepper, and labels unchanged.
+- **Trade-off.** Open spread is still `2 × --book-width` (640px); horizontal overflow on narrow phones is a known follow-up.
+
+### 2026-06-04 — Mobile right-page-only reading
+
+- **Problem.** The open spread is ~640px wide; on mobile only the recto is centered in the closed-book footprint, but navigation advanced by **spreads**, so odd faces (versos) were off-screen left and never seen.
+- **Fix.** `bookPagesMobile` in `pages.tsx` interleaves each desktop face with a blank `<PageSurface>` verso, then appends `ThankYouPage` + blank. `Book.tsx` selects `pages = isMobile ? bookPagesMobile : bookPages` and derives `numPages`, `maxReadingPageIndex`, and `insideBackCoverIndex` at runtime (passed to `BookButtons` / `BackCover`). Same open animation and leaf flip; each **Next** shows the next memory on the centered recto.
+- **Polaroid gating on mobile.** `isPolaroidFaceActive`: `bookPageIndex === currentPage` (reading index matches original `bookPages` face index on each recto) or final spread `bookPageIndex === insideBackCoverIndex` on `BackCover`. Reading tap overlays use the centered recto halves (`50vw ± book-width/2`, half-width each).
+- **`numPages` prop on `Page` / `Cover`.** Fan depth, stack `translateZ`, and cover elevation must use `Book`'s runtime sheet count — not build-time `NUM_PAGES` from `constants.ts` — or mobile's extra leaves get negative z and peek beside the closed cover.
+- **Desktop unchanged.** `bookPages` + build-time `NUM_PAGES` in `constants.ts` still drive tests and `Cover.tsx`-unrelated geometry; `Book` passes `numPages` into `Page` / `Cover`.
+
+### 2026-06-04 — Cover translateZ when open (left-page spine clipping)
+
+- **Bug.** From display page 3 onward, content on the **left** (verso) face looked clipped on its spine-side edge — especially polaroids near the gutter. Affects desktop and mobile.
+- **Cause.** At full open the cover shares `COVER_OPEN_ANGLE` with the left stack; planes meet near the spine. A fixed high `translateZ` on the cover (needed when closed) let `CoverInside` win the depth sort over left-page content in that region.
+- **Fix.** `Cover.tsx`: `translateZ = useTransform(openness, [0, 1], [(numPages + 1) * PAGE_Z_STEP, -PAGE_Z_STEP])` — on top when closed, behind the left stack when open. Mid-open the cover is edge-on (~−90°), where `translateZ` barely affects paint order.
+
+### 2026-06-04 — Spread label reveal only on sequential page turns
+
+- **`SpreadPageLabels` / `HandwrittenText` reveal** runs only when `applySpreadLabelState` is called with `enableReveal: true` and `bumpKeys: true` — i.e. **Next** or right-page click (`goToNextPage`). `PageStepper` hover/focus/click uses `goToDisplayPage` → `enableLabelReveal: false`, so labels stay static while scrubbing. Back/left-page navigation also skips reveal.
+
+### 2026-06-04 — Close-sequence page z-order
+
+- **Bug.** While closing, sheets briefly stacked on top of one another — deep pages flashed over the active spread as every sheet sprang to `rotateY: 0`.
+- **Cause.** Reading-mode right-stack z-order gives low `translateZ` to high-index sheets; when those sheets reach 0° before the active sheet finishes rotating, rotation dominates the ~1.5px depth gaps and the wrong face paints on top (runtime `elementsFromPoint` during close confirmed e.g. `p9` over `p0`).
+- **Fix.** `Page.tsx` accepts `isClosing`: use idle descending `translateZ` plus lift `index === readingPage` (the sheet flipping back onto the right stack) to `(numPages + 1) * PAGE_Z_STEP`.
 
 ## 8. Quality gates
 

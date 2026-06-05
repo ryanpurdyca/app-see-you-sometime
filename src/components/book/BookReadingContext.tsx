@@ -16,19 +16,19 @@ export type BookReadingNav = {
   onCoverPageClick: () => void;
   /** `bookPages` face index — true only for the left/right page on the current spread. */
   isPolaroidFaceActive: (bookPageIndex: number) => boolean;
-  /** True once after advancing from reading page 0 → 1 (Next or right-page click). */
+  /** True once after advancing to reading page 1 via Next or right-page click (not stepper). */
   polaroidPreviewLabelsAnimate: boolean;
   /** Bumps on each 0 → 1 advance so handwriting can replay. */
   polaroidPreviewLabelsKey: number;
-  /** True once after advancing from reading page 1 → 2 (Next or right-page click). */
+  /** True once after advancing to reading page 2 via Next or right-page click (not stepper). */
   winterOffsiteLabelsAnimate: boolean;
   /** Bumps on each 1 → 2 advance so handwriting can replay. */
   winterOffsiteLabelsKey: number;
-  /** True once after advancing from reading page 2 → 3 (Next or right-page click). */
+  /** True once after advancing to reading page 3 via Next or right-page click (not stepper). */
   nashvilleOffsiteLabelsAnimate: boolean;
   /** Bumps on each 2 → 3 advance so handwriting can replay. */
   nashvilleOffsiteLabelsKey: number;
-  /** True once after advancing from reading page 4 → 5 (Next or right-page click). */
+  /** True once after advancing to reading page 5 via Next or right-page click (not stepper). */
   summerOffsiteLabelsAnimate: boolean;
   /** Bumps on each 4 → 5 advance so handwriting can replay. */
   summerOffsiteLabelsKey: number;

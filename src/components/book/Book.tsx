@@ -10,18 +10,33 @@ import { BookButtons, type BookMode } from "./BookButtons";
 import { CursorFollower } from "./CursorFollower";
 import { BookReadingProvider } from "./BookReadingContext";
 import { PageSurface } from "@/design-system";
-import { bookPages } from "./pages";
+import { bookPages, bookPagesMobile } from "./pages";
 import {
   BOOK_HEIGHT_PX,
   BOOK_WIDTH_PX,
   displayPageToReadingIndex,
-  INSIDE_BACK_COVER_BOOK_PAGE_INDEX,
-  MAX_READING_PAGE_INDEX,
-  NUM_PAGES,
+  DESKTOP_BOOK_TOP,
+  MOBILE_BOOK_TOP,
   OPEN_CENTRE_OFFSET,
   OPENNESS_SPRING,
   SCENE_PERSPECTIVE_PX,
 } from "./constants";
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  return isMobile;
+}
 
 /**
  * Interactive 3D book. Pointer X drives `openness` (0 = closed, 1 = open)
@@ -33,6 +48,12 @@ import {
  * without being affected by 3D transforms.
  */
 export function Book() {
+  const isMobile = useIsMobile();
+  const pages = isMobile ? bookPagesMobile : bookPages;
+  const numPages = Math.ceil(pages.length / 2);
+  const maxReadingPageIndex = numPages;
+  const insideBackCoverIndex = pages.length;
+
   const openness = useMotionValue(0);
   const smoothOpenness = useSpring(openness, OPENNESS_SPRING);
 
@@ -75,6 +96,8 @@ export function Book() {
   };
 
   useEffect(() => {
+    if (isMobile) return;
+
     const setFromClientX = (clientX: number) => {
       if (modeRef.current === "reading") return; // book is pinned open
       const w = window.innerWidth || 1;
@@ -97,48 +120,59 @@ export function Book() {
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("touchmove", onTouchMove);
     };
-  }, [openness]);
+  }, [openness, isMobile]);
 
-  const applySpreadLabelState = useCallback((index: number, bumpKeys: boolean) => {
-    setPolaroidPreviewLabelsPlay(index === 1);
-    setWinterOffsiteLabelsPlay(index === 2);
-    setNashvilleOffsiteLabelsPlay(index === 3);
-    setSummerOffsiteLabelsPlay(index === 5);
-    if (!bumpKeys) return;
-    if (index === 1) setPolaroidPreviewLabelsKey((k) => k + 1);
-    else if (index === 2) setWinterOffsiteLabelsKey((k) => k + 1);
-    else if (index === 3) setNashvilleOffsiteLabelsKey((k) => k + 1);
-    else if (index === 5) setSummerOffsiteLabelsKey((k) => k + 1);
-  }, []);
+  const applySpreadLabelState = useCallback(
+    (index: number, options: { bumpKeys?: boolean; enableReveal?: boolean }) => {
+      const { bumpKeys = false, enableReveal = false } = options;
+      if (!enableReveal) {
+        setPolaroidPreviewLabelsPlay(false);
+        setWinterOffsiteLabelsPlay(false);
+        setNashvilleOffsiteLabelsPlay(false);
+        setSummerOffsiteLabelsPlay(false);
+        return;
+      }
+      setPolaroidPreviewLabelsPlay(index === 1);
+      setWinterOffsiteLabelsPlay(index === 2);
+      setNashvilleOffsiteLabelsPlay(index === 3);
+      setSummerOffsiteLabelsPlay(index === 5);
+      if (!bumpKeys) return;
+      if (index === 1) setPolaroidPreviewLabelsKey((k) => k + 1);
+      else if (index === 2) setWinterOffsiteLabelsKey((k) => k + 1);
+      else if (index === 3) setNashvilleOffsiteLabelsKey((k) => k + 1);
+      else if (index === 5) setSummerOffsiteLabelsKey((k) => k + 1);
+    },
+    [],
+  );
 
   const goToReadingPageIndex = useCallback(
-    (target: number, options?: { bumpLabelKeys?: boolean }) => {
-      const to = Math.max(0, Math.min(target, MAX_READING_PAGE_INDEX));
+    (target: number, options?: { enableLabelReveal?: boolean }) => {
+      const to = Math.max(0, Math.min(target, maxReadingPageIndex));
       if (to === currentPageRef.current) return;
-      applySpreadLabelState(to, options?.bumpLabelKeys ?? false);
+      applySpreadLabelState(to, { enableReveal: options?.enableLabelReveal ?? false });
       setCurrentPageSync(to);
     },
-    [applySpreadLabelState],
+    [applySpreadLabelState, maxReadingPageIndex],
   );
 
   const goToDisplayPage = useCallback(
     (displayPage: number) => {
-      goToReadingPageIndex(displayPageToReadingIndex(displayPage));
+      goToReadingPageIndex(displayPageToReadingIndex(displayPage), { enableLabelReveal: false });
     },
     [goToReadingPageIndex],
   );
 
   const goToNextPage = useCallback(() => {
     const from = currentPageRef.current;
-    const to = Math.min(from + 1, MAX_READING_PAGE_INDEX);
+    const to = Math.min(from + 1, maxReadingPageIndex);
     if (to === from) return;
-    applySpreadLabelState(to, true);
+    applySpreadLabelState(to, { bumpKeys: true, enableReveal: true });
     setCurrentPageSync(to);
-  }, [applySpreadLabelState]);
+  }, [applySpreadLabelState, maxReadingPageIndex]);
 
   const goToPrevPage = useCallback(() => {
     const to = Math.max(currentPageRef.current - 1, 0);
-    applySpreadLabelState(to, false);
+    applySpreadLabelState(to, { enableReveal: false });
     setCurrentPageSync(to);
   }, [applySpreadLabelState]);
 
@@ -289,13 +323,13 @@ export function Book() {
           } else {
             handleCloseRef.current();
           }
-        } else if (currentPageRef.current < MAX_READING_PAGE_INDEX) {
+        } else if (currentPageRef.current < maxReadingPageIndex) {
           goToNextPage();
         }
       },
       onRightPagePointer: () => setHoveredSide("right"),
       onRightPageClick: () => {
-        if (currentPageRef.current < MAX_READING_PAGE_INDEX) {
+        if (currentPageRef.current < maxReadingPageIndex) {
           goToNextPage();
         }
       },
@@ -306,11 +340,16 @@ export function Book() {
       onCoverPageClick: () => handleCloseRef.current(),
       isPolaroidFaceActive: (bookPageIndex: number) => {
         if (mode !== "reading") return false;
+        if (isMobile) {
+          return (
+            bookPageIndex === currentPage ||
+            (currentPage === maxReadingPageIndex && bookPageIndex === insideBackCoverIndex)
+          );
+        }
         const rightFace = currentPage * 2;
         const leftFace = currentPage > 0 ? currentPage * 2 - 1 : -1;
         const insideBackActive =
-          currentPage === MAX_READING_PAGE_INDEX &&
-          bookPageIndex === INSIDE_BACK_COVER_BOOK_PAGE_INDEX;
+          currentPage === maxReadingPageIndex && bookPageIndex === insideBackCoverIndex;
         return bookPageIndex === rightFace || bookPageIndex === leftFace || insideBackActive;
       },
       polaroidPreviewLabelsAnimate:
@@ -331,6 +370,9 @@ export function Book() {
     [
       mode,
       currentPage,
+      isMobile,
+      maxReadingPageIndex,
+      insideBackCoverIndex,
       polaroidPreviewLabelsPlay,
       polaroidPreviewLabelsKey,
       winterOffsiteLabelsPlay,
@@ -356,9 +398,11 @@ export function Book() {
             <div
               className="absolute cursor-pointer"
               style={{
-                left: "calc(50vw - var(--book-width))",
-                top: "calc(50vh - var(--book-height) / 2)",
-                width: "var(--book-width)",
+                left: isMobile
+                  ? "calc(50vw - var(--book-width) / 2)"
+                  : "calc(50vw - var(--book-width))",
+                top: isMobile ? MOBILE_BOOK_TOP : DESKTOP_BOOK_TOP,
+                width: isMobile ? "calc(var(--book-width) / 2)" : "var(--book-width)",
                 height: "var(--book-height)",
               }}
               onClick={currentPage > 0 ? handleBack : handleClose}
@@ -369,11 +413,11 @@ export function Book() {
               className="absolute cursor-pointer"
               style={{
                 left: "50vw",
-                top: "calc(50vh - var(--book-height) / 2)",
-                width: "var(--book-width)",
+                top: isMobile ? MOBILE_BOOK_TOP : DESKTOP_BOOK_TOP,
+                width: isMobile ? "calc(var(--book-width) / 2)" : "var(--book-width)",
                 height: "var(--book-height)",
               }}
-              onClick={currentPage < MAX_READING_PAGE_INDEX ? handleNext : undefined}
+              onClick={currentPage < maxReadingPageIndex ? handleNext : undefined}
               onMouseEnter={() => setHoveredSide("right")}
               onMouseLeave={() => setHoveredSide(null)}
             />
@@ -382,11 +426,12 @@ export function Book() {
 
         {/* 3D scene — centred within the viewport-filling wrapper */}
         <div
-          className="flex h-full items-center justify-center"
+          className="flex h-full items-start justify-center"
           style={{
             perspective: `${SCENE_PERSPECTIVE_PX}px`,
             perspectiveOrigin: "50% 45%",
             pointerEvents: "none",
+            paddingTop: isMobile ? MOBILE_BOOK_TOP : DESKTOP_BOOK_TOP,
           }}
         >
           <motion.div
@@ -394,25 +439,27 @@ export function Book() {
             style={{
               width: "var(--book-width)",
               height: "var(--book-height)",
-              left: OPEN_CENTRE_OFFSET,
+              left: isMobile ? "0" : OPEN_CENTRE_OFFSET,
               transformStyle: "preserve-3d",
               rotateX: tiltX,
               rotateZ: tiltZ,
             }}
           >
-            <BackCover openness={smoothOpenness} />
-            {Array.from({ length: NUM_PAGES }, (_, i) => {
-              const isOddTailSheet = i === NUM_PAGES - 1 && bookPages.length % 2 === 1;
+            <BackCover openness={smoothOpenness} insideBackCoverIndex={insideBackCoverIndex} />
+            {Array.from({ length: numPages }, (_, i) => {
+              const isOddTailSheet = i === numPages - 1 && pages.length % 2 === 1;
               return (
                 <Page
                   key={i}
                   index={i}
+                  numPages={numPages}
                   openness={smoothOpenness}
                   readingPage={readingPage}
-                  front={bookPages[i * 2] ?? <PageSurface />}
+                  isClosing={isClosing}
+                  front={pages[i * 2] ?? <PageSurface />}
                   back={
-                    bookPages[i * 2 + 1] ??
-                    (isOddTailSheet ? <BackCoverInsidePage /> : <PageSurface />)
+                    pages[i * 2 + 1] ??
+                    (isOddTailSheet && !isMobile ? <BackCoverInsidePage /> : <PageSurface />)
                   }
                   peeled={
                     !isClosing &&
@@ -420,7 +467,7 @@ export function Book() {
                     ((i === readingPage - 1 && readingPage > 0) || i === readingPage)
                   }
                   subPeeled={
-                    !isClosing && readingPage !== null && i === readingPage + 1 && i < NUM_PAGES
+                    !isClosing && readingPage !== null && i === readingPage + 1 && i < numPages
                   }
                   hovered={
                     readingPage !== null &&
@@ -432,6 +479,8 @@ export function Book() {
             })}
             <Cover
               openness={smoothOpenness}
+              numPages={numPages}
+              isMobile={isMobile}
               closePeelActive={
                 mode === "reading" && currentPage === 0 && hoveredSide === "left" && !isClosing
               }
@@ -444,14 +493,16 @@ export function Book() {
           <div
             className="absolute cursor-pointer"
             style={{
-              left: "calc(50vw - var(--book-width))",
-              top: "calc(50vh - var(--book-height) / 2)",
-              width: "calc(var(--book-width) * 2)",
+              left: isMobile
+                ? "calc(50vw - var(--book-width) / 2)"
+                : "calc(50vw - var(--book-width))",
+              top: isMobile ? MOBILE_BOOK_TOP : DESKTOP_BOOK_TOP,
+              width: isMobile ? "var(--book-width)" : "calc(var(--book-width) * 2)",
               height: "var(--book-height)",
             }}
             onClick={handleRead}
-            onMouseEnter={() => setHoveringBook(true)}
-            onMouseLeave={() => setHoveringBook(false)}
+            onMouseEnter={() => !isMobile && setHoveringBook(true)}
+            onMouseLeave={() => !isMobile && setHoveringBook(false)}
           />
         )}
 
@@ -462,6 +513,8 @@ export function Book() {
           openness={smoothOpenness}
           mode={mode}
           currentPage={currentPage}
+          isMobile={isMobile}
+          maxReadingPageIndex={maxReadingPageIndex}
           onRead={handleRead}
           onCancel={handleCancel}
           onNext={handleNext}
@@ -470,7 +523,9 @@ export function Book() {
           onGoToDisplayPage={goToDisplayPage}
         />
 
-        <CursorFollower openness={smoothOpenness} mode={mode} hoveringBook={hoveringBook} />
+        {!isMobile && (
+          <CursorFollower openness={smoothOpenness} mode={mode} hoveringBook={hoveringBook} />
+        )}
       </div>
     </BookReadingProvider>
   );

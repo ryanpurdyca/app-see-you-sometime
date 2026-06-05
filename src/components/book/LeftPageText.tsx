@@ -8,16 +8,18 @@
  * masks it perfectly at full openness.
  */
 
+import { DESKTOP_BOOK_TOP } from "./constants";
+
 const caveatStyle = { fontFamily: "var(--font-caveat)" } as const;
 
 export function LeftPageText() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute flex flex-col justify-center overflow-hidden py-8 pr-16 pl-8"
+      className="pointer-events-none absolute hidden flex-col justify-center overflow-hidden py-8 pr-16 pl-8 md:flex"
       style={{
         left: "calc(50vw - var(--book-width))",
-        top: "calc(50vh - var(--book-height) / 2)",
+        top: DESKTOP_BOOK_TOP,
         width: "var(--book-width)",
         height: "var(--book-height)",
       }}

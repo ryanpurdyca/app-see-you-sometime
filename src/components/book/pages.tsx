@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { PageSurface } from "@/design-system";
+import { ThankYouPage } from "./ThankYouPage";
 import { BookPolaroid } from "./BookPolaroid";
 import { PeopleCloud } from "./PeopleCloud";
 import { AutocampOffsitePageLabels } from "./AutocampOffsitePageLabels";
@@ -204,7 +205,7 @@ function WinterOffsitePage6() {
         <BookPolaroid
           bookPageIndex={WINTER_OFFSITE_PAGE_6_FACE}
           className="absolute bottom-2 left-2 z-10"
-          image={`${WINTER_OFFSITE_IMG}/img-2026-12.jpg`}
+          image={`${WINTER_OFFSITE_IMG}/img-2026-12.png`}
           alt={"Evergreen being born"}
           caption={'"Evergreen" being born'}
           rotation={2}
@@ -650,9 +651,9 @@ function AutocampOffsitePage17() {
         <BookPolaroid
           bookPageIndex={AUTOCAMP_OFFSITE_PAGE_17_FACE}
           className="absolute top-1 left-1 z-40"
-          image={`${SPRING_2023_OFFSITE_IMG}/img-2023-03.JPG`}
+          image={`${SPRING_2023_OFFSITE_IMG}/img-2023-03.png`}
           alt="Team at work"
-          caption="Team at work"
+          caption="The dynamic duo"
           rotation={3}
           tape={2}
           tapeRotation={2}
@@ -829,4 +830,14 @@ export const bookPages: ReactNode[] = [
   <AutocampOffsitePage18 key="autocamp-offsite-page-18" />,
   <NycHolidayOffsitePage19 key="nyc-holiday-offsite-page-19" />,
   <NycHolidayOffsitePage20 key="nyc-holiday-offsite-page-20" />,
+];
+
+/**
+ * Mobile reading list: each desktop face on a recto with a blank verso so every
+ * page stays centered in the closed-book footprint (see §5 mobile right-page).
+ */
+export const bookPagesMobile: ReactNode[] = [
+  ...bookPages.flatMap((face, i) => [face, <PageSurface key={`m-blank-${i}`} />]),
+  <ThankYouPage key="m-thankyou" />,
+  <PageSurface key="m-blank-thankyou" />,
 ];

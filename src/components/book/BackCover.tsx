@@ -3,12 +3,11 @@
 import { motion, useTransform, type MotionValue } from "framer-motion";
 import { cn } from "@/design-system";
 import { BookPolaroid } from "./BookPolaroid";
-import { INSIDE_BACK_COVER_BOOK_PAGE_INDEX } from "./constants";
-
 const BYE_POLAROID_IMG = "/images/images/Portrait/portrait.png";
 
 type Props = {
   openness: MotionValue<number>;
+  insideBackCoverIndex: number;
 };
 
 /**
@@ -19,7 +18,7 @@ type Props = {
  * Faded out when the book is closed/mid-closing so the front cover swings
  * cleanly without a "stuck" outline visible behind it.
  */
-export function BackCover({ openness }: Props) {
+export function BackCover({ openness, insideBackCoverIndex }: Props) {
   const opacity = useTransform(openness, [0.55, 1], [0, 1], { clamp: true });
 
   return (
@@ -38,7 +37,7 @@ export function BackCover({ openness }: Props) {
     >
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-6">
         <BookPolaroid
-          bookPageIndex={INSIDE_BACK_COVER_BOOK_PAGE_INDEX}
+          bookPageIndex={insideBackCoverIndex}
           className="z-10"
           image={BYE_POLAROID_IMG}
           alt="Portrait"
