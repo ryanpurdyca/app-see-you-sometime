@@ -18,9 +18,33 @@ const caveat = Caveat({
   subsets: ["latin"],
 });
 
+const siteUrl = "https://seeyousometime.com";
+
 export const metadata: Metadata = {
-  title: "see you sometime",
-  description: "An interactive 3D book that responds to your cursor.",
+  metadataBase: new URL(siteUrl),
+  title: "See You Sometime",
+  description: "An interactive memory book to say goodbye to friends, coworkers, and more.",
+  openGraph: {
+    title: "See You Sometime",
+    description: "An interactive memory book to say goodbye to friends, coworkers, and more.",
+    url: siteUrl,
+    siteName: "See You Sometime",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1024,
+        height: 523,
+        alt: "See You Sometime — an interactive memory book with a handwritten note and the Vitally cover",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "See You Sometime",
+    description: "An interactive memory book to say goodbye to friends, coworkers, and more.",
+    images: ["/og-image.jpg"],
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
